@@ -1,0 +1,50 @@
+{{- with site.Params.homeInfoParams }}
+{{- $posts := where site.RegularPages "Section" "posts" -}}
+{{- $cutoff := time.AsTime "2026-01-01" -}}
+{{- $recent := where $posts "Date" "ge" $cutoff -}}
+{{- $latest := first 3 $recent -}}
+<article class="first-entry home-info">
+  <div class="mh-term" role="img" aria-label="{{ .Title }} — {{ .Content | plainify }}">
+    <div class="mh-term__bar">
+      <span class="mh-term__dots" aria-hidden="true">
+        <i class="mh-dot mh-dot--r"></i><i class="mh-dot mh-dot--y"></i><i class="mh-dot mh-dot--g"></i>
+      </span>
+      <span class="mh-term__title">analyst@melted-in-hex:&nbsp;~</span>
+      <span class="mh-term__tools" aria-hidden="true">zsh</span>
+    </div>
+    <div class="mh-term__body">
+      <p class="mh-line" style="--d:0"><span class="mh-prompt">$</span> whoami</p>
+      <h1 class="mh-out mh-title" style="--d:1">{{ .Title | markdownify }}</h1>
+
+      <p class="mh-line" style="--d:2"><span class="mh-prompt">$</span> cat ./profile.txt</p>
+      <div class="mh-out mh-content" style="--d:3">
+        {{ $opts := dict "display" "block" }}
+        {{ .Content | $.Page.RenderString $opts }}
+      </div>
+
+      <p class="mh-line" style="--d:4">
+        <span class="mh-prompt">$</span> uname -a
+        <span class="mh-meta">malware-analysis · reverse-engineering · threat-hunting · threat-intel · AI-security · programmer</span>
+      </p>
+
+      {{- with $latest }}
+      <p class="mh-line" style="--d:5"><span class="mh-prompt">$</span> ls -t ./posts | head -3</p>
+      <ul class="mh-out mh-ls" style="--d:6">
+        {{- range . }}
+        <li class="mh-ls__row">
+          <span class="mh-ls__perm" aria-hidden="true">-rw-r--r--</span>
+          <span class="mh-ls__date" aria-hidden="true">{{ .Date.Format "2006-01-02" }}</span>
+          <a class="mh-ls__name" href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </li>
+        {{- end }}
+      </ul>
+      {{- end }}
+
+      <p class="mh-line mh-line--prompt" style="--d:7"><span class="mh-prompt">$</span><span class="mh-cursor" aria-hidden="true">█</span></p>
+    </div>
+    <footer class="mh-term__footer">
+      {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+    </footer>
+  </div>
+</article>
+{{- end -}}

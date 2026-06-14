@@ -1,0 +1,106 @@
+baseURL = "https://meltedinhex.com/"
+languageCode = "en-us"
+title = "Melted in Hex"
+theme = "PaperMod"
+
+# Pagination
+[pagination]
+pagerSize = 10
+
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+# Pretty code highlighting
+pygmentsUseClasses = true
+
+[minify]
+disableXML = true
+minifyOutput = true
+
+[params]
+  env = "production"
+  title = "Melted in Hex"
+  description = "Malware analyst, reverse engineer, threat hunter, and AI security researcher melting threats down to their raw bytes — threat hunting, threat intelligence, and reverse engineering for an AI-driven attack surface."
+  keywords = ["AI security researcher", "malware analysis", "reverse engineering", "threat hunting", "threat hunter", "threat intelligence", "supply chain security", "MCP security", "AI agents", "cloud security", "programmer"]
+  author = "sdkhere"
+  defaultTheme = "dark"
+  disableThemeToggle = false
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowWordCount = true
+  ShowToc = true
+  TocOpen = false
+  comments = false
+  images = ["images/og-social.png"]
+
+  [params.assets]
+    favicon = "/favicon.png"
+    favicon16x16 = "/favicon-32.png"
+    favicon32x32 = "/favicon-32.png"
+    apple_touch_icon = "/favicon.png"
+
+  [params.label]
+    text = "Melted in Hex"
+    icon = "/favicon.png"
+    iconHeight = 28
+
+  [params.homeInfoParams]
+    Title = "Melted in Hex"
+    Content = "Malware analyst, reverse engineer, threat hunter, and AI security researcher — melting threats down to their raw bytes. The same instinct that took malware apart, now pointed at an AI-driven attack surface, with AI in the loop."
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/meltedinhex"
+  [[params.socialIcons]]
+    name = "rss"
+    url = "/index.xml"
+
+  [params.cover]
+    linkFullImages = true
+
+# Menu
+[[menu.main]]
+  identifier = "posts"
+  name = "Posts"
+  url = "/posts/"
+  weight = 10
+[[menu.main]]
+  identifier = "tags"
+  name = "Tags"
+  url = "/tags/"
+  weight = 20
+[[menu.main]]
+  identifier = "archive"
+  name = "Archive"
+  url = "/archives/"
+  weight = 30
+[[menu.main]]
+  identifier = "search"
+  name = "Search"
+  url = "/search/"
+  weight = 40
+[[menu.main]]
+  identifier = "about"
+  name = "About"
+  url = "/about/"
+  weight = 50
+
+# Syntax highlighting
+[markup]
+  [markup.highlight]
+    noClasses = false
+    codeFences = true
+    guessSyntax = true
+    lineNos = false
+    style = "monokai"
+  [markup.goldmark.renderer]
+    unsafe = true
+
+# Output formats for search (JSON index)
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

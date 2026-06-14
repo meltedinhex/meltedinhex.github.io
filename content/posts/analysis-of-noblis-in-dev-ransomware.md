@@ -9,7 +9,7 @@ tags:
   - "python"
   - "Ransomware"
 cover:
-  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgb-XBfurdsdPLKRO8JvWXNKxMuYE8bfGcJvYFvRqaZLQQcaO0i1ekDeAXzUte6vtu_Nry0Seeoczize_nNoppZ69Ms3g6-KL58fCHzrbb0fAI8_VP8bhB0n_lqmb_w-NjYXNfeLS2H1guz/s1600/encryptd_files.PNG"
+  image: "/images/analysis-of-noblis-in-dev-ransomware/encryptd_files-465efca0.png"
   alt: "Analysis of Noblis In-dev Ransomware"
   relative: false
 canonicalURL: "https://sdkhere.blogspot.com/2017/12/analysis-of-noblis-in-dev-ransomware.html"
@@ -103,12 +103,12 @@ The main wrapper of this ransomware is below.
 It checks for a file encrypted\_files.txt in %APPDATA%; if it is not there, it will proceed with the encryption.  
 It initializes the encryption key, finds the specified files for encryption, encrypts them, makes an entry for each encrypted file in encrypted\_files.txt, and displays a GUI form.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgb-XBfurdsdPLKRO8JvWXNKxMuYE8bfGcJvYFvRqaZLQQcaO0i1ekDeAXzUte6vtu_Nry0Seeoczize_nNoppZ69Ms3g6-KL58fCHzrbb0fAI8_VP8bhB0n_lqmb_w-NjYXNfeLS2H1guz/s640/encryptd_files.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgb-XBfurdsdPLKRO8JvWXNKxMuYE8bfGcJvYFvRqaZLQQcaO0i1ekDeAXzUte6vtu_Nry0Seeoczize_nNoppZ69Ms3g6-KL58fCHzrbb0fAI8_VP8bhB0n_lqmb_w-NjYXNfeLS2H1guz/s1600/encryptd_files.PNG)  
+[![](/images/analysis-of-noblis-in-dev-ransomware/encryptd_files-465efca0.png)](/images/analysis-of-noblis-in-dev-ransomware/encryptd_files-465efca0.png)  
   
 The ransomware has an independent configuration file (runtime.cfg) which is loaded at runtime.  
 The configuration file has the encrypted file extension, ransom note, file types to be encrypted, BTC amount, wallet address, etc.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHPOjJPtPcMLG1eHMWhqUiWqsGbFc0gbgp7mvF8SOAKGPY_DmUkO4Ae3gioaAb4QzV_PNvWd8wnUCEhLEpkGrbptnFc8AUOttoxIlbHmKrLZjXlnq6SDmVyozlS0wv-wh6-StAtwzOy0vP/s640/configfile.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHPOjJPtPcMLG1eHMWhqUiWqsGbFc0gbgp7mvF8SOAKGPY_DmUkO4Ae3gioaAb4QzV_PNvWd8wnUCEhLEpkGrbptnFc8AUOttoxIlbHmKrLZjXlnq6SDmVyozlS0wv-wh6-StAtwzOy0vP/s1600/configfile.JPG)  
+[![](/images/analysis-of-noblis-in-dev-ransomware/configfile-628394d3.jpg)](/images/analysis-of-noblis-in-dev-ransomware/configfile-628394d3.jpg)  
   
 Here, the wallet address is invalid; that's why we are calling it in-development ransomware.  
 The ransom note is in Spanish and it points to a handle @4v4t4r.  
@@ -182,10 +182,10 @@ If key.txt is not present in the current directory, it will generate an AES key 
 The first 16 bytes of every encrypted file is the IV, and the rest is encrypted with this IV and the key stored in key.txt.  
   
 After encryption of every file, it will start a GUI panel shown below.  
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg5QH7KwQzaollnLlR3-d4e9yMN6S6w4lcLgbjdMGmHQfr4G9HjByMx-5K52AbXKaCmwr3NjOoAaAOKVf3l4Rcf7XTuzbmBhMDUztGfLilgHqBMhHaJhPLvKktDBITuakvK4mZxWNTl2U1R/s640/showdialog.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg5QH7KwQzaollnLlR3-d4e9yMN6S6w4lcLgbjdMGmHQfr4G9HjByMx-5K52AbXKaCmwr3NjOoAaAOKVf3l4Rcf7XTuzbmBhMDUztGfLilgHqBMhHaJhPLvKktDBITuakvK4mZxWNTl2U1R/s1600/showdialog.PNG)  
+[![](/images/analysis-of-noblis-in-dev-ransomware/showdialog-f25d1c15.png)](/images/analysis-of-noblis-in-dev-ransomware/showdialog-f25d1c15.png)  
   
 Decryption tool -  
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh1ganVFsbj4ZTOd-C_W4GMjrHgL8j3wmhKydGT2tnJYD5SQmeO7KVVhZ1cxVSS7E2xuK8zTQuZYT8gqtjrVykeZrF26ivB5Z1e4x7I45GaO89SiR0wo-vDebhR9IwoQWS_YsdTGj39SfR_/s400/decryption_.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh1ganVFsbj4ZTOd-C_W4GMjrHgL8j3wmhKydGT2tnJYD5SQmeO7KVVhZ1cxVSS7E2xuK8zTQuZYT8gqtjrVykeZrF26ivB5Z1e4x7I45GaO89SiR0wo-vDebhR9IwoQWS_YsdTGj39SfR_/s1600/decryption_.PNG)  
+[![](/images/analysis-of-noblis-in-dev-ransomware/decryption_-09a06588.png)](/images/analysis-of-noblis-in-dev-ransomware/decryption_-09a06588.png)  
   
 The ransomware has the code for RSA encryption but it is not used here; maybe it will come with RSA encryption in the next version.  
   

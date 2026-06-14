@@ -4,7 +4,7 @@ date: 2018-10-01T02:30:00+05:30
 slug: "flare-on-challenge-2018-writeup"
 draft: false
 cover:
-  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgqubfQRNWJCCJHyTMHgJ4dbbLm6S_zatv9dfBZTNtpHrNZaWrcDALncXS-BDQi89xKQsFRqzl68Bs0B0MYW485YAA8EctIIK4KQh3mf4ewl82C02NPK4Xa0cEslPMNMtxTQcwMsvDvCcnj/s1600/code.JPG"
+  image: "/images/flare-on-challenge-2018-writeup/code-745d3572.jpg"
   alt: "Flare-On Challenge 2018 Writeup"
   relative: false
 canonicalURL: "https://sdkhere.blogspot.com/2018/10/flare-on-challenge-2018-writeup.html"
@@ -30,7 +30,7 @@ I have used the [Jd-gui tool](https://github.com/java-decompiler/jd-gui/releases
   
   
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgqubfQRNWJCCJHyTMHgJ4dbbLm6S_zatv9dfBZTNtpHrNZaWrcDALncXS-BDQi89xKQsFRqzl68Bs0B0MYW485YAA8EctIIK4KQh3mf4ewl82C02NPK4Xa0cEslPMNMtxTQcwMsvDvCcnj/s640/code.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgqubfQRNWJCCJHyTMHgJ4dbbLm6S_zatv9dfBZTNtpHrNZaWrcDALncXS-BDQi89xKQsFRqzl68Bs0B0MYW485YAA8EctIIK4KQh3mf4ewl82C02NPK4Xa0cEslPMNMtxTQcwMsvDvCcnj/s1600/code.JPG)
+[![](/images/flare-on-challenge-2018-writeup/code-745d3572.jpg)](/images/flare-on-challenge-2018-writeup/code-745d3572.jpg)
 
   
  key : GoldenTicket2018@flare-on.com  
@@ -42,18 +42,18 @@ I have used the [Jd-gui tool](https://github.com/java-decompiler/jd-gui/releases
 I have solved this challenge statically.  
 The zip contains 48 PE files and each one asks for a password. If you enter anything wrong, it displays "Go step on a brick!". So I loaded one file in CFF and found a resource named "BRICK".  
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi68itESQ4RkZZnVmQw87AHKaN6qx-Dfvz7PkCeDmlrBCRlMuNjyMQg8xfNq0Ykf0knZJYXxkK4MRdpHL4Gx5C10nHkGsDWwBTfk9gQG84yheX1MP4kkfSyF0C36FhyJwMy0FzUG_ayiJWh/s640/resource.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi68itESQ4RkZZnVmQw87AHKaN6qx-Dfvz7PkCeDmlrBCRlMuNjyMQg8xfNq0Ykf0knZJYXxkK4MRdpHL4Gx5C10nHkGsDWwBTfk9gQG84yheX1MP4kkfSyF0C36FhyJwMy0FzUG_ayiJWh/s1600/resource.JPG)
+[![](/images/flare-on-challenge-2018-writeup/resource-0c4df235.jpg)](/images/flare-on-challenge-2018-writeup/resource-0c4df235.jpg)
 
   
  This BRICK is different in each file, so I entered the ASCII of the first 20 bytes from the same file in place of a password. Yes, I guessed it right :)  
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhD5WcerUZdFqyXq6htN8ECp9NdzUdQbIwyNJthb_rD1j2SXSv92DdfqNdGnnlakRPWOgSMxTTyaWh8cVV3LtpRRGOivJ4RgDnhSUDEpvrtt8IqeEMmZJU5CmWO77yVCCtnCkUvqVZsWYpc/s640/pass.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhD5WcerUZdFqyXq6htN8ECp9NdzUdQbIwyNJthb_rD1j2SXSv92DdfqNdGnnlakRPWOgSMxTTyaWh8cVV3LtpRRGOivJ4RgDnhSUDEpvrtt8IqeEMmZJU5CmWO77yVCCtnCkUvqVZsWYpc/s1600/pass.JPG)
+[![](/images/flare-on-challenge-2018-writeup/pass-5f510a11.jpg)](/images/flare-on-challenge-2018-writeup/pass-5f510a11.jpg)
 
   
    
  When we enter the correct password, it drops a PNG file and displays a character associated with it. Here we have "w" and the associated PNG file looks like below.  
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-2LG5YhJmNR19rKIcIX5x88mmX_hEDORbJYWSs6KDaLfoQ2cMdTURbyTdQ2LmUusXE_kJjuljvimQZyDaMdURN2GmyqWdcsvQqe4x6sXfDWUiIvrVYABODZZxaw1PVOVxfQmADWdGeBfa/s400/w_13147895.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-2LG5YhJmNR19rKIcIX5x88mmX_hEDORbJYWSs6KDaLfoQ2cMdTURbyTdQ2LmUusXE_kJjuljvimQZyDaMdURN2GmyqWdcsvQqe4x6sXfDWUiIvrVYABODZZxaw1PVOVxfQmADWdGeBfa/s1600/w_13147895.png)
+[![](/images/flare-on-challenge-2018-writeup/w_13147895-fa369911.png)](/images/flare-on-challenge-2018-writeup/w_13147895-fa369911.png)
 
 So this means the 23rd character of our key will be "w".
 
@@ -87,7 +87,7 @@ This is a Confuser-packed .NET binary. After execution, it drops a DLL in %APPDA
 
 When you debug standalone DLL with ollydbg, you will find below code.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhTaN9Dcks0wVkAiBSj_PM4RgyF05TOgzCJt8EGgfkJIfugYpGDvy6UWSkwGmAarHwDO3FZ0HKeLO2ABbYbPnylPeTYjaxaPug_uI0X3aBrWnAJ4TkFbyo5Nwyn8u4yHN8zP9nI3J3mCBhb/s640/4_1.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhTaN9Dcks0wVkAiBSj_PM4RgyF05TOgzCJt8EGgfkJIfugYpGDvy6UWSkwGmAarHwDO3FZ0HKeLO2ABbYbPnylPeTYjaxaPug_uI0X3aBrWnAJ4TkFbyo5Nwyn8u4yHN8zP9nI3J3mCBhb/s1600/4_1.PNG)
+[![](/images/flare-on-challenge-2018-writeup/4_1-c04c8735.png)](/images/flare-on-challenge-2018-writeup/4_1-c04c8735.png)
 
 The first function calculates the crc32 of the parent process name and compares it with some hard-coded value. So this DLL must be injected into some specific process; the hint is already given in the instructions, like "especially if they are a Firefox user". So if you replace loaddll.exe with firefox.exe then the checksum will definitely match.
 
@@ -97,7 +97,7 @@ If both these functions succeed, it will create a thread to proceed further.
 
 This thread downloads base64 encoded and encrypted data from the URL hxxp://pastebin.com/raw/hvaru8NU and decodes and decrypts it using the RC4 algorithm with the key md5("FL@R3ON.EXE"). The decrypted code is a JSON file which looks like below.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiVJsUkeRQcbXR8nc4ZMIphBBUJTMJO3nBIQyCJ3kFxxXOaL5Y8NX2CADkmOrzDPG1ajIBUSNwQx9lxEmPaWEDE6zXT8tVopOQEFHyeMmXI8umif75HaHAZPTRWjE3iRP1yA6IwOHmwRmsF/s640/json.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiVJsUkeRQcbXR8nc4ZMIphBBUJTMJO3nBIQyCJ3kFxxXOaL5Y8NX2CADkmOrzDPG1ajIBUSNwQx9lxEmPaWEDE6zXT8tVopOQEFHyeMmXI8umif75HaHAZPTRWjE3iRP1yA6IwOHmwRmsF/s1600/json.JPG)
+[![](/images/flare-on-challenge-2018-writeup/json-78347d59.jpg)](/images/flare-on-challenge-2018-writeup/json-78347d59.jpg)
 
 This is a web injection technique similar to [TinyNuke malware](https://www.bitsighttech.com/blog/break-out-of-the-tinynuke-botnet). At the last, the DLL injects this JSON into Firefox. If the webpage contains the "code" section shown in the JSON, then it will be replaced by the "content" section. At the end of this JSON file, the host and file path are already given.
 
@@ -137,7 +137,7 @@ I appended the parameter in the URL like ?q="abcdefgh" and checked where this pa
 
 It was comparing each byte of the parameter with some value, I set a breakpoint at the comparison and recorded each value.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCOyFQFuOoSPFyu8Yv6HKp2Tt1g3VoEhOOdrYybyoed7i3eGIuwahumTn9fGl8kmaVWLSQBTv-0jWQQqK1JaInebl5Thw3uhhdnA7DqAH_oJhyphenhyphen7nti_McvoR-FPtOpOROIV1OHj42bCQkV/s640/wasm_comp.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCOyFQFuOoSPFyu8Yv6HKp2Tt1g3VoEhOOdrYybyoed7i3eGIuwahumTn9fGl8kmaVWLSQBTv-0jWQQqK1JaInebl5Thw3uhhdnA7DqAH_oJhyphenhyphen7nti_McvoR-FPtOpOROIV1OHj42bCQkV/s1600/wasm_comp.JPG)
+[![](/images/flare-on-challenge-2018-writeup/wasm_comp-7e51904d.jpg)](/images/flare-on-challenge-2018-writeup/wasm_comp-7e51904d.jpg)
 
 0xBF2 is where it is comparing parameters with constant values.
 
@@ -145,7 +145,7 @@ Key : wasm\_rulez\_js\_droolz@flare-on.com
 
 **Challenge 6** :**magic**
 
-**[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPPIG8jSP3Dc-WDCSmSRNcoJscgifEWkVyBeg9OWcPVPARRjrk0pr99NYu6oAV809S9fGntPyKk4EyneAxekw4qFv1WkpnBuWFnBU1-eNHwgK6o__S0dDkfdf8Jj8AtBoHMdCEBBQkfzmP/s640/6_1.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPPIG8jSP3Dc-WDCSmSRNcoJscgifEWkVyBeg9OWcPVPARRjrk0pr99NYu6oAV809S9fGntPyKk4EyneAxekw4qFv1WkpnBuWFnBU1-eNHwgK6o__S0dDkfdf8Jj8AtBoHMdCEBBQkfzmP/s1600/6_1.JPG)**
+**[![](/images/flare-on-challenge-2018-writeup/6_1-5d1bdb04.jpg)](/images/flare-on-challenge-2018-writeup/6_1-5d1bdb04.jpg)**
 
 **This loop runs 666 times and it changes the magic file in every iteration.
 

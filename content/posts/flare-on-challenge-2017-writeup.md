@@ -8,7 +8,7 @@ tags:
   - "Flare-On 2017"
   - "FlareOn4"
 cover:
-  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJuzTsZjGI2vAMKnHcwMwOBzBQY5I4vYN2RoFyc6AMzR1TAk_2BJYryev3pN08e9rzW1dJWf_SlBnnF9kmuOzEqfshlbWNV0YWmWj_ZJadJIJw2v6uvD88DTB2WMSo7sNqTBOvvsUQ5AoV/s1600/c2.PNG"
+  image: "/images/flare-on-challenge-2017-writeup/c2-56ca1bae.png"
   alt: "Flare-On Challenge 2017 Writeup"
   relative: false
 canonicalURL: "https://sdkhere.blogspot.com/2017/10/flare-on-challenge-2017-writeup.html"
@@ -68,7 +68,7 @@ Key : ClientSideLoginsAreEasy@flare-on.com
  **Challenge 2 : IgniteMe.exe**  
  This is a crackme challenge. It is a command line tool, takes an input from the user and checks whether it is correct or not.  
 In the function 401050, you can see where the input is processed by a XOR loop.  
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJuzTsZjGI2vAMKnHcwMwOBzBQY5I4vYN2RoFyc6AMzR1TAk_2BJYryev3pN08e9rzW1dJWf_SlBnnF9kmuOzEqfshlbWNV0YWmWj_ZJadJIJw2v6uvD88DTB2WMSo7sNqTBOvvsUQ5AoV/s640/c2.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJuzTsZjGI2vAMKnHcwMwOBzBQY5I4vYN2RoFyc6AMzR1TAk_2BJYryev3pN08e9rzW1dJWf_SlBnnF9kmuOzEqfshlbWNV0YWmWj_ZJadJIJw2v6uvD88DTB2WMSo7sNqTBOvvsUQ5AoV/s1600/c2.PNG)  
+[![](/images/flare-on-challenge-2017-writeup/c2-56ca1bae.png)](/images/flare-on-challenge-2017-writeup/c2-56ca1bae.png)  
   
 The XOR key is hardcoded, which is 0x4. This function XORs the input data with 0x4 in reverse order and compares it against the hardcoded encrypted data.  
 So, we have the encrypted data and encryption key, and we know the algorithm.  
@@ -97,7 +97,7 @@ When you reverse engineer the binary, you will see the buffer is transferred to 
 With the help of this character it performs some operation on data at 0x40107c.  
 You can see the code at 0x401029.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj4YUCy3BfdQo9vuJBkTlbaxUkNgGC5ekXAxLvZxuHpFPDKEF_ImF67vLjWdF3Pt0XmfdfxBWxadT5nTfXI4oDSlg5jx2F2IKlzvd_c-KX6mbpWp20-LwfpX4-uIl6_Rwf8nB-DpKOQdkYZ/s640/c3.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj4YUCy3BfdQo9vuJBkTlbaxUkNgGC5ekXAxLvZxuHpFPDKEF_ImF67vLjWdF3Pt0XmfdfxBWxadT5nTfXI4oDSlg5jx2F2IKlzvd_c-KX6mbpWp20-LwfpX4-uIl6_Rwf8nB-DpKOQdkYZ/s1600/c3.PNG)  
+[![](/images/flare-on-challenge-2017-writeup/c3-a06831c6.png)](/images/flare-on-challenge-2017-writeup/c3-a06831c6.png)  
   
 To decrypt the data properly we need the correct input character.  
 We have to create a client for this binary, brute-force the input from 0 to 0xff and print the output.  
@@ -169,7 +169,7 @@ This loop checks the executable files in the directory, takes the timedatestamp 
   
 Look at the pseudo code of function2.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiyHD1sRDDYQEF1ybuoOqKUAWfMpReM7udrRJIQuUAH9otIlqUMTIP34byH0YUauANiTcp7Qq5xgW9Is5JO1Q06g5EW6uuaK1NKU8Zt_6Y9UegpKlVi4iaE7Xna6W8gxjuSUHap_koFlHm4/s640/c4.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiyHD1sRDDYQEF1ybuoOqKUAWfMpReM7udrRJIQuUAH9otIlqUMTIP34byH0YUauANiTcp7Qq5xgW9Is5JO1Q06g5EW6uuaK1NKU8Zt_6Y9UegpKlVi4iaE7Xna6W8gxjuSUHap_koFlHm4/s1600/c4.PNG)  
+[![](/images/flare-on-challenge-2017-writeup/c4-1116eeb6.png)](/images/flare-on-challenge-2017-writeup/c4-1116eeb6.png)  
   
 It is comparing the timestamp of a file with a hardcoded value.  
 So if you check the timestamps of the first 4 challenges of Flare-On 2016, you will get the idea.  
@@ -177,7 +177,7 @@ Just put those 4 files in the directory and tweak notepad.exe to update its time
 After 4 executions we get the key.bin properly filled.  
 When you update notepad.exe with the last timestamp, you get the key.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYpmeBhAgMaOBV6eLXGWx-w3dcKzMnCdnVPEZvT8W6HdxxVZCeK0rMKyMN3oGUaZYaR4oG2iVVwVxJODtf3MlLLEwkuNty8YDBfO710P1LYJiD9mqFZcY4hLTPJCbNVXcVB6rQlOxrhGLn/s400/c4b.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYpmeBhAgMaOBV6eLXGWx-w3dcKzMnCdnVPEZvT8W6HdxxVZCeK0rMKyMN3oGUaZYaR4oG2iVVwVxJODtf3MlLLEwkuNty8YDBfO710P1LYJiD9mqFZcY4hLTPJCbNVXcVB6rQlOxrhGLn/s1600/c4b.png)  
+[![](/images/flare-on-challenge-2017-writeup/c4b-b8abae98.png)](/images/flare-on-challenge-2017-writeup/c4b-b8abae98.png)  
   
 Key : bl457\_fr0m\_th3\_p457@flare-on.com  
   
@@ -242,7 +242,7 @@ Key : y0u\_\_sUnK\_mY\_\_P3Wp3w\_b04t@flare-on.com
  **Challenge 6 : payload.dll**  
  This DLL has only one export function named EntryPoint.  
 When we execute this function using rundll32, we get the below message box.  
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4SidiLIs_3__bU-1wFcQ_FitktsIlVHCSPDHg4xcGnBPpEbz69SAC9GHHpLjQjPCGpWIyJW5Pk4lMXQuIbnwDNB3juyXTI0GoVQ-kH4rdRV-M-VMYxj86xm3bT3FmIePuNbVs0gLnz86W/s400/c6_msg.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4SidiLIs_3__bU-1wFcQ_FitktsIlVHCSPDHg4xcGnBPpEbz69SAC9GHHpLjQjPCGpWIyJW5Pk4lMXQuIbnwDNB3juyXTI0GoVQ-kH4rdRV-M-VMYxj86xm3bT3FmIePuNbVs0gLnz86W/s1600/c6_msg.PNG)  
+[![](/images/flare-on-challenge-2017-writeup/c6_msg-8f59cdab.png)](/images/flare-on-challenge-2017-writeup/c6_msg-8f59cdab.png)  
   
 Here is the hint; we have to provide some argument to this DLL.  
 Let's have a look at the code of the export function.  
@@ -252,12 +252,12 @@ When you break at this location, we can get the value to which our argument is c
 The argument is compared with "orphanedirreproducibleconfidence". Let's change the argument value and make this condition satisfied.  
 So in the last it shows a message box with the key part of 1 byte.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDiqHgtxKu_l7mvDfzRwq7SGoBIW5WvU2iMe2dLN7g6CJ0fITdDKPAj9wCjQChJ8fy6YWrkF3QOafsbDuSD8Du6zqsIuh9aLb0l0eddR9hjnWQDPcDa_xI-dpqymPxm__oIFusFwRf-LU2/s400/msgbox.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDiqHgtxKu_l7mvDfzRwq7SGoBIW5WvU2iMe2dLN7g6CJ0fITdDKPAj9wCjQChJ8fy6YWrkF3QOafsbDuSD8Du6zqsIuh9aLb0l0eddR9hjnWQDPcDa_xI-dpqymPxm__oIFusFwRf-LU2/s1600/msgbox.JPG)  
+[![](/images/flare-on-challenge-2017-writeup/msgbox-e7d3f2b6.jpg)](/images/flare-on-challenge-2017-writeup/msgbox-e7d3f2b6.jpg)  
   
 Now let's go back in reverse, to where this argument value is coming from.  
 The answer is in the function at 0x180005D30; let's check the pseudo code of this function.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgSZsrNfiLgywag5shc-L27NXF2tnv3E1p2j2ZA50g8DgQ3vzDJonIdialOTxEmBfPCUjeqKuXPO3dzzT_ytxWleFroYv6tpDdxtCTFjtMt0bO7-8HjIz7Ff0mpEvCkrNSjWOLoZwC6q99w/s640/c6_source.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgSZsrNfiLgywag5shc-L27NXF2tnv3E1p2j2ZA50g8DgQ3vzDJonIdialOTxEmBfPCUjeqKuXPO3dzzT_ytxWleFroYv6tpDdxtCTFjtMt0bO7-8HjIz7Ff0mpEvCkrNSjWOLoZwC6q99w/s1600/c6_source.PNG)  
+[![](/images/flare-on-challenge-2017-writeup/c6_source-20450da6.png)](/images/flare-on-challenge-2017-writeup/c6_source-20450da6.png)  
   
 So, the index 25 is coming from sub\_180004760(); it gives the value 25 if executed in September.  
 For the argument value, let's check sub\_180005C40()  

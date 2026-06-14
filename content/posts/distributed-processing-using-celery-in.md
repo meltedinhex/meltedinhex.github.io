@@ -9,7 +9,7 @@ tags:
   - "distributed tasks in python"
   - "python-celery"
 cover:
-  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2z3EDOl9tyUhRni0fwgiOHOct83gFeluvFk4em9d13A_zV6wFCtGrmBgU8ixGhuS1cMUxcFpDkVgq5kA5Hn-KVXksC_EL_vnWuo5GGfXRg2st0zPBrtA97AIz6a08lsmvIMpziqNod4w5/s1600/celery_architecture.jpg"
+  image: "/images/distributed-processing-using-celery-in/celery_architecture-d8d5269c.jpg"
   alt: "Distributed processing using celery in python"
   relative: false
 canonicalURL: "https://sdkhere.blogspot.com/2017/01/distributed-processing-using-celery-in.html"
@@ -22,7 +22,7 @@ Celery is an asynchronous task queue based on distributed message passing. Tasks
 **Architecture:**  
   
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2z3EDOl9tyUhRni0fwgiOHOct83gFeluvFk4em9d13A_zV6wFCtGrmBgU8ixGhuS1cMUxcFpDkVgq5kA5Hn-KVXksC_EL_vnWuo5GGfXRg2st0zPBrtA97AIz6a08lsmvIMpziqNod4w5/s640/celery_architecture.jpg)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2z3EDOl9tyUhRni0fwgiOHOct83gFeluvFk4em9d13A_zV6wFCtGrmBgU8ixGhuS1cMUxcFpDkVgq5kA5Hn-KVXksC_EL_vnWuo5GGfXRg2st0zPBrtA97AIz6a08lsmvIMpziqNod4w5/s1600/celery_architecture.jpg)
+[![](/images/distributed-processing-using-celery-in/celery_architecture-d8d5269c.jpg)](/images/distributed-processing-using-celery-in/celery_architecture-d8d5269c.jpg)
 
 Fig1 : Celery architecture
 
@@ -191,6 +191,6 @@ flower -A proj --port=5555
 
 Now, you can visit this URL http://localhost:5555 for monitoring celery clusters.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ2qhtEVaxxh2Vqk_QTpIA-INckzTV0TlfwJr0slGSE7eyxw1M_9iVFdKcDkorVaz8zF8AsadE85uQMEGLVJEr7tmMsiXckuXS4C__H-lKzr9Thbbx4KdKCMtssyqwJt2VNhPJk1r1gJ47/s640/flower1.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ2qhtEVaxxh2Vqk_QTpIA-INckzTV0TlfwJr0slGSE7eyxw1M_9iVFdKcDkorVaz8zF8AsadE85uQMEGLVJEr7tmMsiXckuXS4C__H-lKzr9Thbbx4KdKCMtssyqwJt2VNhPJk1r1gJ47/s1600/flower1.png)  
+[![](/images/distributed-processing-using-celery-in/flower1-a83ec990.png)](/images/distributed-processing-using-celery-in/flower1-a83ec990.png)  
 
 Fig2 : Celery Flower

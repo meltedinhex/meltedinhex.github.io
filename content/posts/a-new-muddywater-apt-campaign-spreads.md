@@ -12,7 +12,7 @@ tags:
   - "PowerShell"
   - "VBS"
 cover:
-  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgRS7ga1tHBHr6HMtC8kNusPvlBhtbiAzV6QlPVFuEGCAlizG3p3_2j-3v-Yt3DAzfsDo8CpBci6kXWGwLllFeDdoYRp_VcA1Kidc5Sdr8WTLhwdzi4iijh6YLbBvpQYm2ZU32aNd79B0IJ/s1600/doc1.PNG"
+  image: "/images/a-new-muddywater-apt-campaign-spreads/doc1-85a3eec5.png"
   alt: "A new MuddyWater APT campaign spreads Backdoor RAT"
   relative: false
 canonicalURL: "https://sdkhere.blogspot.com/2019/01/a-new-muddywater-apt-campaign-spreads.html"
@@ -36,27 +36,27 @@ https://twitter.com/360TIC/status/1081080752438009856
 
 https://www.virustotal.com/#/file/c873532e009f2fc7d3b111636f3bbaa307465e5a99a7f4386bebff2ef8a37a20/detection
 
-![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgRS7ga1tHBHr6HMtC8kNusPvlBhtbiAzV6QlPVFuEGCAlizG3p3_2j-3v-Yt3DAzfsDo8CpBci6kXWGwLllFeDdoYRp_VcA1Kidc5Sdr8WTLhwdzi4iijh6YLbBvpQYm2ZU32aNd79B0IJ/s640/doc1.PNG)
+![](/images/a-new-muddywater-apt-campaign-spreads/doc1-85a3eec5.png)
 
 The document has obfuscated macro code which contains encrypted binary data. On execution, it decrypts the data, drops files and executes them.
 
 The decryption function used in VBS macro is shown below.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEim7Y75ztW5RgT8LGcKIewvyBmBk4bWPEV5zEnQT2lD51CCgNYuLd1TP3Cx9P7Rf8O3TiOtK_BB_OdJYxIedpAGEkxRhDUavwaq_Gdju0oV2_PrPA0zA4y_EnWZgq_trD8aUhXP90wYjjv4/s400/decrypt_macro.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEim7Y75ztW5RgT8LGcKIewvyBmBk4bWPEV5zEnQT2lD51CCgNYuLd1TP3Cx9P7Rf8O3TiOtK_BB_OdJYxIedpAGEkxRhDUavwaq_Gdju0oV2_PrPA0zA4y_EnWZgq_trD8aUhXP90wYjjv4/s1600/decrypt_macro.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/decrypt_macro-f9b0c3dd.png)](/images/a-new-muddywater-apt-campaign-spreads/decrypt_macro-f9b0c3dd.png)
 
 With the help of this function, it decrypts line(0) of the code shown in the below image, which is nothing but the header of a PE file.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgpUtmarW5jwmw4OVIQyI7KZtEcvzK1DN2ls7ERatTlA_Yz2nI5m_vMUNaziDdJqQx_oEPiVjLXBDm3GpIAM3EqfcqZ6MwgpQHPHUIB00SsyCPKt67PfmY0uPjGJ1ioUrVZk-ombnDjAkOd/s640/file1_enc.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgpUtmarW5jwmw4OVIQyI7KZtEcvzK1DN2ls7ERatTlA_Yz2nI5m_vMUNaziDdJqQx_oEPiVjLXBDm3GpIAM3EqfcqZ6MwgpQHPHUIB00SsyCPKt67PfmY0uPjGJ1ioUrVZk-ombnDjAkOd/s1600/file1_enc.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/file1_enc-37d5b560.png)](/images/a-new-muddywater-apt-campaign-spreads/file1_enc-37d5b560.png)
 
 The macro concatenates the above lines, converts them to ASCII, and stores it at "C:\users\public" with the name "temp\_rt\_32.exe".
 
 After that, it concatenates another piece of code shown below and stores it at the same location with the name "Data.zip"
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhoyDBeHzTbungHsEvTDrkh30mtcqVpoFcVv0YfphNmFUN-wNJPgOfclTspl6KekGEXzNhV0S64OlnwJtaSa50r32WMX_-h01spwkmKv8YDU1Dmbv0fqTsuv41vG3MlC-t08XYNBm8qJgcV/s640/file2_enc.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhoyDBeHzTbungHsEvTDrkh30mtcqVpoFcVv0YfphNmFUN-wNJPgOfclTspl6KekGEXzNhV0S64OlnwJtaSa50r32WMX_-h01spwkmKv8YDU1Dmbv0fqTsuv41vG3MlC-t08XYNBm8qJgcV/s1600/file2_enc.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/file2_enc-03ff56c0.png)](/images/a-new-muddywater-apt-campaign-spreads/file2_enc-03ff56c0.png)
 
 Location - C:\Users\Public
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-OCRSvg3fZblp8mCx_8TT8dBkeSIcKU9a6kShm09XAhz4VJVnkGgqU2kHmuriORZGVF6rnBN6aV8iRyiqTwvfiZyC42EuhphqwGuStu5KEQWGY8F1fVoDNUdpkPWHj-kh_h7glIGUaNAo/s640/drop_location.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-OCRSvg3fZblp8mCx_8TT8dBkeSIcKU9a6kShm09XAhz4VJVnkGgqU2kHmuriORZGVF6rnBN6aV8iRyiqTwvfiZyC42EuhphqwGuStu5KEQWGY8F1fVoDNUdpkPWHj-kh_h7glIGUaNAo/s1600/drop_location.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/drop_location-9f084ea4.png)](/images/a-new-muddywater-apt-campaign-spreads/drop_location-9f084ea4.png)
 
 After that, the document uses ShellExecute to run temp\_rt\_32.exe and exits itself.
 
@@ -66,9 +66,9 @@ temp\_rt\_32.exe is a UPX packed Delphi file. On execution, it extracts the data
 
 And then it imports the UP.txt file to the registry, which is nothing but the RUN entry of GoogleUpdate.exe with the name DVRStudio, and exits itself.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNHa2Qt0ZNKEb3YBZwdXMkyP2bwCWHzgaqs4zWDucpA7bTyZ_ZqN56_4wNjUHIiT3n6U2gR3ax19XIuyGI-Mi2b_HxKDORT7k0l0h2DqpF4Pp3d01C15Uqrit6tXNfL_iiMlBNpp76uHyI/s640/datazip.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNHa2Qt0ZNKEb3YBZwdXMkyP2bwCWHzgaqs4zWDucpA7bTyZ_ZqN56_4wNjUHIiT3n6U2gR3ax19XIuyGI-Mi2b_HxKDORT7k0l0h2DqpF4Pp3d01C15Uqrit6tXNfL_iiMlBNpp76uHyI/s1600/datazip.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/datazip-5f7ac659.png)](/images/a-new-muddywater-apt-campaign-spreads/datazip-5f7ac659.png)
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjCcYb-V3XsTqfeJ15B4t91Dk-YWjRBSK2Y5CKSQ4uTI64GJhpIx65kv30UucWFAzBnniPgTG7Poeil05YAgbGe3dzbw3VO9wQH48q3CCveY8arCrIOj_-DY-EalHUjeez0e1iBu2iIMc55/s640/reg.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjCcYb-V3XsTqfeJ15B4t91Dk-YWjRBSK2Y5CKSQ4uTI64GJhpIx65kv30UucWFAzBnniPgTG7Poeil05YAgbGe3dzbw3VO9wQH48q3CCveY8arCrIOj_-DY-EalHUjeez0e1iBu2iIMc55/s1600/reg.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/reg-d00a20c0.png)](/images/a-new-muddywater-apt-campaign-spreads/reg-d00a20c0.png)
 
 **GoogleUpdate.exe :**
 
@@ -82,17 +82,17 @@ ID = base64\_encode(username\_volumeserialnumber)
 
 After that, it checks internet connectivity by resolving google.com. If it returns true, it will do the malicious activity, otherwise it will wait for 5 min.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjxhXJL0f9COecDSlDnJZJPXiy6XIy0JvRb2Q9vdOqTs3bAnLLPJX925s7d4PAY9EAzxH06k6ttJXWihP6-djf4o-cQO7zDbIEf-GIdQgXmz01U282jsBJT9W7y1pxgiXWvaFmJVnUKG5on/s400/internet_chk.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjxhXJL0f9COecDSlDnJZJPXiy6XIy0JvRb2Q9vdOqTs3bAnLLPJX925s7d4PAY9EAzxH06k6ttJXWihP6-djf4o-cQO7zDbIEf-GIdQgXmz01U282jsBJT9W7y1pxgiXWvaFmJVnUKG5on/s1600/internet_chk.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/internet_chk-7ee345c6.png)](/images/a-new-muddywater-apt-campaign-spreads/internet_chk-7ee345c6.png)
 
 If the internet is connected, then it reads "C:\Users\Public\temp\_gh\_12.dat" which has the following encoded data.
 
 "NAAbYiYadQF4QQAAMXo2Oic7CT4nORx/N3oYKwReWSMEMwAuCGxlX3ZUYmEHEh4+Gz0RPxgVBi8QYBY/aWITJQQGImZ2Y1cLdncHIQ8iHywJMhAgHxgfJRx1GUlvEhl9HRIIUG1wclB9Zw8/AiwQPQYCDmMCOBxv"
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigya90NctpGF4krCefoawDVgdbZOEOxYdrNiFxwv5IMLeqTFoeYp-Z40VejP4DutNPwtbSD-sK4muvliGicAFMvI8N2cV8JiYKqlm73DhEixKpBHN4KoelYofYHnik3IAHbM_-iF9gJVzZ/s640/url_decode.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigya90NctpGF4krCefoawDVgdbZOEOxYdrNiFxwv5IMLeqTFoeYp-Z40VejP4DutNPwtbSD-sK4muvliGicAFMvI8N2cV8JiYKqlm73DhEixKpBHN4KoelYofYHnik3IAHbM_-iF9gJVzZ/s1600/url_decode.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/url_decode-92fdd895.png)](/images/a-new-muddywater-apt-campaign-spreads/url_decode-92fdd895.png)
 
 The above function will Base64 decode the data of temp\_gh\_12.dat, XOR the decoded data with the hardcoded key and then again Base64 decode the decrypted data.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6tYuPEreW3NfvTIICYBv3WikwAT-6UaRc34GHn0F2F-jzD__KVm7BHJilvnrb0XBqHuLOezaT3sFsRvzQVvvzdHtMakaTXIVP5bd6xG-nEb7hKflw_rIbSYwYZcPExl7GUgMJGtrF_8E7/s640/xor.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6tYuPEreW3NfvTIICYBv3WikwAT-6UaRc34GHn0F2F-jzD__KVm7BHJilvnrb0XBqHuLOezaT3sFsRvzQVvvzdHtMakaTXIVP5bd6xG-nEb7hKflw_rIbSYwYZcPExl7GUgMJGtrF_8E7/s1600/xor.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/xor-f0aff5a5.png)](/images/a-new-muddywater-apt-campaign-spreads/xor-f0aff5a5.png)
 
 Here the key is "UHIRER874893UIUOFUGHEWROUIRGH35"
 
@@ -102,7 +102,7 @@ hxxps://www.jsonstore.io/4de4d6d84d17638b3cd0eaf18857784aff27501be7d3dd89fad2b7a
 
 The sample downloads the JSON file from the above URL and gets the URL of the CnC server.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWFUiskVIihJzZDrs1n9wSGbaglqtjX05l-2BnkXGaIStAn_v0cPIbJS6EZ0Y6ymE9jIBU18nxzqLjWY4ffFQjZJKkZiZAek9CSMRDGEBtm6VlGtANdyJ9q987bwhfnNZHcRNPXPtRXzst/s640/cnc_urls.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWFUiskVIihJzZDrs1n9wSGbaglqtjX05l-2BnkXGaIStAn_v0cPIbJS6EZ0Y6ymE9jIBU18nxzqLjWY4ffFQjZJKkZiZAek9CSMRDGEBtm6VlGtANdyJ9q987bwhfnNZHcRNPXPtRXzst/s1600/cnc_urls.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/cnc_urls-c88f739e.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_urls-c88f739e.png)
 
 Above jsonstore api has two CnC URLs. The sample will parse these URLs and proceed with the active one.
 
@@ -118,15 +118,15 @@ The sample reads this info from the file and sends it to the CnC server at the b
 
 hxxp://shopcloths.ddns.net/users.php?tname=id\_UniqueID&path=Users
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgd4njnLqIIFqnqjwiIdfF6fI_VpvdYraztJV4kU87UCkzmbLQrejslK87720l4hZPSiHIo3oNHcUUWT8-Ztm0gg8fKAJiERyJUyKuG0UbCzlV42EKlR0T0obW3lePwKM9X4h53jJkBr2FH/s640/info_sent.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgd4njnLqIIFqnqjwiIdfF6fI_VpvdYraztJV4kU87UCkzmbLQrejslK87720l4hZPSiHIo3oNHcUUWT8-Ztm0gg8fKAJiERyJUyKuG0UbCzlV42EKlR0T0obW3lePwKM9X4h53jJkBr2FH/s1600/info_sent.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/info_sent-990dd469.png)](/images/a-new-muddywater-apt-campaign-spreads/info_sent-990dd469.png)
 
 The sample has a Base64 encoded and XOR encrypted PowerShell script which is decrypted by the same encryption and encoding method described above.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3LKgd1mt5hjjoYTVGFBKUzT3wiu7Y3GNRy_d3amX7Ub9xZkH2S0UrsLoP393607dEtb_hLtHw6Z5iR5A_qwTVGNxS81Qru_fFRLgBvx9K2WGXbuYhBRAqk1skbFRLSqLW3aDDG5bWvxax/s640/enc_powershell.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3LKgd1mt5hjjoYTVGFBKUzT3wiu7Y3GNRy_d3amX7Ub9xZkH2S0UrsLoP393607dEtb_hLtHw6Z5iR5A_qwTVGNxS81Qru_fFRLgBvx9K2WGXbuYhBRAqk1skbFRLSqLW3aDDG5bWvxax/s1600/enc_powershell.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/enc_powershell-02672e55.png)](/images/a-new-muddywater-apt-campaign-spreads/enc_powershell-02672e55.png)
 
 The decrypted PowerShell script looks like below.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhk1WkUxzx_l1SOwpcuHj4XYLGajfs2wflmU8BVKWt_4AJMf8TPlT-YEsDXPzNVgZSNYRpdmec57Thcoj6y9iDu_ZWPsqrxSh_EDxMY56wC-IrsAhMOoEPauGh1PoIwZoaMsmyk5w3_GRSS/s640/ps_script.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhk1WkUxzx_l1SOwpcuHj4XYLGajfs2wflmU8BVKWt_4AJMf8TPlT-YEsDXPzNVgZSNYRpdmec57Thcoj6y9iDu_ZWPsqrxSh_EDxMY56wC-IrsAhMOoEPauGh1PoIwZoaMsmyk5w3_GRSS/s1600/ps_script.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/ps_script-cfd15241.png)](/images/a-new-muddywater-apt-campaign-spreads/ps_script-cfd15241.png)
 
 The first function of the script gives all the usernames available in the system.
 
@@ -140,11 +140,11 @@ After that, it reads the same file and sends it to the CnC server at the below l
 
 hxxp://shopcloths.ddns.net/users.php?tname=res\_uniqueID.frk&path=Data
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhKo8j_u9QfbRbL6agtVx1tPCypdEXdY4uhfoinBpPEqWds-CcRcvsgcjv4NC_e2FUhqxDXd4zo9iQraWOKiv1WQrw5G2y2NiIAVPxyOZRyPMQKMUEdrJudSNe0gW0deFOW5OGrEUHJrtBV/s640/post_info.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhKo8j_u9QfbRbL6agtVx1tPCypdEXdY4uhfoinBpPEqWds-CcRcvsgcjv4NC_e2FUhqxDXd4zo9iQraWOKiv1WQrw5G2y2NiIAVPxyOZRyPMQKMUEdrJudSNe0gW0deFOW5OGrEUHJrtBV/s1600/post_info.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/post_info-3514f1ed.png)](/images/a-new-muddywater-apt-campaign-spreads/post_info-3514f1ed.png)
 
 After all these initialization steps, control transfers to an infinite loop which takes care of all the actions coming from the server and acts accordingly.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiTgHLSftJCwzt28jtbDi72VZ4UXZ3bzljEeD-hAfBipo5QQ6ZZ53PBC0u5WnwHuf8UcJ9hzjpWtm4SMD6NZE8QF7zcSzqzY628l9-NmJttRHmdQ6B6hMxH7pmD8Pvb8smMVICjmGaBgwQp/s640/cnc_loop.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiTgHLSftJCwzt28jtbDi72VZ4UXZ3bzljEeD-hAfBipo5QQ6ZZ53PBC0u5WnwHuf8UcJ9hzjpWtm4SMD6NZE8QF7zcSzqzY628l9-NmJttRHmdQ6B6hMxH7pmD8Pvb8smMVICjmGaBgwQp/s1600/cnc_loop.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/cnc_loop-5fba598d.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_loop-5fba598d.png)
 
 This loop first checks the internet connection by pinging google.com, then it checks server connectivity by sending the following request to the server and comparing the output with the hardcoded value.
 
@@ -162,11 +162,11 @@ Currently, there are only three commands present in this version.
 
 2. Upload FilePath: It uploads FilePath on the server at URL hxxp://shopcloths.ddns.net/users.php?tname=randomname.extension&path=Data
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgNVvXzXGGF2iA0JAdoaPsNwdPk8BM31sqDojl3NnSGADo4RH7J3_IdjdLzv7qvqzZrcvrDeREGlAW-TjdujDr76MzatWQBbQEUr_Yax7ATRCS4Y6ao1ubaaER0Ezrmk7DrNJBsh55N_B7/s640/cnc_commands.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgNVvXzXGGF2iA0JAdoaPsNwdPk8BM31sqDojl3NnSGADo4RH7J3_IdjdLzv7qvqzZrcvrDeREGlAW-TjdujDr76MzatWQBbQEUr_Yax7ATRCS4Y6ao1ubaaER0Ezrmk7DrNJBsh55N_B7/s1600/cnc_commands.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/cnc_commands-e2110ab7.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_commands-e2110ab7.png)
 
 3. Powershell script: If the response of the server is an encoded and encrypted PowerShell script, then it will be run by the third function which is shown below.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmPBBE4kYXr5Ac48rPh2b-cbbjSkPHMBY6d28TqaXa-gAZEoefj0CGge481aShxlU8yh18WbkN03aMGq-ipRs9mEknnfwuIuFQebu9Tu4g_710BAbfRg8q9HSBKibsyNcFj8EeE8ctwsC3/s640/run_ps.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmPBBE4kYXr5Ac48rPh2b-cbbjSkPHMBY6d28TqaXa-gAZEoefj0CGge481aShxlU8yh18WbkN03aMGq-ipRs9mEknnfwuIuFQebu9Tu4g_710BAbfRg8q9HSBKibsyNcFj8EeE8ctwsC3/s1600/run_ps.PNG)
+[![](/images/a-new-muddywater-apt-campaign-spreads/run_ps-9019e195.png)](/images/a-new-muddywater-apt-campaign-spreads/run_ps-9019e195.png)
 
 **IOCs :**
 

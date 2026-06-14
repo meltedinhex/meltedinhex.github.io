@@ -11,7 +11,7 @@ tags:
   - "Ransomware"
   - "Spider"
 cover:
-  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipWXaBWZbioMjcirYuclOKI4s4LjzxrWWRLZCVrQga0LeNY6hMyf_PbIZvyuhm4GsKHGWa630OzSgPgiGVaA5zlWZ5Lsx2N_b6D0otW6rLnls2RtLvUqgaPisax0JA6ZsVFyyze9NBJ5ph/s1600/ransomidtxt.PNG"
+  image: "/images/analysis-of-file-spider-ransomware/ransomidtxt-32cd8163.png"
   alt: "Analysis of File-Spider Ransomware"
   relative: false
 canonicalURL: "https://sdkhere.blogspot.com/2017/12/analysis-of-file-spider-ransomware.html"
@@ -111,7 +111,7 @@ FileType: MSIL
   
 This binary is executed with 3 arguments "spider", "ktn" and "100".  
 First of all it creates a victim's ID and dumps it to %APPDATA%\Spider\id.txt  
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipWXaBWZbioMjcirYuclOKI4s4LjzxrWWRLZCVrQga0LeNY6hMyf_PbIZvyuhm4GsKHGWa630OzSgPgiGVaA5zlWZ5Lsx2N_b6D0otW6rLnls2RtLvUqgaPisax0JA6ZsVFyyze9NBJ5ph/s640/ransomidtxt.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipWXaBWZbioMjcirYuclOKI4s4LjzxrWWRLZCVrQga0LeNY6hMyf_PbIZvyuhm4GsKHGWa630OzSgPgiGVaA5zlWZ5Lsx2N_b6D0otW6rLnls2RtLvUqgaPisax0JA6ZsVFyyze9NBJ5ph/s1600/ransomidtxt.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/ransomidtxt-32cd8163.png)](/images/analysis-of-file-spider-ransomware/ransomidtxt-32cd8163.png)  
   
 One string is created from 0x20 bytes of a random number, the second argument (ktn) and the third argument (100). It is encrypted with the RSA algorithm; the RSA public key is hardcoded in the function, which is-  
   
@@ -169,22 +169,22 @@ Directories which are going to be skipped are:
   
 Each file is encrypted by the AES CFB algorithm with the same key, which is encrypted by RSA, and random 0x20 bytes of salt.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgpGEf1tetH4gP7w5DRlbYK4VIFZy5B9WW2CPKDUxvhi-ABH9UTCXLBWwBD9FCyL6inErqUXIdmtwVaxwh1g4OvtbBORO4UwGmeixOGS-8dRkmDYag0OccbUjWn4ZSaqLzYaj9H6tHp2HsH/s640/aes_algo.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgpGEf1tetH4gP7w5DRlbYK4VIFZy5B9WW2CPKDUxvhi-ABH9UTCXLBWwBD9FCyL6inErqUXIdmtwVaxwh1g4OvtbBORO4UwGmeixOGS-8dRkmDYag0OccbUjWn4ZSaqLzYaj9H6tHp2HsH/s1600/aes_algo.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/aes_algo-b53bdd53.png)](/images/analysis-of-file-spider-ransomware/aes_algo-b53bdd53.png)  
   
 The password and salt are randomly generated.  
 These two are different for each file, so they are prepended to the encrypted file.  
 The first 0x20 bytes are the salt, the next 0x50 bytes are the AES encrypted password and the rest is the encrypted file data.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJoNJH7cdXz47eOMr5rMIJeMZbhAShepvoCiznGPie72SD2vqtiFUsrBY6XxbesGarH-q1sJcYw0JzZNCGiEfL21GCZxgvsNP8cFvcJKVfw7n2H8U9kG0Yz54GMlqDitnz-AYzuEo9FVxA/s640/encrypted_file.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJoNJH7cdXz47eOMr5rMIJeMZbhAShepvoCiznGPie72SD2vqtiFUsrBY6XxbesGarH-q1sJcYw0JzZNCGiEfL21GCZxgvsNP8cFvcJKVfw7n2H8U9kG0Yz54GMlqDitnz-AYzuEo9FVxA/s1600/encrypted_file.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/encrypted_file-25150054.png)](/images/analysis-of-file-spider-ransomware/encrypted_file-25150054.png)  
   
 After the encryption of each file, it will add the full path of the encrypted file to %APPDATA%\Spider\files.txt  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhB73DplZ2p51gU2vE8rOhG_eY7IaA5mYDZ0EwO8X_lruJ5uEA16EJTiaoRmG1COHVQ45xC8746HFVPvRXCxe6UZUZQA2QJI3R2DPBjE_XiyUQQFNlTyh5rd4vojdacoDUhpEId6mgInCqL/s640/filetxt.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhB73DplZ2p51gU2vE8rOhG_eY7IaA5mYDZ0EwO8X_lruJ5uEA16EJTiaoRmG1COHVQ45xC8746HFVPvRXCxe6UZUZQA2QJI3R2DPBjE_XiyUQQFNlTyh5rd4vojdacoDUhpEId6mgInCqL/s1600/filetxt.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/filetxt-2097aa36.png)](/images/analysis-of-file-spider-ransomware/filetxt-2097aa36.png)  
   
 In each directory, it creates an internet shortcut file named "HOW TO DECRYPT FILES.url" which redirects to hxxps://vid.me/embedded/CGyDc?autoplay=1&stats=1. It's a video which shows how to remove the ransomware by paying a ransom in Bitcoin to the attacker.  
   
 It appends .spider extension to each encrypted file.  
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEja0rfqmGf62ZtEv6WoDaCqsdWm50Z-sbYR-wAQqEkdFpo8AoXjNPAQpycWva9LidJgDroyPmUDxZFkgCUrHIaLThYQvu_VZzFfzOJeucvkgegLz95_8fU2gVmNZq6O7UtB6ZfXomNqg7vE/s400/enc_files.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEja0rfqmGf62ZtEv6WoDaCqsdWm50Z-sbYR-wAQqEkdFpo8AoXjNPAQpycWva9LidJgDroyPmUDxZFkgCUrHIaLThYQvu_VZzFfzOJeucvkgegLz95_8fU2gVmNZq6O7UtB6ZfXomNqg7vE/s1600/enc_files.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/enc_files-1be53abb.png)](/images/analysis-of-file-spider-ransomware/enc_files-1be53abb.png)  
 
 **Decryptor (dec.exe) :**  
 
@@ -196,7 +196,7 @@ The dec.exe is executed with a single argument "spider".
 It creates a mutex of name "SpiderForm" to avoid execution of multiple instances.  
 The argument provided to this must be "spider" or "startup" for further execution.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiL5d9iToaCFqE_wcX03Y569TexPZ0sh98WWV1qqYlaLZOGwbmluo2iKi8NVSFRNz5HvDS5is0DQL9k5-w9ESmvlXnr648zbxER9ZtkrmpyMuMkRCIbGcRGfykX0VSMRgHPLOBvA1AotA3h/s640/dec_code.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiL5d9iToaCFqE_wcX03Y569TexPZ0sh98WWV1qqYlaLZOGwbmluo2iKi8NVSFRNz5HvDS5is0DQL9k5-w9ESmvlXnr648zbxER9ZtkrmpyMuMkRCIbGcRGfykX0VSMRgHPLOBvA1AotA3h/s1600/dec_code.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/dec_code-ade62766.png)](/images/analysis-of-file-spider-ransomware/dec_code-ade62766.png)  
   
 Then it creates a thread which terminates all the following processes.  
 "taskmgr", "procexp", "msconfig", "Starter", "regedit", "cdclt", "cmd", "OUTLOOK", "WINWORD", "EXCEL", "MSACCESS"  
@@ -207,13 +207,13 @@ Value : "%APPDATA%\Spider\dec.exe startup"
   
 In the last, it will start the form which contains payment instructions and the decryption tool.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPUiB5OntISBuubN32oeiuXDBUW0DU8K_kweTrW0whZdx7dMwLxSK7W9dbqGrE1waoatEaxekhGu6Ayw9_sb3PNAPkHby3RvJ50DZYUmIq4LiF-mD-Ao-dUqrS_jNObfr2ab9cFScF8vqo/s640/dec_tool.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPUiB5OntISBuubN32oeiuXDBUW0DU8K_kweTrW0whZdx7dMwLxSK7W9dbqGrE1waoatEaxekhGu6Ayw9_sb3PNAPkHby3RvJ50DZYUmIq4LiF-mD-Ao-dUqrS_jNObfr2ab9cFScF8vqo/s1600/dec_tool.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/dec_tool-4054b701.png)](/images/analysis-of-file-spider-ransomware/dec_tool-4054b701.png)  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgFM0T6aCx89x50r6s7fJLBnxKmnMk-eYlvnCUy4OFIw7IdHKIT_vEwcbiCmb4TnHYoY1HjZUULOkJOOBPQ6a_slUTaNm-ZAmgHaAFeHG5uXTxQOv4Y1L5ti94B2z0qAawSQ1XVUNsKhLY8/s640/dec_key.PNG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgFM0T6aCx89x50r6s7fJLBnxKmnMk-eYlvnCUy4OFIw7IdHKIT_vEwcbiCmb4TnHYoY1HjZUULOkJOOBPQ6a_slUTaNm-ZAmgHaAFeHG5uXTxQOv4Y1L5ti94B2z0qAawSQ1XVUNsKhLY8/s1600/dec_key.PNG)  
+[![](/images/analysis-of-file-spider-ransomware/dec_key-ef40d7a4.png)](/images/analysis-of-file-spider-ransomware/dec_key-ef40d7a4.png)  
   
 Payment site of File Spider ransomware is spiderwjzbmsmu7y[.]onion  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjXq8LaQHLgkVDH8f-H3Hco62fje1qmASkXr3HMCMcgPxz_e2kY1O3u2Xfai5VbQueta6CoPQD5F6W8o37bQUgWcRBfEiO_OT13Q5JsByfiIM4gcJgfNsg6zQNQgWobSS_xAJ234rDGE6ui/s640/onionsite.JPG)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjXq8LaQHLgkVDH8f-H3Hco62fje1qmASkXr3HMCMcgPxz_e2kY1O3u2Xfai5VbQueta6CoPQD5F6W8o37bQUgWcRBfEiO_OT13Q5JsByfiIM4gcJgfNsg6zQNQgWobSS_xAJ234rDGE6ui/s1600/onionsite.JPG)  
+[![](/images/analysis-of-file-spider-ransomware/onionsite-78a9f0cd.jpg)](/images/analysis-of-file-spider-ransomware/onionsite-78a9f0cd.jpg)  
   
 
 **IOCs :**  

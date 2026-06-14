@@ -10,7 +10,7 @@ tags:
   - "Ransomware"
   - "Ransomware spread by JavaScript"
 cover:
-  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh8RXBLXH05hCI4W7wFzSnb4bwXFt-hUOyYR2jj1LKpLYz-nCcPccKCkJHtehyphenhyphenEIT1f3LsBTH7bf4vvGaSrLRuq1WLdhD0FaOmrnlQgFXk8w1-ORYpV587zG0A6sVib_hW9QPIoM7ohLG7N/s1600/workflow.png"
+  image: "/images/analysis-of-ransomware-spread-by/workflow-33bac296.png"
   alt: "Analysis of Ransomware spread by JavaScript"
   relative: false
 canonicalURL: "https://sdkhere.blogspot.com/2016/06/analysis-of-ransomware-spread-by.html"
@@ -37,19 +37,19 @@ The sample drops the following files in the Temp directory on execution:
 2. BAT file :  Created by itself  
 3. TXT file : Created by itself  
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh8RXBLXH05hCI4W7wFzSnb4bwXFt-hUOyYR2jj1LKpLYz-nCcPccKCkJHtehyphenhyphenEIT1f3LsBTH7bf4vvGaSrLRuq1WLdhD0FaOmrnlQgFXk8w1-ORYpV587zG0A6sVib_hW9QPIoM7ohLG7N/s640/workflow.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh8RXBLXH05hCI4W7wFzSnb4bwXFt-hUOyYR2jj1LKpLYz-nCcPccKCkJHtehyphenhyphenEIT1f3LsBTH7bf4vvGaSrLRuq1WLdhD0FaOmrnlQgFXk8w1-ORYpV587zG0A6sVib_hW9QPIoM7ohLG7N/s1600/workflow.png)
+[![](/images/analysis-of-ransomware-spread-by/workflow-33bac296.png)](/images/analysis-of-ransomware-spread-by/workflow-33bac296.png)
 
 Fig1 : Workflow of JavaScript sample
 
 Content of JS file before the de-obfuscation is as follows:
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWnMDQgomrtALEhyT1o_Te2pMHIuj1ydGr-LisxMcCRAwEfH50ehHYxFt4QMiP-b5iz6LDpdBr5napvS6B6SJ5Bk8CUcTE4WdpImB6OvMsD0YNJETv2WLy6La-YSJUXd6d4J7sU1BwUZP6/s640/obfuscated_js.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWnMDQgomrtALEhyT1o_Te2pMHIuj1ydGr-LisxMcCRAwEfH50ehHYxFt4QMiP-b5iz6LDpdBr5napvS6B6SJ5Bk8CUcTE4WdpImB6OvMsD0YNJETv2WLy6La-YSJUXd6d4J7sU1BwUZP6/s1600/obfuscated_js.png)  
+[![](/images/analysis-of-ransomware-spread-by/obfuscated_js-cfdac258.png)](/images/analysis-of-ransomware-spread-by/obfuscated_js-cfdac258.png)  
 
 Fig2 : Obfuscated JS code
 
 After de-obfuscation and decryption of the above code looks like as follows:
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7ctkk9i5cKwlF1ucHpMp1I5YUdvXF2ugq1idWa1uCGPrd_CgpK0lTg0zJcgOihXQeE8tyjvb7-ngM3j1-3UyxFQojPazBXQgohzqaV6Tyxp9yNfhvNGo4xoTDgcSFt43edLuFSLeUQMHX/s640/deobfuscated_js.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7ctkk9i5cKwlF1ucHpMp1I5YUdvXF2ugq1idWa1uCGPrd_CgpK0lTg0zJcgOihXQeE8tyjvb7-ngM3j1-3UyxFQojPazBXQgohzqaV6Tyxp9yNfhvNGo4xoTDgcSFt43edLuFSLeUQMHX/s1600/deobfuscated_js.png)
+[![](/images/analysis-of-ransomware-spread-by/deobfuscated_js-95e036c0.png)](/images/analysis-of-ransomware-spread-by/deobfuscated_js-95e036c0.png)
 
 Fig3 : Deobfuscated JS script
 
@@ -68,13 +68,13 @@ File size :  15.93 KB (16317 bytes)
 The Batch file is created by JavaScript file and dropped into the Temp directory.  
   
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEju9Tg2eMgQvRiAoE18qGsAxc29KnoM-1FDpFtgLamzcOWsEB_54meCnfkBbTvYk5xwTwpDH39gveDooVf4qxmqzSsWEdU7ZhqRKrpbhZZtatEpmlxinfyoF1g3Vz5Fy-UZ-epLRHECB46r/s640/js_code_to_create_bat.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEju9Tg2eMgQvRiAoE18qGsAxc29KnoM-1FDpFtgLamzcOWsEB_54meCnfkBbTvYk5xwTwpDH39gveDooVf4qxmqzSsWEdU7ZhqRKrpbhZZtatEpmlxinfyoF1g3Vz5Fy-UZ-epLRHECB46r/s1600/js_code_to_create_bat.png)
+[![](/images/analysis-of-ransomware-spread-by/js_code_to_create_bat-c9ecaf11.png)](/images/analysis-of-ransomware-spread-by/js_code_to_create_bat-c9ecaf11.png)
 
 Fig4 : JavaScript code for creating BAT file
 
 After the creation of batch file, it looks like:
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAkf22WgJ1eGPh7hSgxHNzdGZnUO6QKY-ScqhKRAUhUQ4GgXCN4lsFbQXtU6ayjEf5-184JKy1gDBula0aKBmVw5avznNfyJWpreOLtHjkLZminzJ-h56TJnzsD96dV0Xgwvr3me9aWOqZ/s640/bat+file.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAkf22WgJ1eGPh7hSgxHNzdGZnUO6QKY-ScqhKRAUhUQ4GgXCN4lsFbQXtU6ayjEf5-184JKy1gDBula0aKBmVw5avznNfyJWpreOLtHjkLZminzJ-h56TJnzsD96dV0Xgwvr3me9aWOqZ/s1600/bat+file.png)
+[![](/images/analysis-of-ransomware-spread-by/bat-file-c30a0372.png)](/images/analysis-of-ransomware-spread-by/bat-file-c30a0372.png)
 
 Fig5 : BAT file snippet
 
@@ -98,19 +98,19 @@ It calls the executable file (\_crypt.exe) for each file on the disk.
 After the encryption, it deletes the executable file (\_crypt.exe) from the Temp directory and starts the text file (\_readme.txt).  
   
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtkW-aoTv-hUPeznfI_FeS3ypwm0i5N4EXAB4UcjY3Y614M0FZN4Vuiex2kRaUk_pIfRYkbgp7yaFgqaE21qDNsW6JDfFHN85reuaqSGimjvVshowfdA0wuBphTiSSbTCqKWc5NB-3-YFh/s640/batsnipp.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtkW-aoTv-hUPeznfI_FeS3ypwm0i5N4EXAB4UcjY3Y614M0FZN4Vuiex2kRaUk_pIfRYkbgp7yaFgqaE21qDNsW6JDfFHN85reuaqSGimjvVshowfdA0wuBphTiSSbTCqKWc5NB-3-YFh/s1600/batsnipp.png)
+[![](/images/analysis-of-ransomware-spread-by/batsnipp-f1b7ef6d.png)](/images/analysis-of-ransomware-spread-by/batsnipp-f1b7ef6d.png)
 
   
   
 Text file has ransom note, it ask for 0.5 BTC to decrypt the files.  
   
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiSR3TcTa2SpwEw9glpQmVPJd8hvQ4bQpL_FrYUNOhTCa6ny4m0FKZZ6LXgsahJ6hlDdATIkzg10Ewx8IN2QZONs2mKH7ya1Lm1aMwBzlJm-EEr76g039zPbISITUjvzNrcYhUhhAoZrgKg/s640/ransom_note.jpg)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiSR3TcTa2SpwEw9glpQmVPJd8hvQ4bQpL_FrYUNOhTCa6ny4m0FKZZ6LXgsahJ6hlDdATIkzg10Ewx8IN2QZONs2mKH7ya1Lm1aMwBzlJm-EEr76g039zPbISITUjvzNrcYhUhhAoZrgKg/s1600/ransom_note.jpg)
+[![](/images/analysis-of-ransomware-spread-by/ransom_note-e17906d6.jpg)](/images/analysis-of-ransomware-spread-by/ransom_note-e17906d6.jpg)
 
 Fig7 : Ransom note
 
 At the end, the batch file makes a run entry for the above text file (\_readme.txt) and deletes itself from the Temp directory.
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhUrW1n_01WCic7uytCACMLkMwKV_E66USiMKB4kWvdTt-BbHAvM4AeUVTEgo4vD82JC1L9fYo8bU-298ocIJq5A3mNPkBOCfcOxDqNxg3dTYkmToqL1eAZPOg3siEPcTUpQHCF7IKdtZp/s640/runentry.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhUrW1n_01WCic7uytCACMLkMwKV_E66USiMKB4kWvdTt-BbHAvM4AeUVTEgo4vD82JC1L9fYo8bU-298ocIJq5A3mNPkBOCfcOxDqNxg3dTYkmToqL1eAZPOg3siEPcTUpQHCF7IKdtZp/s1600/runentry.png)
+[![](/images/analysis-of-ransomware-spread-by/runentry-f3e2c0f2.png)](/images/analysis-of-ransomware-spread-by/runentry-f3e2c0f2.png)
 
 Fig8 : Run entry of ransom note
 
@@ -128,12 +128,12 @@ The executable file is an encryption tool which encrypts a file passed via its p
 The sample reads a file, encrypts it with the following encryption logic, and writes the file with the same extension:  
   
 
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi__gPwJEL6-TBFoRFGDPs53tolDlbKNsLRLVBuK0AqAn8Et8sCuXg2VuOPaS8-93ih5dpopMyRrJyo7aTN_1V12hgdYvTz1p2ieiTauqw4qr8CierKiHZuyKEMIyEux9fJQgLkGnL9P5_M/s640/encryptionlogic.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi__gPwJEL6-TBFoRFGDPs53tolDlbKNsLRLVBuK0AqAn8Et8sCuXg2VuOPaS8-93ih5dpopMyRrJyo7aTN_1V12hgdYvTz1p2ieiTauqw4qr8CierKiHZuyKEMIyEux9fJQgLkGnL9P5_M/s1600/encryptionlogic.png)
+[![](/images/analysis-of-ransomware-spread-by/encryptionlogic-f44f4948.png)](/images/analysis-of-ransomware-spread-by/encryptionlogic-f44f4948.png)
 
 Fig9 : Encryption routine
 
 Where, the key is directly present in a .data section of the sample, size of key is 0xFF bytes.
-[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-Uqnr5bhFCS1boBCqHERi-IRdH0shaofH8_2xQAxbfBU8CWlBzuySLgSrp-Nin0hs0BJauXRSldS3rtUse6OE2N447EnHGIyiTtYB7ULIwM8ah8KC3C8ul4yXefv-8372N1t1cewSbupJ/s640/encrypkey.png)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-Uqnr5bhFCS1boBCqHERi-IRdH0shaofH8_2xQAxbfBU8CWlBzuySLgSrp-Nin0hs0BJauXRSldS3rtUse6OE2N447EnHGIyiTtYB7ULIwM8ah8KC3C8ul4yXefv-8372N1t1cewSbupJ/s1600/encrypkey.png)
+[![](/images/analysis-of-ransomware-spread-by/encrypkey-11552811.png)](/images/analysis-of-ransomware-spread-by/encrypkey-11552811.png)
 
 Fig10 : Encryption key shown in data section
 

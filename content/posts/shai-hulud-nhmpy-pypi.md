@@ -293,6 +293,8 @@ Using a CodeQL workflow filename is a nice piece of misdirection — `codeql.yml
 
 ## Detection & hunting
 
+> 📦 **All of the rules and IOCs below are in a dedicated open repo:** [`meltedinhex/detections`](https://github.com/meltedinhex/detections/tree/master/nhmpy-hades-pypi) — YARA, Sigma, KQL and machine-readable IOC lists (CSV/JSON), ready to drop into your pipeline.
+
 You don't need the cipher internals to catch this — the behaviour is the giveaway:
 
 - **Process lineage** — `python` (or `pip`/`pytest`/a notebook kernel) spawning **`bun`**, especially `bun run …_index.js`. That chain is almost never legitimate.
@@ -446,3 +448,7 @@ Treat it as a credential compromise, because it is one:
 - Living off the land has reached the language runtime. Pulling a clean, signed Bun binary to run JavaScript inside a Python attack is a tidy way around ecosystem-specific scanners, and it means detection has to follow process lineage rather than file contents.
 - The platform is the C2. When everything rides GitHub and cloud metadata, there's no malicious domain to block; you're left defending with token hygiene, least-privilege CI, egress filtering and OIDC scoping.
 - Layered, custom obfuscation is normal now. Off-the-shelf deobfuscators got part of the way and stopped, and reading the payload meant rebuilding a bespoke cipher by hand. Budget time for that when you scope this kind of work.
+
+---
+
+*Detection coverage for this campaign — YARA, Sigma, KQL and machine-readable IOCs — lives in the open at [`meltedinhex/detections`](https://github.com/meltedinhex/detections/tree/master/nhmpy-hades-pypi).*

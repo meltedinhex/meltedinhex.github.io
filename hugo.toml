@@ -24,7 +24,7 @@ minifyOutput = true
   title = "Melted in Hex"
   description = "Malware analyst, reverse engineer, threat hunter, and AI security researcher melting threats down to their raw bytes — threat hunting, threat intelligence, and reverse engineering for an AI-driven attack surface."
   keywords = ["AI security researcher", "malware analysis", "reverse engineering", "threat hunting", "threat hunter", "threat intelligence", "supply chain security", "MCP security", "AI agents", "cloud security", "programmer"]
-  author = "sdkhere"
+  author = "Melted in Hex"
   defaultTheme = "dark"
   disableThemeToggle = false
   ShowReadingTime = true
@@ -42,7 +42,7 @@ minifyOutput = true
     favicon = "/favicon.png"
     favicon16x16 = "/favicon-32.png"
     favicon32x32 = "/favicon-32.png"
-    apple_touch_icon = "/favicon.png"
+    apple_touch_icon = "/images/melted-in-hex.png"
 
   [params.label]
     text = "Melted in Hex"

@@ -1,0 +1,62 @@
+{
+  "campaign": "polinrider-blockchain-loader",
+  "family": "PolinRider (DPRK / Lazarus) - blockchain dead-drop npm loader, new _V variant",
+  "type": "npm supply-chain import-triggered loader (EtherHiding)",
+  "reference": "https://meltedinhex.com/posts/polinrider-blockchain-dead-drop-npm/",
+  "note": "Three indicator classes: attacker-owned C2 (block/alert), on-chain dead drops (read, do not block), and legitimate services abused as transport (alert on context only). Values are plain (not defanged) for tooling. Final payload (BeaverTail -> InvisibleFerret) is High confidence via external corroboration, not recovered from the sample.",
+  "indicators": {
+    "c2": [
+      { "type": "ipv4", "value": "166.88.54.158", "ports": [80, 443], "role": "Primary C2 (A-marker cohort)" },
+      { "type": "ipv4", "value": "198.105.127.210", "ports": [80, 443], "role": "Fallback C2 (numeric-marker cohort)" },
+      { "type": "ipv4", "value": "23.27.202.27", "ports": [443, 27017], "role": "Fallback C2 (default cohort)" },
+      { "type": "uri_path", "value": "/$/boot", "role": "Stage C fetch endpoint" },
+      { "type": "http_header", "value": "Sec-V", "role": "Per-victim version-gating header (echoes build marker)" },
+      { "type": "xor_key", "value": "ThZG+0jfXE6VAGOJ", "role": "Decrypts the Stage C response" }
+    ],
+    "dead_drops": {
+      "tron": [
+        { "value": "TMfKQEd7TJJa5xNZJZ2Lep838vrzrs7mAP", "role": "Stage A pointer" },
+        { "value": "TXfxHUet9pJVU1BgVkBAbrES4YUc1nGzcG", "role": "Stage B pointer" },
+        { "value": "TA48dct6rFW8BXsiLAtjFaVFoSuryMjD3v", "role": "Rotation pointer" }
+      ],
+      "aptos": [
+        { "value": "0xbe037400670fbf1c32364f762975908dc43eeb38759263e7dfcdabc76380811e", "role": "Stage A fallback pointer" },
+        { "value": "0x3f0e5781d0855fb460661ac63257376db1941b2bb522499e4757ecb3ebd5dce3", "role": "Stage B fallback pointer" },
+        { "value": "0x533b2dbcaeff19cd1f799234a27b578d713d8fcaa341b7501e4526106483e0b1", "role": "Rotation pointer" }
+      ],
+      "bsc_tx": [
+        { "value": "0x80a1148ee589125bc1e57d36abac9f08089b2990d9372be3a33a1f057ad1ef89", "role": "Stage A payload carrier (to burn address)" },
+        { "value": "0xa896af4f2876df59af1e705fb75031630ebd37fa89659a9896be4d3da8c87f02", "role": "Stage B payload carrier (to burn address)" }
+      ],
+      "bsc_addr": [
+        { "value": "0x000000000000000000000000000000000000dEaD", "role": "Burn address used as write-only payload carrier" }
+      ],
+      "xor_keys": [
+        { "value": "2[gWfGj;<:-93Z^C", "role": "Stage A on-chain payload XOR key" },
+        { "value": "m6:tTh^D)cBz?NM]", "role": "Stage B on-chain payload XOR key" }
+      ]
+    },
+    "abused_services": [
+      { "value": "https://api.trongrid.io", "context": "TRON pointer resolution" },
+      { "value": "https://fullnode.mainnet.aptoslabs.com", "context": "Aptos fallback pointer" },
+      { "value": "https://bsc-dataseed.binance.org", "context": "BSC payload retrieval" },
+      { "value": "https://bsc-rpc.publicnode.com", "context": "BSC payload retrieval (backup RPC)" }
+    ],
+    "sample": [
+      { "type": "package", "value": "tailwind-color-shades 1.0.2", "context": "Malicious npm package (functional decoy; fully reversed)" },
+      { "type": "package", "value": "safe-validate 1.0.4", "context": "Sibling npm package (Funval clone); same loader CONFIRMED (marker A6-Shadow-14); own dead-drop IOCs not yet decoded" },
+      { "type": "repo", "value": "deepthought26/schema-checker", "context": "GitHub source repo behind safe-validate (name mismatch; no safe-validate repo)" },
+      { "type": "file", "value": "lib/schema/bootstrap.js", "context": "safe-validate real loader; lib/bootstrap.js import is a 404 decoy" },
+      { "type": "account", "value": "deepthought26", "context": "npm + GitHub owner of both packages; also published PyPI nhmpy 2.4.7" },
+      { "type": "sha256", "value": "fab731cd8005d9d73a8fe862a8bfea32c945bd957bbb9861f36401d18b878c8b", "context": "tailwind-color-shades tarball (8151 bytes)" },
+      { "type": "sha1", "value": "20d89e126abc68e74e01f1a8701b68dfc29005fa", "context": "tailwind-color-shades tarball" },
+      { "type": "md5", "value": "dd58d3a964e739f524dd3b28f1542c01", "context": "tailwind-color-shades tarball" },
+      { "type": "sha1", "value": "a048ac42b7e4c7dad4dd24e352dfe292d835a0cf", "context": "safe-validate 1.0.4 dist shasum" },
+      { "type": "marker", "value": "global['_V'] = 'A6-Shadow-15'", "context": "New-variant campaign marker (tailwind-color-shades)" },
+      { "type": "marker", "value": "global['_V'] = 'A6-Shadow-14'", "context": "New-variant campaign marker (safe-validate)" },
+      { "type": "source", "value": "import './src/bootstrap'", "context": "Import-time trigger in index.ts (tailwind-color-shades)" },
+      { "type": "source", "value": "require('./schema/bootstrap')", "context": "Real loader require in lib/index.js (safe-validate); lib/bootstrap.js import is a 404 decoy" },
+      { "type": "config", "value": "sideEffects: [./lib/bootstrap.js]", "context": "package.json tree-shaking defeat forcing the loader to run" }
+    ]
+  }
+}

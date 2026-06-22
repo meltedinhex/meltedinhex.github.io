@@ -1,0 +1,34 @@
+type,indicator,role,context
+sha256,999577b1701d051a2ee2174631ee2e127e2d80f3bb0dadaf369a004a8395e050,nhmpy-2.4.7-py3-none-any.whl,Malicious wheel (v2.4.7)
+sha256,6506d31707a39949f89534bf9705bcf889f1ecae3dbc6f4ff88d67a8be3d01b2,nhmpy-setup.pth,Stage-0 .pth auto-exec dropper (1315 bytes)
+sha256,c0501df195ae335f6764c214d6dd6cb58e05a188e86313b7a7b10e2cd7fea251,nhmpy/_index.js,Stage-2 obfuscated JS stealer (5221226 bytes)
+package,nhmpy 2.4.7,PyPI package,NumPy typosquat; yanked "Seems Token Leaked"
+account,elitexp,PyPI account,Owner that published the package
+filename,nhmpy-setup.pth,File,Stage-0 .pth auto-exec dropper
+filename,_index.js,File,Stage-2 5.2MB obfuscated JS stealer (inside package)
+host_artifact,%TEMP%/.bun_ran,Host artifact,One-shot execution guard
+host_artifact,%TEMP%/b/bun,Host artifact,Dropped Bun runtime (Linux/macOS)
+host_artifact,%TEMP%/b/bun.exe,Host artifact,Dropped Bun runtime (Windows)
+host_artifact,/tmp/p<random>.js,Host artifact,Decrypted payload written before execution
+marker,Hades - The End for the Damned,String,Exfil repo description (campaign marker)
+marker,TheBeautifulSnadsOfTime,String,GitHub keyword used to fetch staged payload
+marker,.github/workflows/codeql.yml,String,Worm: malicious workflow disguised as CodeQL
+marker,DontRevokeOrItGoesBoom,String,Marker consistent with revocation-triggered destruction
+marker,f0a756767,String,globalThis name of the custom G1 string cipher
+decoy,ghp_decoyGitHubToken,Honeytoken,Decoy token in toolkit templates
+decoy,npm_F4k3NPMToken,Honeytoken,Decoy token in toolkit templates
+decoy,AKIAFAKE,Honeytoken,Decoy token in toolkit templates
+decoy,sk-ant-api03-fake,Honeytoken,Decoy token in toolkit templates
+network,https://github.com/oven-sh/bun/releases/download/bun-v1.3.13/,Abused service,Bun runtime download (LOLbin)
+network,https://api.github.com,Abused service,Exfil + worm via stolen victim token
+network,https://api.github.com/graphql,Abused service,Repo/branch enumeration via stolen token
+network,http://169.254.169.254,Abused service,AWS IMDS credential theft
+network,http://169.254.170.2,Abused service,ECS metadata credential theft
+network,https://login.microsoftonline.com,Abused service,Azure token/identity theft
+network,https://management.azure.com,Abused service,Azure token/identity theft
+network,https://oauth2.googleapis.com/token,Abused service,GCP credential theft
+network,https://pypi.org/_/oidc/mint-token,Abused service,PyPI OIDC publishing token theft
+network,https://upload.pypi.org/legacy/,Abused service,Registry publishing
+network,https://registry.npmjs.org/-/npm/v1/,Abused service,npm token theft
+network,https://api.anthropic.com,Abused service,AI assistant key theft
+user_agent,python-requests/2.31.0,Spoofed UA,Used by the Bun/JS payload against GitHub API

@@ -1,0 +1,79 @@
+{{- define "main" }}
+
+<header class="page-header">
+  <h1>{{ .Title }}</h1>
+  {{- if .Description }}
+  <div class="post-description">{{ .Description }}</div>
+  {{- end }}
+</header>
+
+<div class="post-content">
+  {{ .Content }}
+
+  {{- $campaigns := sort hugo.Data.campaigns.campaigns "date" "desc" }}
+  {{- $cats := slice }}
+  {{- range $campaigns }}{{ $cats = $cats | append .category }}{{ end }}
+  {{- $cats = uniq $cats }}
+
+  <div class="tracker-filters" role="group" aria-label="Filter by category">
+    <button class="tracker-filter is-active" data-filter="all">All</button>
+    {{- range $cats }}
+    <button class="tracker-filter" data-filter="{{ . | urlize }}">{{ . }}</button>
+    {{- end }}
+  </div>
+
+  <div class="tracker-wrap">
+    <table class="tracker-table">
+      <thead>
+        <tr>
+          <th>Campaign</th>
+          <th>Family</th>
+          <th>Actor</th>
+          <th>Platform</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Coverage</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{- range $campaigns }}
+        <tr data-category="{{ .category | urlize }}">
+          <td data-label="Campaign"><a href="/posts/{{ .slug }}/">{{ .name }}</a></td>
+          <td data-label="Family">{{ .family }}</td>
+          <td data-label="Actor">{{ .actor }}</td>
+          <td data-label="Platform"><span class="tracker-tag">{{ .platform }}</span></td>
+          <td data-label="Type">{{ .category }}</td>
+          <td data-label="Date">{{ dateFormat "2006-01-02" .date }}</td>
+          <td data-label="Coverage">
+            {{- with .detections }}
+            <a class="tracker-cov" href="https://github.com/meltedinhex/detections/tree/master/{{ .repo }}" target="_blank" rel="noopener noreferrer">{{ delimit .coverage " · " }}</a>
+            {{- else }}
+            <span class="tracker-cov-none">&mdash;</span>
+            {{- end }}
+          </td>
+        </tr>
+        {{- end }}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var buttons = document.querySelectorAll('.tracker-filter');
+    var rows = document.querySelectorAll('.tracker-table tbody tr');
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var f = btn.getAttribute('data-filter');
+        buttons.forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        rows.forEach(function (row) {
+          var show = f === 'all' || row.getAttribute('data-category') === f;
+          row.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  })();
+</script>
+
+{{- end }}

@@ -1,0 +1,34 @@
+// nhmpy / Hades wave (Shai-Hulud-class) — PyPI supply-chain credential worm
+// Analysis: https://meltedinhex.com/posts/shai-hulud-nhmpy-pypi/
+// Microsoft Defender for Endpoint (Advanced Hunting) / Sentinel.
+// Tune the time window and exclude hosts where Bun is legitimately part of the toolchain.
+
+// 1) Process: a Python interpreter (or pip/pytest) spawning Bun — the core execution chain
+DeviceProcessEvents
+| where Timestamp > ago(30d)
+| where FileName in~ ("bun", "bun.exe")
+| where InitiatingProcessFileName in~ ("python", "python.exe", "python3",
+        "pip", "pip.exe", "pip3", "pytest", "pytest.exe")
+| where ProcessCommandLine has "run" and ProcessCommandLine has_any ("_index.js", ".js")
+| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName,
+          FileName, ProcessCommandLine, InitiatingProcessCommandLine
+
+// 2) File: malicious .pth dropper, dropped Bun runtime, or the one-shot guard
+DeviceFileEvents
+| where Timestamp > ago(30d)
+| where (FileName endswith "-setup.pth" and FolderPath has_any ("site-packages", "dist-packages"))
+      or FileName == ".bun_ran"
+      or (FileName in~ ("bun", "bun.exe") and FolderPath has_any ("\\b\\", "/b/"))
+      or (FileName == "_index.js" and FolderPath has_any ("site-packages", "dist-packages"))
+| project Timestamp, DeviceName, ActionType, FileName, FolderPath,
+          InitiatingProcessFileName, SHA256
+
+// 3) Network: Bun pulled from GitHub releases, or GitHub API hit with the spoofed UA
+DeviceNetworkEvents
+| where Timestamp > ago(30d)
+| where (RemoteUrl has "oven-sh/bun/releases/download")
+      or (RemoteUrl has "api.github.com"
+          and InitiatingProcessFileName in~ ("bun", "bun.exe", "python", "python.exe"))
+      or RemoteUrl has_any ("169.254.169.254", "169.254.170.2")  // cloud metadata from an endpoint
+| project Timestamp, DeviceName, RemoteUrl, RemoteIP,
+          InitiatingProcessFileName, InitiatingProcessCommandLine

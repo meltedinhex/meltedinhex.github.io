@@ -1,0 +1,38 @@
+// PolinRider blockchain dead-drop npm loader — Microsoft Defender / Sentinel hunts
+// Analysis: https://meltedinhex.com/posts/polinrider-blockchain-dead-drop-npm/
+// Tune the time window and exclude any hosts where web3 tooling is legitimate.
+
+// 1) Network: a build/test (node/vite/next/jest) process talking to blockchain RPC —
+//    the dead-drop resolution behaviour. Strongest behavioural signal.
+DeviceNetworkEvents
+| where Timestamp > ago(30d)
+| where InitiatingProcessFileName in~ ("node", "node.exe", "npm", "npm.cmd", "vite", "next", "jest")
+| where RemoteUrl has_any ("trongrid.io", "aptoslabs.com", "bsc-dataseed", "bsc-rpc.publicnode.com")
+| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName,
+          RemoteUrl, RemoteIP, InitiatingProcessCommandLine
+
+// 2) Network: the live C2 — hard-coded IPs or the /$/boot fetch endpoint
+DeviceNetworkEvents
+| where Timestamp > ago(30d)
+| where RemoteIP in ("166.88.54.158", "198.105.127.210", "23.27.202.27")
+      or RemoteUrl has "/$/boot"
+| project Timestamp, DeviceName, RemoteUrl, RemoteIP, RemotePort,
+          InitiatingProcessFileName, InitiatingProcessCommandLine
+
+// 3) Process: a build/test process spawning a detached, hidden node -e child
+DeviceProcessEvents
+| where Timestamp > ago(30d)
+| where FileName in~ ("node", "node.exe")
+| where ProcessCommandLine has "-e"
+| where InitiatingProcessFileName in~ ("node", "node.exe", "npm", "npm.cmd",
+        "vite", "next", "jest", "vite.exe")
+| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName,
+          FileName, ProcessCommandLine, InitiatingProcessCommandLine
+
+// 4) File: obfuscated payload injected into framework config files
+DeviceFileEvents
+| where Timestamp > ago(30d)
+| where FileName in~ ("postcss.config.mjs", "tailwind.config.js", "next.config.mjs",
+        "vite.config.js", "vite.config.ts", "eslint.config.mjs", "babel.config.js")
+| project Timestamp, DeviceName, ActionType, FileName, FolderPath,
+          InitiatingProcessFileName, SHA256

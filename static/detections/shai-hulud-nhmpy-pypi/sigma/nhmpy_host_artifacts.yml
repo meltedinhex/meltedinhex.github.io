@@ -1,0 +1,34 @@
+title: nhmpy / Hades Host Artifacts (.pth Dropper, Bun Runtime, Run Guard)
+id: 2c9e5a71-6f0b-4a3d-8c11-2c9e5a716f0b
+status: experimental
+description: >
+    Detects filesystem artifacts of the nhmpy / Hades PyPI worm: a malicious *-setup.pth
+    file inside site-packages, the dropped Bun runtime, the one-shot .bun_ran guard, or
+    an _index.js planted inside a Python package directory.
+references:
+    - https://meltedinhex.com/posts/shai-hulud-nhmpy-pypi/
+author: meltedinhex
+date: 2026-06-14
+tags:
+    - attack.persistence
+    - attack.t1546
+    - attack.t1195.001
+logsource:
+    category: file_event
+detection:
+    pth_in_sitepackages:
+        TargetFilename|endswith: '-setup.pth'
+        TargetFilename|contains:
+            - 'site-packages'
+            - 'dist-packages'
+    run_guard:
+        TargetFilename|endswith: '\.bun_ran'
+    index_js_in_pkg:
+        TargetFilename|endswith: '_index.js'
+        TargetFilename|contains:
+            - 'site-packages'
+            - 'dist-packages'
+    condition: pth_in_sitepackages or run_guard or index_js_in_pkg
+falsepositives:
+    - Legitimate .pth path-configuration files (filtered by the -setup.pth suffix, but verify)
+level: high

@@ -1,0 +1,40 @@
+title: Build/Test Process Contacting Blockchain RPC Endpoints
+id: 4d8e2a17-6c93-4b1e-9a7f-2c8d4e1f3b6a
+status: experimental
+description: >
+    Detects a Node/JS build or test process (node, vite, next, jest, npm) making outbound
+    requests to TRON, Aptos or Binance Smart Chain RPC endpoints. This is the dead-drop
+    resolution behaviour of the PolinRider blockchain loader (tailwind-color-shades npm), where
+    an import-triggered stager reads its next stage from public blockchain transactions before
+    fetching a live C2. Build hosts rarely talk to blockchain RPC.
+references:
+    - https://meltedinhex.com/posts/polinrider-blockchain-dead-drop-npm/
+author: meltedinhex
+date: 2026-06-16
+tags:
+    - attack.command_and_control
+    - attack.t1102
+    - attack.t1105
+    - attack.execution
+    - attack.t1059.007
+logsource:
+    category: network_connection
+detection:
+    selection_proc:
+        Image|endswith:
+            - '\node.exe'
+            - '/node'
+            - '\npm.cmd'
+            - '/vite'
+            - '/next'
+            - '/jest'
+    selection_rpc:
+        DestinationHostname|contains:
+            - 'trongrid.io'
+            - 'aptoslabs.com'
+            - 'bsc-dataseed'
+            - 'bsc-rpc.publicnode.com'
+    condition: selection_proc and selection_rpc
+falsepositives:
+    - Genuine web3 / blockchain projects whose build tooling legitimately queries chain RPC
+level: high

@@ -73,6 +73,11 @@ minifyOutput = true
   url = "/posts/"
   weight = 10
 [[menu.main]]
+  identifier = "tracker"
+  name = "Threats"
+  url = "/tracker/"
+  weight = 15
+[[menu.main]]
   identifier = "tags"
   name = "Tags"
   url = "/tags/"
@@ -107,3 +112,8 @@ minifyOutput = true
 # Output formats for search (JSON index)
 [outputs]
   home = ["HTML", "RSS", "JSON"]
+
+# Google Analytics (GA4). Replace the ID with your own Measurement ID.
+[services]
+  [services.googleAnalytics]
+    ID = "G-H28GNEX53W"

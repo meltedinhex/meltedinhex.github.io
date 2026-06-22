@@ -1,0 +1,32 @@
+title: PolinRider C2 Boot Endpoint and Sec-V Header
+id: a3f72c91-5e84-4d6b-bc02-9f1a7e3d5c84
+status: experimental
+description: >
+    Detects the PolinRider blockchain loader fetching its version-gated stage from a hard-coded
+    C2: an HTTP GET to the path /$/boot, the custom Sec-V request header used for per-victim
+    version gating, or a connection to the campaign's hard-coded C2 IPs. The marker is echoed in
+    Sec-V so the operator can serve different cohorts different payloads.
+references:
+    - https://meltedinhex.com/posts/polinrider-blockchain-dead-drop-npm/
+author: meltedinhex
+date: 2026-06-16
+tags:
+    - attack.command_and_control
+    - attack.t1105
+    - attack.t1573
+logsource:
+    category: proxy
+detection:
+    selection_boot:
+        cs-uri-stem|contains: '/$/boot'
+    selection_header:
+        cs-headers|contains: 'Sec-V:'
+    selection_ip:
+        dst_ip:
+            - '166.88.54.158'
+            - '198.105.127.210'
+            - '23.27.202.27'
+    condition: selection_boot or selection_header or selection_ip
+falsepositives:
+    - Unlikely; /$/boot and the Sec-V header are campaign-specific
+level: critical

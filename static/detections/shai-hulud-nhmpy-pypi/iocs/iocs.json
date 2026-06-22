@@ -1,0 +1,75 @@
+{
+  "campaign": "nhmpy-hades-pypi",
+  "family": "Shai-Hulud-class / Hades PyPI wave",
+  "type": "PyPI supply-chain credential worm",
+  "reference": "https://meltedinhex.com/posts/shai-hulud-nhmpy-pypi/",
+  "note": "Hashes are build-specific; sibling packages use different bytes and an __init__.py import-hook variant. Network indicators are legitimate services abused, not dedicated C2. Values are plain (not defanged) for tooling.",
+  "indicators": {
+    "hashes": [
+      {
+        "type": "sha256",
+        "value": "999577b1701d051a2ee2174631ee2e127e2d80f3bb0dadaf369a004a8395e050",
+        "file": "nhmpy-2.4.7-py3-none-any.whl",
+        "role": "Malicious wheel (v2.4.7)"
+      },
+      {
+        "type": "sha256",
+        "value": "6506d31707a39949f89534bf9705bcf889f1ecae3dbc6f4ff88d67a8be3d01b2",
+        "file": "nhmpy-setup.pth",
+        "role": "Stage-0 .pth auto-exec dropper",
+        "size": 1315
+      },
+      {
+        "type": "sha256",
+        "value": "c0501df195ae335f6764c214d6dd6cb58e05a188e86313b7a7b10e2cd7fea251",
+        "file": "nhmpy/_index.js",
+        "role": "Stage-2 obfuscated JS stealer",
+        "size": 5221226
+      }
+    ],
+    "package": [
+      { "value": "nhmpy 2.4.7", "context": "PyPI package; NumPy typosquat; yanked \"Seems Token Leaked\"" },
+      { "value": "elitexp", "context": "PyPI account that published the package" }
+    ],
+    "files": [
+      { "value": "nhmpy-setup.pth", "context": "Stage-0 .pth auto-exec dropper" },
+      { "value": "_index.js", "context": "Stage-2 5.2MB obfuscated JS stealer (inside package)" }
+    ],
+    "host_artifacts": [
+      { "value": "%TEMP%/.bun_ran", "context": "One-shot execution guard" },
+      { "value": "%TEMP%/b/bun", "context": "Dropped Bun runtime (Linux/macOS)" },
+      { "value": "%TEMP%/b/bun.exe", "context": "Dropped Bun runtime (Windows)" },
+      { "value": "/tmp/p<random>.js", "context": "Decrypted payload written before execution" }
+    ],
+    "markers": [
+      { "value": "Hades - The End for the Damned", "context": "Exfil repo description (campaign marker)" },
+      { "value": "TheBeautifulSnadsOfTime", "context": "GitHub keyword used to fetch staged payload" },
+      { "value": ".github/workflows/codeql.yml", "context": "Worm: malicious workflow disguised as CodeQL" },
+      { "value": "DontRevokeOrItGoesBoom", "context": "Marker consistent with revocation-triggered destruction" },
+      { "value": "f0a756767", "context": "globalThis name of the custom G1 string cipher" }
+    ],
+    "decoys": [
+      { "value": "ghp_decoyGitHubToken", "context": "Honeytoken in toolkit templates" },
+      { "value": "npm_F4k3NPMToken", "context": "Honeytoken in toolkit templates" },
+      { "value": "AKIAFAKE", "context": "Honeytoken in toolkit templates" },
+      { "value": "sk-ant-api03-fake", "context": "Honeytoken in toolkit templates" }
+    ],
+    "network_abused": [
+      { "value": "https://github.com/oven-sh/bun/releases/download/bun-v1.3.13/", "context": "Bun runtime download (LOLbin)" },
+      { "value": "https://api.github.com", "context": "Exfil + worm via stolen victim token" },
+      { "value": "https://api.github.com/graphql", "context": "Repo/branch enumeration via stolen token" },
+      { "value": "http://169.254.169.254", "context": "AWS IMDS credential theft" },
+      { "value": "http://169.254.170.2", "context": "ECS metadata credential theft" },
+      { "value": "https://login.microsoftonline.com", "context": "Azure token/identity theft" },
+      { "value": "https://management.azure.com", "context": "Azure token/identity theft" },
+      { "value": "https://oauth2.googleapis.com/token", "context": "GCP credential theft" },
+      { "value": "https://pypi.org/_/oidc/mint-token", "context": "PyPI OIDC publishing token theft" },
+      { "value": "https://upload.pypi.org/legacy/", "context": "Registry publishing" },
+      { "value": "https://registry.npmjs.org/-/npm/v1/", "context": "npm token theft" },
+      { "value": "https://api.anthropic.com", "context": "AI assistant key theft" }
+    ],
+    "user_agent": [
+      { "value": "python-requests/2.31.0", "context": "Spoofed UA used by the Bun/JS payload against GitHub API" }
+    ]
+  }
+}

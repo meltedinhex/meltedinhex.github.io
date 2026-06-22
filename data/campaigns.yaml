@@ -1,0 +1,108 @@
+# Single source of truth for the Threat Tracker (/tracker/) and the
+# Detection coverage index (/detections/).
+#
+# Each entry describes one analysed threat. Add `detections:` to surface a
+# campaign on the detections page. `featured: true` pins it to the top.
+#
+# repo  = folder name under github.com/meltedinhex/detections
+# static = folder name under /detections/<...>/ on this site (raw files)
+
+campaigns:
+  - name: "PolinRider"
+    slug: "polinrider-blockchain-dead-drop-npm"
+    title: "Dead Drops on the Blockchain"
+    family: "BeaverTail → InvisibleFerret"
+    actor: "DPRK / Lazarus"
+    platform: "npm"
+    category: "Supply chain"
+    date: "2026-06-22"
+    featured: true
+    summary: >-
+      An npm package that hides its payload on public blockchains (EtherHiding).
+      A TRON pointer resolves to a Binance Smart Chain burn-address transaction
+      whose data field carries an XOR-encrypted loader, ending in a version-gated
+      BeaverTail → InvisibleFerret chain.
+    attack: ["T1195.002", "T1204.002", "T1059.007", "T1620", "T1027", "T1140", "T1564.003", "T1102", "T1105", "T1573"]
+    detections:
+      repo: "polinrider-blockchain-loader"
+      static: "polinrider-blockchain-dead-drop-npm"
+      coverage: ["YARA", "Sigma", "KQL", "IOCs"]
+
+  - name: "Shai-Hulud (nhmpy)"
+    slug: "shai-hulud-nhmpy-pypi"
+    title: "Peeling the Sandworm"
+    family: "Shai-Hulud · Hades wave"
+    actor: "Unattributed"
+    platform: "PyPI"
+    category: "Supply chain"
+    date: "2026-06-14"
+    featured: true
+    summary: >-
+      A PyPI package one keystroke from NumPy that ships a full working copy of
+      NumPy as cover. A .pth file runs at interpreter start and executes a 5.2 MB
+      JavaScript credential stealer through a Bun runtime pulled from GitHub.
+    attack: ["T1195.002", "T1059.007", "T1547", "T1552.001", "T1041"]
+    detections:
+      repo: "nhmpy-hades-pypi"
+      static: "shai-hulud-nhmpy-pypi"
+      coverage: ["YARA", "Sigma", "KQL", "IOCs"]
+
+  - name: "MuddyWater"
+    slug: "a-new-muddywater-apt-campaign-spreads"
+    title: "A new MuddyWater APT campaign"
+    family: "MuddyWater backdoor RAT"
+    actor: "MuddyWater (Iran-nexus)"
+    platform: "Office macro / PowerShell"
+    category: "APT"
+    date: "2019-01-11"
+    summary: >-
+      An Iran-nexus APT campaign delivering a PowerShell/VBS backdoor RAT through
+      malicious MS Word documents and a multi-stage MSIL loader.
+
+  - name: "File-Spider"
+    slug: "analysis-of-file-spider-ransomware"
+    title: "Analysis of File-Spider Ransomware"
+    family: "Spider ransomware"
+    actor: "Unattributed"
+    platform: "Office macro"
+    category: "Ransomware"
+    date: "2017-12-11"
+    summary: >-
+      The Spider ransomware delivered via a malicious Office macro that pulls a
+      PowerShell downloader and an MSIL encryptor.
+
+  - name: "LockCrypt"
+    slug: "analysis-of-lockcrypt-ransomware"
+    title: "Analysis of LockCrypt ransomware"
+    family: "LockCrypt"
+    actor: "Unattributed"
+    platform: "Windows PE"
+    category: "Ransomware"
+    date: "2017-12-01"
+    summary: >-
+      A teardown of the LockCrypt ransomware family, its encryption routine and
+      its persistence behaviour.
+
+  - name: "Noblis In-dev"
+    slug: "analysis-of-noblis-in-dev-ransomware"
+    title: "Analysis of Noblis In-dev Ransomware"
+    family: "Noblis"
+    actor: "Unattributed"
+    platform: "Python / PyInstaller"
+    category: "Ransomware"
+    date: "2017-12-13"
+    summary: >-
+      An in-development Python ransomware packaged with PyInstaller, recovered
+      and analysed before it was finished.
+
+  - name: "JS-spread ransomware"
+    slug: "analysis-of-ransomware-spread-by"
+    title: "Ransomware spread by JavaScript"
+    family: "Batch file-crypter"
+    actor: "Unattributed"
+    platform: "JavaScript"
+    category: "Ransomware"
+    date: "2016-06-06"
+    summary: >-
+      A ransomware campaign spread through malicious JavaScript that drops a
+      batch-based file crypter.

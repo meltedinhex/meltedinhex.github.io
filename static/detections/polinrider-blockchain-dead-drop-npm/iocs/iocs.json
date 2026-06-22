@@ -47,7 +47,7 @@
       { "type": "package", "value": "safe-validate 1.0.4", "context": "Sibling npm package (Funval clone); same loader CONFIRMED (marker A6-Shadow-14); own dead-drop IOCs not yet decoded" },
       { "type": "repo", "value": "deepthought26/schema-checker", "context": "GitHub source repo behind safe-validate (name mismatch; no safe-validate repo)" },
       { "type": "file", "value": "lib/schema/bootstrap.js", "context": "safe-validate real loader; lib/bootstrap.js import is a 404 decoy" },
-      { "type": "account", "value": "deepthought26", "context": "npm + GitHub owner of both packages; also published PyPI nhmpy 2.4.7" },
+      { "type": "account", "value": "deepthought26", "context": "npm + GitHub owner of both packages" },
       { "type": "sha256", "value": "fab731cd8005d9d73a8fe862a8bfea32c945bd957bbb9861f36401d18b878c8b", "context": "tailwind-color-shades tarball (8151 bytes)" },
       { "type": "sha1", "value": "20d89e126abc68e74e01f1a8701b68dfc29005fa", "context": "tailwind-color-shades tarball" },
       { "type": "md5", "value": "dd58d3a964e739f524dd3b28f1542c01", "context": "tailwind-color-shades tarball" },

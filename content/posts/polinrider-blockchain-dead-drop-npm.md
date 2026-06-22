@@ -251,7 +251,7 @@ That is not a cleanup. Marking `bootstrap.js` as having side effects *guarantees
 
 One honest caveat, because I would rather be precise than dramatic: I retrieved and read `safe-validate`'s real loader, so the *family match is confirmed*: same decoder algorithm, same `constructor`/`Function` trick, same execution tail, same marker slot. What I have not yet done is decode *its* on-chain payload blob, so its specific TRON/Aptos addresses and XOR keys may differ from the ones I recovered above. The dead-drop mechanism is the same; the individual pointers are unconfirmed. If you run `safe-validate`, treat it exactly like this one.
 
-The wider point for defenders is the important one. This is not a single package to yank. It is a kit one actor is reusing across packages, and, since the same `deepthought26` account also published the malicious PyPI worm [`nhmpy`](/posts/shai-hulud-nhmpy-pypi/) I tore apart last week, across ecosystems. Block the package and the playbook survives.
+The wider point for defenders is the important one. This is not a single package to yank. It is a kit one actor is reusing across packages. Block the package and the playbook survives.
 
 ## Detection & hunting
 
@@ -335,7 +335,7 @@ These split into three very different buckets, and mixing them is how teams end 
 | `safe-validate` 1.0.4 (npm) | Package | Sibling: Funval clone; same loader confirmed (marker `A6-Shadow-14`) |
 | `deepthought26/schema-checker` | GitHub repo | Source repo behind `safe-validate` (name mismatch; no `safe-validate` repo) |
 | `lib/schema/bootstrap.js` | File (in tarball) | `safe-validate` real loader (`lib/bootstrap.js` import is a 404 decoy) |
-| `deepthought26` | npm + GitHub account | Owner of both npm packages (also published PyPI `nhmpy`) |
+| `deepthought26` | npm + GitHub account | Owner of both npm packages |
 | `fab731cd8005d9d73a8fe862a8bfea32c945bd957bbb9861f36401d18b878c8b` | SHA-256 | `tailwind-color-shades` tarball (8,151 B) |
 | `dd58d3a964e739f524dd3b28f1542c01` | MD5 | `tailwind-color-shades` tarball |
 | `a048ac42b7e4c7dad4dd24e352dfe292d835a0cf` | SHA-1 (dist shasum) | `safe-validate` 1.0.4 tarball |

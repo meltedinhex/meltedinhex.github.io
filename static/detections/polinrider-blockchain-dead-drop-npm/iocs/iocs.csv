@@ -24,7 +24,7 @@ package,tailwind-color-shades 1.0.2,sample,Malicious npm package (functional dec
 package,safe-validate 1.0.4,sample,Sibling npm package (Funval clone); same loader CONFIRMED (marker A6-Shadow-14); own dead-drop IOCs not yet decoded
 repo,deepthought26/schema-checker,sample,GitHub source repo behind safe-validate (name mismatch; no safe-validate repo)
 file,lib/schema/bootstrap.js,sample,safe-validate real loader (lib/bootstrap.js import is a 404 decoy)
-account,deepthought26,sample,npm + GitHub owner of both packages (also published PyPI nhmpy 2.4.7)
+account,deepthought26,sample,npm + GitHub owner of both packages
 sha256,fab731cd8005d9d73a8fe862a8bfea32c945bd957bbb9861f36401d18b878c8b,sample,Tarball tailwind-color-shades-1.0.2.tgz (8151 bytes)
 sha1,20d89e126abc68e74e01f1a8701b68dfc29005fa,sample,Tarball tailwind-color-shades-1.0.2.tgz
 md5,dd58d3a964e739f524dd3b28f1542c01,sample,Tarball tailwind-color-shades-1.0.2.tgz

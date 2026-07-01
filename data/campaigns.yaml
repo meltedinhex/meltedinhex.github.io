@@ -8,6 +8,22 @@
 # static = folder name under /detections/<...>/ on this site (raw files)
 
 campaigns:
+  - name: "EtherHiding"
+    slug: "etherhiding-explained"
+    title: "EtherHiding, Explained"
+    family: "Blockchain dead-drop C2"
+    actor: "Technique (CLEARFAKE · DPRK)"
+    platform: "Blockchain"
+    category: "Technique"
+    date: "2026-06-23"
+    featured: true
+    summary: >-
+      A plain-English explainer of EtherHiding: storing a malicious payload on a
+      public blockchain and reading it back with a quiet read-only call, turning
+      the chain into takedown-proof C2. Covers both storage flavours and where
+      defenders still win.
+    attack: ["T1102.001"]
+
   - name: "PolinRider"
     slug: "polinrider-blockchain-dead-drop-npm"
     title: "Dead Drops on the Blockchain"

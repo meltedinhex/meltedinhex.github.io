@@ -1,0 +1,21 @@
+# ErrTraffic "Analytics" cluster (EtherHiding -> ClickFix) - July 2026 snapshot
+# Full analysis: https://meltedinhex.com/posts/clickfix-errtraffic-blockchain-c2/
+# Author: Melted in Hex. Tune sid/rev and $HOME_NET/$EXTERNAL_NET before deploying.
+
+# 1) Injected EtherHiding loader served in an HTML response (contract marker)
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"MIH ErrTraffic Analytics injected loader (Polygon contract)"; flow:established,to_client; file.data; content:"0x08207B087F61d7e95E441E15fd6d40BEfd6eD308"; nocase; classtype:trojan-activity; sid:2100001; rev:1;)
+
+# 2) Injected loader (getURL selector + eth_call), variant-agnostic once decoded
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"MIH ErrTraffic injected loader (eth_call + getURL selector)"; flow:established,to_client; file.data; content:"eth_call"; content:"38bcdc1c"; distance:0; classtype:trojan-activity; sid:2100002; rev:1;)
+
+# 3) ErrTraffic TDS config request
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"MIH ErrTraffic TDS config request (/api/?a=tds_cfg)"; flow:established,to_server; http.method; content:"GET"; http.uri; content:"/api/"; content:"a=tds_cfg"; distance:0; classtype:trojan-activity; sid:2100003; rev:1;)
+
+# 4) Fake-Cloudflare Windows landing page
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"MIH ErrTraffic fake-Cloudflare Windows landing"; flow:established,to_server; http.uri; content:"/landing/windows.html"; classtype:trojan-activity; sid:2100004; rev:1;)
+
+# 5) Clipboard-PowerShell response carries the campaign's custom header
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"MIH ErrTraffic init response X-Captcha-Mode header"; flow:established,to_client; http.header_names; content:"X-Captcha-Mode"; classtype:trojan-activity; sid:2100005; rev:1;)
+
+# 6) Known July infrastructure by TLS SNI (rotate/extend as hosts change on-chain)
+alert tls $HOME_NET any -> $EXTERNAL_NET any (msg:"MIH ErrTraffic Analytics known C2/delivery SNI (July 2026)"; tls.sni; pcre:"/(kaloed|marjdl|mamkor|maloke|babelo|kaleda|abrmot|mekasa|pokese|lashbou)\.pro$|ambiltogel\.net$|zewaplus\.club$/"; classtype:trojan-activity; sid:2100006; rev:1;)

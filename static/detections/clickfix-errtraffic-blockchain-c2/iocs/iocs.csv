@@ -1,0 +1,34 @@
+type,value,role,confidence,notes
+polygon_contract,0x08207B087F61d7e95E441E15fd6d40BEfd6eD308,ddr-contract,confirmed,EtherHiding delivery-host pointer (Sekoia "Analytics" cluster)
+function_selector,0x38bcdc1c,ddr-selector,confirmed,getURL() (per LevelBlue)
+domain,kaloed.pro,delivery-host,confirmed,July rotation
+domain,marjdl.pro,delivery-host,confirmed,July rotation
+domain,mamkor.pro,delivery-host,confirmed,July rotation
+domain,kaleda.pro,delivery-host,confirmed,July rotation
+domain,maloke.pro,delivery-host,confirmed,July rotation
+domain,babelo.pro,delivery-host,confirmed,live at time of writing
+domain,abrmot.pro,delivery-host,confirmed,July rotation
+domain,mekasa.pro,delivery-host,confirmed,July rotation
+domain,pokese.pro,delivery-host,confirmed,July rotation
+domain,merabs.pro,delivery-host,confirmed,July rotation
+domain,fesold.com,delivery-host,confirmed,July rotation
+domain,lashbou.pro,delivery-host,medium,sibling infra observed via pivot
+domain,kwt.ambiltogel.net,stealer-c2,confirmed,config + beacon + exfil (July Go sample)
+domain,zewaplus.club,module-download,confirmed,serves runtime modules (loader-capable channel)
+url,telegram.me/r7t3at,dead-drop-resolver,confirmed,C2 host in channel bio
+domain,cal.snehamumbai.org,gate,confirmed,secondary gate (compromised site)
+domain,cal.magicalegyptwomen.com,gate,confirmed,set as on-chain delivery host 2026-07-11
+url_path,/api/?a=tds_cfg,delivery-endpoint,confirmed,ErrTraffic TDS config
+url_path,/api/index.php?a=init,delivery-endpoint,confirmed,clipboard-PowerShell endpoint
+url_path,/landing/windows.html,delivery-endpoint,confirmed,fake-Cloudflare ClickFix landing
+sha256,0df0ccb038bdceb9a33c402aa290698a3249da467f5ad98bd935b7a158306a74,payload,confirmed,July Go infostealer (delivered as x.exe)
+sha1,b737728dc2eeccae2ea4d06060a3b3844cd478f7,payload,confirmed,July Go infostealer
+md5,c15075c52eb051af672410b081fb5e3c,payload,confirmed,July Go infostealer
+cert_serial,0x098edb3c2fad914f,payload-signer,confirmed,fake self-signed cert (CN spoofs etsy.com)
+env_var,SEE_MASK_NOZONECHECKS=1,host-artifact,confirmed,MOTW bypass in clipboard PowerShell
+process,ComputerDefaults.exe,host-artifact,confirmed,fileless UAC bypass
+cookie,_cf_verified,host-artifact,confirmed,set by fake-CAPTCHA overlay
+cookie,_wp_perf_ok,host-artifact,confirmed,set by fake-CAPTCHA overlay
+js_symbol,window.__BW_MODE_RUN__,host-artifact,confirmed,landing-page loader entry point
+http_header,X-Captcha-Mode: 2,host-artifact,confirmed,on ?a=init PowerShell response
+file,session-manager.php,wordpress-backdoor,confirmed,MU-plugin backdoor (Monarx/LevelBlue/Sekoia)

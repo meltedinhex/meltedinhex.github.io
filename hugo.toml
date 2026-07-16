@@ -83,11 +83,6 @@ minifyOutput = true
   url = "/tags/"
   weight = 20
 [[menu.main]]
-  identifier = "series"
-  name = "Series"
-  url = "/series/"
-  weight = 25
-[[menu.main]]
   identifier = "archive"
   name = "Archive"
   url = "/archives/"

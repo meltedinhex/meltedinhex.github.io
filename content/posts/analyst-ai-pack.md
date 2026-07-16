@@ -2,7 +2,6 @@
 title: "AnalystAIPack: Giving an AI Agent a Malware Analyst's Working Knowledge"
 date: 2026-07-01T10:00:00+05:30
 slug: "analyst-ai-pack"
-weight: 1
 draft: false
 description: "AnalystAIPack is an open, Apache-2.0 library of runnable agent skills that give an AI agent a malware analyst's working knowledge across analysis, RE, and threat hunting."
 tags:

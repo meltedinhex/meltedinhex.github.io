@@ -83,6 +83,11 @@ minifyOutput = true
   url = "/tags/"
   weight = 20
 [[menu.main]]
+  identifier = "series"
+  name = "Series"
+  url = "/series/"
+  weight = 25
+[[menu.main]]
   identifier = "archive"
   name = "Archive"
   url = "/archives/"
@@ -97,6 +102,12 @@ minifyOutput = true
   name = "About"
   url = "/about/"
   weight = 50
+
+# Taxonomies (tags + categories are PaperMod defaults; series adds post series)
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+  series = "series"
 
 # Syntax highlighting
 [markup]

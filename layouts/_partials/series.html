@@ -1,0 +1,38 @@
+{{- /*
+  Series navigation box — "Part N of M" with links to every part.
+  Renders only when the current page has one or more `series` terms.
+  Ordering within a series is controlled by the page's `series_weight`
+  front-matter field (taxonomy-specific weight), so it does not affect
+  the global post ordering.
+*/ -}}
+{{- $cur := . -}}
+{{- with .GetTerms "series" -}}
+  {{- range . -}}
+    {{- $posts := .Pages.ByWeight -}}
+    {{- $total := len $posts -}}
+    {{- range $i, $p := $posts -}}
+      {{- if eq $p.RelPermalink $cur.RelPermalink -}}{{- $cur.Scratch.Set "seriesCurNum" (add $i 1) -}}{{- end -}}
+    {{- end -}}
+    {{- $curNum := $cur.Scratch.Get "seriesCurNum" -}}
+    <aside class="series-box" aria-label="Series navigation">
+      <div class="series-box__head">
+        <span class="series-box__label">Series</span>
+        <a class="series-box__title" href="{{ .Permalink }}">{{ .LinkTitle }}</a>
+        {{- if $curNum }}<span class="series-box__progress">Part {{ $curNum }} of {{ $total }}</span>{{- end }}
+      </div>
+      <ol class="series-box__list">
+        {{- range $i, $p := $posts -}}
+          {{- $isCurrent := eq $p.RelPermalink $cur.RelPermalink -}}
+          <li class="series-box__item{{ if $isCurrent }} is-current{{ end }}">
+            <span class="series-box__num">{{ add $i 1 }}</span>
+            {{- if $isCurrent -}}
+              <span class="series-box__current" aria-current="true">{{ $p.LinkTitle }}<em>you are here</em></span>
+            {{- else -}}
+              <a class="series-box__link" href="{{ $p.Permalink }}">{{ $p.LinkTitle }}</a>
+            {{- end -}}
+          </li>
+        {{- end -}}
+      </ol>
+    </aside>
+  {{- end -}}
+{{- end -}}

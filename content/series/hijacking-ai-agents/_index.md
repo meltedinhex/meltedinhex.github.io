@@ -1,6 +1,10 @@
 ---
 title: "Hijacking AI Agents"
 description: "How malicious skills, MCP tools, and poisoned content take over your AI coding assistant, and how to stop them. A defensive research series."
+cover:
+  image: "/images/hijacking-ai-agents/cover.png"
+  alt: "Hijacking AI Agents, a defensive research series"
+  relative: false
 ---
 
 A defensive research series on how an agentic AI coding assistant can be turned

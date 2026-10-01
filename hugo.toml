@@ -38,6 +38,15 @@ minifyOutput = true
   comments = false
   images = ["images/og-social.png"]
 
+  # Threat Wire (/wire/): optional live JSON endpoint the board refreshes from
+  # at runtime. Leave empty to serve only the committed snapshot at
+  # /wire/wire.json. Set to the TI project's published feed (GitHub Pages),
+  # e.g. "https://<user>.github.io/ti-threat-monitor/data/wire.json", to make
+  # the board update live without rebuilding the site.
+  wireLiveURL = ""
+  # How often (seconds) the /wire/ board re-polls its feed for new threats.
+  # It only re-renders when the feed's generated_at changes. 0 disables polling.
+  wireRefreshSeconds = 30
   [params.assets]
     favicon = "/favicon.png"
     favicon16x16 = "/favicon-32.png"
@@ -82,6 +91,11 @@ minifyOutput = true
   name = "Threats"
   url = "/tracker/"
   weight = 20
+[[menu.main]]
+  identifier = "wire"
+  name = "Wire"
+  url = "/wire/"
+  weight = 22
 [[menu.main]]
   identifier = "tags"
   name = "Tags"

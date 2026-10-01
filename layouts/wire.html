@@ -1,0 +1,593 @@
+{{- define "main" }}
+
+<header class="page-header wire-header">
+  <div class="wire-live" aria-live="polite">
+    <span class="wire-pulse" aria-hidden="true"></span>
+    <span id="wireStatus">Loading feed…</span>
+  </div>
+  <h1>{{ .Title }}</h1>
+  {{- if .Description }}
+  <div class="post-description">{{ .Description }}</div>
+  {{- end }}
+  <p class="wire-note">
+    A deduplicated, always-on intelligence feed: one entry per unique threat,
+    correlated across every source that reported it, fact-checked against those
+    sources, and scored for confidence before it lands here. Click any threat to
+    open its full dossier — indicators, ATT&amp;CK mapping, and sourcing. Treat as
+    leads, not gospel: verify before operational use.
+  </p>
+</header>
+
+<div class="post-content wire-content">
+
+  <section class="wire-stats" id="wireStats" aria-label="Feed statistics"></section>
+
+  <section class="wire-heat" id="wireHeat" hidden>
+    <h2 class="wire-heat-title">ATT&amp;CK signal <span>· most-seen techniques across the current feed</span></h2>
+    <div class="wire-heat-grid" id="wireHeatGrid"></div>
+  </section>
+
+  <section class="wire-controls">
+    <div class="wire-search-wrap">
+      <span class="wire-search-icon" aria-hidden="true">/</span>
+      <input id="wireSearch" type="search" placeholder="Search threats, CVEs, malware, actors, techniques…" autocomplete="off" aria-label="Search the feed" />
+    </div>
+    <div class="wire-filter-row">
+      <div class="wire-seg" role="group" aria-label="Filter by severity">
+        <span class="wire-seg-label">sev</span>
+        <div class="wire-chips" id="wireSeverity">
+          <button class="wire-chip is-active" data-sev="all">All</button>
+          <button class="wire-chip sev-critical" data-sev="critical">Critical</button>
+          <button class="wire-chip sev-high" data-sev="high">High</button>
+          <button class="wire-chip sev-medium" data-sev="medium">Medium</button>
+          <button class="wire-chip sev-low" data-sev="low">Low</button>
+        </div>
+      </div>
+      <div class="wire-seg" role="group" aria-label="Filter by time window">
+        <span class="wire-seg-label">seen</span>
+        <div class="wire-chips" id="wireTime">
+          <button class="wire-chip is-active" data-time="all">All</button>
+          <button class="wire-chip" data-time="1">24h</button>
+          <button class="wire-chip" data-time="7">7d</button>
+          <button class="wire-chip" data-time="30">30d</button>
+          <button class="wire-chip" data-time="90">90d</button>
+        </div>
+      </div>
+      <select id="wireCategory" aria-label="Filter by category">
+        <option value="all">All categories</option>
+      </select>
+      <select id="wireSort" aria-label="Sort by">
+        <option value="updated">Newest</option>
+        <option value="confidence">Confidence</option>
+        <option value="severity">Severity</option>
+        <option value="sources">Most sources</option>
+        <option value="name">Name (A–Z)</option>
+      </select>
+    </div>
+  </section>
+
+  <p id="wireCount" class="wire-result-count"></p>
+  <div id="wireGrid" class="wire-grid" aria-live="polite"
+       data-snapshot="{{ "wire/wire.json" | relURL }}"
+       data-live="{{ .Site.Params.wireLiveURL | default "" }}"
+       data-refresh="{{ .Site.Params.wireRefreshSeconds | default 60 }}"></div>
+  <div id="wireEmpty" class="wire-empty" hidden>
+    <p>No threats match your filters.</p>
+  </div>
+  <noscript>
+    <p class="wire-empty">The Threat Wire needs JavaScript to render its live feed.</p>
+  </noscript>
+</div>
+
+<!-- Threat dossier drawer -->
+<div id="wireOverlay" class="wire-overlay" hidden></div>
+<aside id="wireDossier" class="wire-dossier" hidden role="dialog" aria-modal="true" aria-labelledby="wireDossierTitle" tabindex="-1">
+  <div class="wire-dossier-inner" id="wireDossierBody"></div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  var gridEl = document.getElementById("wireGrid");
+  var SNAPSHOT_URL = (gridEl && gridEl.getAttribute("data-snapshot")) || "/wire/wire.json";
+  var LIVE_URL = (gridEl && gridEl.getAttribute("data-live")) || "";
+  var REFRESH_MS = Math.max(0, (parseInt(gridEl && gridEl.getAttribute("data-refresh"), 10) || 0) * 1000);
+
+  var SEV_RANK = { critical: 4, high: 3, medium: 2, unknown: 2, low: 1, informational: 0 };
+
+  var state = { reports: [], filtered: [], sev: "all", cat: "all", time: "all", sort: "updated", q: "", generatedAt: null, live: false };
+
+  var el = {
+    status: document.getElementById("wireStatus"),
+    stats: document.getElementById("wireStats"),
+    heat: document.getElementById("wireHeat"),
+    heatGrid: document.getElementById("wireHeatGrid"),
+    grid: document.getElementById("wireGrid"),
+    empty: document.getElementById("wireEmpty"),
+    count: document.getElementById("wireCount"),
+    search: document.getElementById("wireSearch"),
+    severity: document.getElementById("wireSeverity"),
+    category: document.getElementById("wireCategory"),
+    time: document.getElementById("wireTime"),
+    sort: document.getElementById("wireSort"),
+    overlay: document.getElementById("wireOverlay"),
+    dossier: document.getElementById("wireDossier"),
+    dossierBody: document.getElementById("wireDossierBody")
+  };
+
+  var byslug = {};
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function timeAgo(iso) {
+    if (!iso) return "unknown";
+    var then = new Date(iso).getTime();
+    if (isNaN(then)) return "unknown";
+    var s = Math.max(0, (Date.now() - then) / 1000);
+    if (s < 3600) return Math.round(s / 60) + "m ago";
+    if (s < 86400) return Math.round(s / 3600) + "h ago";
+    var d = Math.round(s / 86400);
+    if (d < 30) return d + "d ago";
+    return Math.round(d / 30) + "mo ago";
+  }
+
+  function confClass(c) {
+    if (c >= 0.75) return "hi";
+    if (c >= 0.5) return "mid";
+    return "lo";
+  }
+
+  function renderStats() {
+    var r = state.reports;
+    var now = Date.now();
+    var day = r.filter(function (x) { return x.last_updated && (now - new Date(x.last_updated)) < 864e5; }).length;
+    var week = r.filter(function (x) { return x.last_updated && (now - new Date(x.last_updated)) < 6048e5; }).length;
+    var crit = r.filter(function (x) { return x.severity === "critical"; }).length;
+    var avg = r.length ? r.reduce(function (a, x) { return a + (x.confidence || 0); }, 0) / r.length : 0;
+    var actors = {}, mal = {};
+    r.forEach(function (x) {
+      (x.threat_actors || []).forEach(function (a) { actors[a.toLowerCase()] = 1; });
+      (x.malware_families || []).forEach(function (m) { mal[m.toLowerCase()] = 1; });
+    });
+    var tiles = [
+      { n: r.length, l: "threats tracked" },
+      { n: day, l: "new · 24h" },
+      { n: week, l: "new · 7d" },
+      { n: crit, l: "critical" },
+      { n: Math.round(avg * 100) + "%", l: "avg confidence" },
+      { n: Object.keys(mal).length, l: "malware families" },
+      { n: Object.keys(actors).length, l: "threat actors" }
+    ];
+    el.stats.innerHTML = tiles.map(function (t) {
+      return '<div class="wire-stat"><span class="wire-stat-n">' + esc(t.n) +
+        '</span><span class="wire-stat-l">' + esc(t.l) + "</span></div>";
+    }).join("");
+  }
+
+  function renderHeat() {
+    var counts = {};
+    state.reports.forEach(function (x) {
+      (x.ttps || []).forEach(function (t) {
+        if (!t.id) return;
+        if (!counts[t.id]) counts[t.id] = { id: t.id, tactic: t.tactic || "", n: 0 };
+        counts[t.id].n++;
+      });
+    });
+    var top = Object.keys(counts).map(function (k) { return counts[k]; })
+      .sort(function (a, b) { return b.n - a.n; }).slice(0, 12);
+    if (!top.length) { el.heat.hidden = true; return; }
+    var max = top[0].n;
+    el.heat.hidden = false;
+    el.heatGrid.innerHTML = top.map(function (t) {
+      var intensity = 0.18 + 0.82 * (t.n / max);
+      return '<button class="wire-heat-cell" data-q="' + esc(t.id) + '" ' +
+        'style="--heat:' + intensity.toFixed(3) + '" title="' + esc(t.tactic) + ' · ' + t.n + ' report(s)">' +
+        '<span class="wire-heat-id">' + esc(t.id) + '</span>' +
+        '<span class="wire-heat-n">' + t.n + "</span></button>";
+    }).join("");
+    Array.prototype.forEach.call(el.heatGrid.querySelectorAll(".wire-heat-cell"), function (b) {
+      b.addEventListener("click", function () {
+        el.search.value = b.getAttribute("data-q");
+        state.q = b.getAttribute("data-q").toLowerCase();
+        apply();
+      });
+    });
+  }
+
+  function haystack(x) {
+    return [x.name, x.category, x.summary]
+      .concat(x.cves || [], x.malware_families || [], x.threat_actors || [],
+        (x.ttps || []).map(function (t) { return t.id; }))
+      .join(" ").toLowerCase();
+  }
+
+  function apply() {
+    var cutoff = state.time === "all" ? 0 : Date.now() - parseInt(state.time, 10) * 864e5;
+    var out = state.reports.filter(function (x) {
+      if (state.sev !== "all" && x.severity !== state.sev) return false;
+      if (state.cat !== "all" && x.category !== state.cat) return false;
+      if (cutoff && !(x.last_updated && new Date(x.last_updated).getTime() >= cutoff)) return false;
+      if (state.q && haystack(x).indexOf(state.q) === -1) return false;
+      return true;
+    });
+    out.sort(function (a, b) {
+      switch (state.sort) {
+        case "confidence": return (b.confidence || 0) - (a.confidence || 0);
+        case "severity": return (SEV_RANK[b.severity] || 0) - (SEV_RANK[a.severity] || 0);
+        case "sources": return (b.source_count || 0) - (a.source_count || 0);
+        case "name": return String(a.name).localeCompare(String(b.name));
+        default: return new Date(b.last_updated || 0) - new Date(a.last_updated || 0);
+      }
+    });
+    state.filtered = out;
+    renderGrid();
+  }
+
+  function chips(items, cls, cap) {
+    if (!items || !items.length) return "";
+    return items.slice(0, cap).map(function (i) {
+      return '<span class="wire-tag ' + cls + '">' + esc(i) + "</span>";
+    }).join("");
+  }
+
+  function card(x) {
+    var conf = Math.round((x.confidence || 0) * 100);
+    var faith = Math.round((x.faithfulness || 0) * 100);
+    var idents = chips(x.cves, "cve", 3) + chips(x.malware_families, "mal", 3) + chips(x.threat_actors, "act", 2);
+    var ttps = (x.ttps || []).slice(0, 4).map(function (t) {
+      return '<span class="wire-tag ttp">' + esc(t.id) + "</span>";
+    }).join("");
+    var srcs = x.sources || [];
+    var srcLinks = srcs.slice(0, 3).map(function (s) {
+      return '<a class="wire-src" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(s.title) + '" data-stop="1">' + esc(s.source) + "</a>";
+    }).join("");
+    var moreSrc = srcs.length > 3 ? '<span class="wire-src-more">+' + (srcs.length - 3) + "</span>" : "";
+    return '' +
+      '<article class="wire-card sev-' + esc(x.severity) + '" data-slug="' + esc(x.slug) + '" role="button" tabindex="0" aria-label="Open dossier: ' + esc(x.name) + '">' +
+        '<div class="wire-card-top">' +
+          '<span class="wire-sev">' + esc(x.severity) + "</span>" +
+          '<span class="wire-cat">' + esc(x.category) + "</span>" +
+          '<span class="wire-ago">' + esc(timeAgo(x.last_updated)) + "</span>" +
+        "</div>" +
+        '<h3 class="wire-card-title">' + esc(x.name) + ' <span class="wire-open" aria-hidden="true">\u2197</span></h3>' +
+        (x.summary ? '<p class="wire-summary">' + esc(x.summary) + "</p>" : "") +
+        (idents ? '<div class="wire-tags">' + idents + "</div>" : "") +
+        (ttps ? '<div class="wire-tags wire-ttps">' + ttps + "</div>" : "") +
+        '<div class="wire-meta">' +
+          '<div class="wire-conf">' +
+            '<div class="wire-conf-head"><span>confidence</span><span class="wire-conf-pct ' + confClass(x.confidence) + '">' + conf + '%</span></div>' +
+            '<div class="wire-bar"><span class="wire-bar-fill ' + confClass(x.confidence) + '" style="width:' + conf + '%"></span></div>' +
+          "</div>" +
+          '<div class="wire-facts">' +
+            '<span title="source articles merged">◈ ' + (x.source_count || 0) + " src</span>" +
+            '<span title="indicators of compromise">⌾ ' + (x.ioc_count || 0) + " IOC</span>" +
+            '<span title="faithfulness to sources">✓ ' + faith + "%</span>" +
+          "</div>" +
+        "</div>" +
+        (srcLinks ? '<div class="wire-card-foot"><span class="wire-srcs">' + srcLinks + moreSrc + "</span></div>" : "") +
+      "</article>";
+  }
+
+  function renderGrid() {
+    el.count.textContent = state.filtered.length +
+      (state.filtered.length === 1 ? " threat" : " threats") +
+      (state.reports.length !== state.filtered.length ? " of " + state.reports.length : "");
+    if (!state.filtered.length) {
+      el.grid.innerHTML = "";
+      el.empty.hidden = false;
+      return;
+    }
+    el.empty.hidden = true;
+    el.grid.innerHTML = state.filtered.map(card).join("");
+  }
+
+  function ingest(data, live) {
+    if (!data || !Array.isArray(data.reports)) return;
+    var isRefresh = state.reports.length > 0;
+    state.reports = data.reports;
+    state.generatedAt = data.generated_at || null;
+    byslug = {};
+    state.reports.forEach(function (x) { byslug[x.slug] = x; });
+    // Populate category filter once.
+    if (el.category.options.length <= 1) {
+      var cats = {};
+      state.reports.forEach(function (x) { if (x.category) cats[x.category] = 1; });
+      Object.keys(cats).sort().forEach(function (c) {
+        var o = document.createElement("option");
+        o.value = c; o.textContent = c.charAt(0).toUpperCase() + c.slice(1);
+        el.category.appendChild(o);
+      });
+    }
+    state.live = !!live;
+    renderStatus();
+    renderStats();
+    renderHeat();
+    apply();
+    // Deep link on first load: /wire/#slug opens that dossier. On a background
+    // refresh we leave any open dossier untouched.
+    if (!isRefresh) {
+      var hash = (location.hash || "").replace(/^#/, "");
+      if (hash && byslug[hash]) openDossier(hash);
+    }
+  }
+
+  function renderStatus() {
+    var dot = REFRESH_MS ? "live" : "";
+    el.status.textContent =
+      (state.live ? "Live · " : (REFRESH_MS ? "Auto · " : "")) +
+      state.reports.length + " threats · updated " + timeAgo(state.generatedAt);
+    void dot;
+  }
+
+  /* ---- IOC helpers ---- */
+  function defang(v) {
+    return String(v)
+      .replace(/^http/i, "hxxp")
+      .replace(/\./g, "[.]")
+      .replace(/:\/\//, "://")
+      .replace(/@/g, "[@]");
+  }
+  var IOC_ORDER = ["ipv4", "ipv6", "domain", "url", "email", "md5", "sha1", "sha256", "cve"];
+  var IOC_LABEL = {
+    ipv4: "IPv4", ipv6: "IPv6", domain: "Domains", url: "URLs", email: "Emails",
+    md5: "MD5", sha1: "SHA1", sha256: "SHA256", cve: "CVEs"
+  };
+
+  function flatIocs(x) {
+    var out = [];
+    var m = x.iocs || {};
+    IOC_ORDER.forEach(function (k) { (m[k] || []).forEach(function (v) { out.push(v); }); });
+    return out;
+  }
+
+  function copyText(text, btn) {
+    var done = function () {
+      if (!btn) return;
+      var old = btn.textContent; btn.textContent = "copied ✓"; btn.classList.add("ok");
+      setTimeout(function () { btn.textContent = old; btn.classList.remove("ok"); }, 1400);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, done);
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta); done();
+    }
+  }
+
+  function downloadCsv(x) {
+    var rows = [["type", "indicator"]];
+    var m = x.iocs || {};
+    IOC_ORDER.forEach(function (k) { (m[k] || []).forEach(function (v) { rows.push([k, v]); }); });
+    var csv = rows.map(function (r) {
+      return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(",");
+    }).join("\r\n");
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = x.slug + "-iocs.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  }
+
+  /* ---- Dossier drawer ---- */
+  var lastFocus = null;
+
+  function iocBlocks(x, fanged) {
+    var m = x.iocs || {};
+    var blocks = IOC_ORDER.filter(function (k) { return (m[k] || []).length; }).map(function (k) {
+      var rows = m[k].map(function (v) {
+        var shown = fanged ? defang(v) : v;
+        return '<li><code class="wire-ioc-val">' + esc(shown) + '</code>' +
+          '<button class="wire-ioc-copy" data-copy="' + esc(shown) + '" title="Copy">⧉</button></li>';
+      }).join("");
+      return '<div class="wire-ioc-group"><h4>' + esc(IOC_LABEL[k] || k) +
+        ' <span>' + m[k].length + "</span></h4><ul>" + rows + "</ul></div>";
+    }).join("");
+    return blocks || '<p class="wire-ioc-none">No indicators extracted for this threat.</p>';
+  }
+
+  function dossierHtml(x) {
+    var conf = Math.round((x.confidence || 0) * 100);
+    var faith = Math.round((x.faithfulness || 0) * 100);
+    var idents = "";
+    if ((x.cves || []).length) idents += '<div class="wire-d-idrow"><span class="wire-d-idlabel">CVEs</span>' + chips(x.cves, "cve", 99) + "</div>";
+    if ((x.malware_families || []).length) idents += '<div class="wire-d-idrow"><span class="wire-d-idlabel">Malware</span>' + chips(x.malware_families, "mal", 99) + "</div>";
+    if ((x.threat_actors || []).length) idents += '<div class="wire-d-idrow"><span class="wire-d-idlabel">Actors</span>' + chips(x.threat_actors, "act", 99) + "</div>";
+
+    var ttpRows = (x.ttps || []).map(function (t) {
+      var url = "https://attack.mitre.org/techniques/" + String(t.id).replace(".", "/");
+      return '<tr><td><a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer"><code>' + esc(t.id) + "</code></a></td>" +
+        "<td>" + esc(t.name || "—") + "</td><td>" + esc(t.tactic || "—") + "</td></tr>";
+    }).join("");
+    var ttpTable = ttpRows
+      ? '<table class="wire-d-ttp"><thead><tr><th>Technique</th><th>Name</th><th>Tactic</th></tr></thead><tbody>' + ttpRows + "</tbody></table>"
+      : '<p class="wire-ioc-none">No ATT&CK techniques mapped.</p>';
+
+    var products = (x.affected_products || []).length
+      ? '<div class="wire-d-tags">' + x.affected_products.map(function (p) { return '<span class="wire-tag">' + esc(p) + "</span>"; }).join("") + "</div>"
+      : "";
+    var recs = (x.recommendations || []).length
+      ? "<ul class='wire-d-recs'>" + x.recommendations.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>"
+      : "";
+    var sources = (x.sources || []).map(function (s) {
+      return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.title) +
+        '</a><span class="wire-d-srcname">' + esc(s.source) + "</span></li>";
+    }).join("");
+
+    return '' +
+      '<div class="wire-d-head sev-' + esc(x.severity) + '">' +
+        '<button class="wire-d-close" id="wireDClose" aria-label="Close dossier">✕</button>' +
+        '<div class="wire-d-eyebrow"><span class="wire-sev">' + esc(x.severity) + "</span>" +
+          '<span class="wire-cat">' + esc(x.category) + '</span>' +
+          '<span class="wire-ago">updated ' + esc(timeAgo(x.last_updated)) + "</span></div>" +
+        '<h2 id="wireDossierTitle" class="wire-d-title">' + esc(x.name) + "</h2>" +
+        '<div class="wire-d-scores">' +
+          '<div class="wire-d-score"><div class="wire-conf-head"><span>confidence</span><span class="wire-conf-pct ' + confClass(x.confidence) + '">' + conf + '%</span></div><div class="wire-bar"><span class="wire-bar-fill ' + confClass(x.confidence) + '" style="width:' + conf + '%"></span></div></div>' +
+          '<div class="wire-d-score"><div class="wire-conf-head"><span>faithfulness</span><span class="wire-conf-pct ' + confClass(x.faithfulness) + '">' + faith + '%</span></div><div class="wire-bar"><span class="wire-bar-fill ' + confClass(x.faithfulness) + '" style="width:' + faith + '%"></span></div></div>' +
+          '<div class="wire-d-facts"><span>◈ ' + (x.source_count || 0) + ' sources</span><span>⌾ ' + (x.ioc_count || 0) + ' IOCs</span></div>' +
+        "</div>" +
+      "</div>" +
+      '<div class="wire-d-scroll">' +
+        (idents ? '<section class="wire-d-sec"><h3>Identifiers</h3>' + idents + "</section>" : "") +
+        (x.summary ? '<section class="wire-d-sec"><h3>Executive summary</h3><p>' + esc(x.summary) + "</p></section>" : "") +
+        (x.analysis ? '<section class="wire-d-sec"><h3>Detailed analysis</h3><p>' + esc(x.analysis) + "</p></section>" : "") +
+        '<section class="wire-d-sec" id="wireIocSec">' +
+          '<div class="wire-d-sechead"><h3>Indicators of compromise</h3>' +
+            '<div class="wire-ioc-tools">' +
+              '<label class="wire-defang"><input type="checkbox" id="wireDefang"> defang</label>' +
+              '<button class="wire-ioc-btn" id="wireCopyAll">copy all</button>' +
+              '<button class="wire-ioc-btn" id="wireCsv">CSV</button>' +
+            "</div>" +
+          "</div>" +
+          '<div id="wireIocBody">' + iocBlocks(x, false) + "</div>" +
+        "</section>" +
+        '<section class="wire-d-sec"><h3>ATT&amp;CK techniques</h3>' + ttpTable + "</section>" +
+        (products ? '<section class="wire-d-sec"><h3>Affected products</h3>' + products + "</section>" : "") +
+        (recs ? '<section class="wire-d-sec"><h3>Recommendations</h3>' + recs + "</section>" : "") +
+        (sources ? '<section class="wire-d-sec"><h3>Sources <span class="wire-d-count">' + (x.sources || []).length + '</span></h3><ol class="wire-d-sources">' + sources + "</ol></section>" : "") +
+        '<p class="wire-d-disclaimer">Correlated and synthesized automatically from the sources above, then fact-checked and confidence-scored. Verify indicators before acting.</p>' +
+      "</div>";
+  }
+
+  function openDossier(slug) {
+    var x = byslug[slug];
+    if (!x) return;
+    lastFocus = document.activeElement;
+    el.dossierBody.innerHTML = dossierHtml(x);
+    el.overlay.hidden = false;
+    el.dossier.hidden = false;
+    document.body.classList.add("wire-locked");
+    requestAnimationFrame(function () {
+      el.overlay.classList.add("show");
+      el.dossier.classList.add("show");
+    });
+    el.dossier.focus();
+    if (history.replaceState) history.replaceState(null, "", "#" + slug);
+
+    document.getElementById("wireDClose").addEventListener("click", closeDossier);
+    var defangBox = document.getElementById("wireDefang");
+    var iocBody = document.getElementById("wireIocBody");
+    defangBox.addEventListener("change", function () { iocBody.innerHTML = iocBlocks(x, defangBox.checked); });
+    document.getElementById("wireCopyAll").addEventListener("click", function () {
+      var list = flatIocs(x).map(function (v) { return defangBox.checked ? defang(v) : v; });
+      copyText(list.join("\n"), this);
+    });
+    document.getElementById("wireCsv").addEventListener("click", function () { downloadCsv(x); });
+    el.dossierBody.addEventListener("click", onIocCopy);
+  }
+
+  function onIocCopy(e) {
+    var b = e.target.closest ? e.target.closest(".wire-ioc-copy") : null;
+    if (b) copyText(b.getAttribute("data-copy"), b);
+  }
+
+  function closeDossier() {
+    el.overlay.classList.remove("show");
+    el.dossier.classList.remove("show");
+    document.body.classList.remove("wire-locked");
+    setTimeout(function () { el.overlay.hidden = true; el.dossier.hidden = true; el.dossierBody.innerHTML = ""; }, 220);
+    if (history.replaceState) history.replaceState(null, "", location.pathname + location.search);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  /* ---- Wire up controls ---- */
+  el.search.addEventListener("input", function () { state.q = el.search.value.trim().toLowerCase(); apply(); });
+  el.category.addEventListener("change", function () { state.cat = el.category.value; apply(); });
+  el.sort.addEventListener("change", function () { state.sort = el.sort.value; apply(); });
+
+  function segGroup(container, attr, set) {
+    Array.prototype.forEach.call(container.querySelectorAll(".wire-chip"), function (b) {
+      b.addEventListener("click", function () {
+        Array.prototype.forEach.call(container.querySelectorAll(".wire-chip"), function (o) { o.classList.remove("is-active"); });
+        b.classList.add("is-active");
+        set(b.getAttribute(attr));
+        apply();
+      });
+    });
+  }
+  segGroup(el.severity, "data-sev", function (v) { state.sev = v; });
+  segGroup(el.time, "data-time", function (v) { state.time = v; });
+
+  // Card click / keyboard → open dossier (source links opt out via data-stop).
+  el.grid.addEventListener("click", function (e) {
+    if (e.target.closest("[data-stop]")) return;
+    var c = e.target.closest(".wire-card");
+    if (c) openDossier(c.getAttribute("data-slug"));
+  });
+  el.grid.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var c = e.target.closest(".wire-card");
+    if (c) { e.preventDefault(); openDossier(c.getAttribute("data-slug")); }
+  });
+  el.overlay.addEventListener("click", closeDossier);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !el.dossier.hidden) { closeDossier(); return; }
+    if (e.key === "/" && document.activeElement !== el.search && el.dossier.hidden) {
+      e.preventDefault(); el.search.focus();
+    }
+  });
+
+  // Support hash-based deep links that change without a full reload.
+  window.addEventListener("hashchange", function () {
+    var slug = (location.hash || "").replace(/^#/, "");
+    if (slug && byslug[slug]) {
+      if (el.dossier.hidden) openDossier(slug);
+    } else if (!slug && !el.dossier.hidden) {
+      closeDossier();
+    }
+  });
+
+  // Load snapshot first (instant, offline-safe), then poll for fresh data.
+  // The live feed (if configured) is preferred; otherwise we re-poll the
+  // same-origin snapshot, which TI can mirror into the served static folder.
+  var FEED_URL = LIVE_URL || SNAPSHOT_URL;
+  var refreshing = false;
+
+  function fetchJson(url) {
+    return fetch(url, { cache: "no-cache" }).then(function (r) {
+      return r.ok ? r.json() : null;
+    });
+  }
+
+  function refresh() {
+    if (refreshing || document.hidden) return;
+    refreshing = true;
+    fetchJson(FEED_URL)
+      .then(function (d) {
+        // Only re-render when the feed actually changed (avoids flicker and
+        // preserves scroll/filters between polls).
+        if (d && d.generated_at && d.generated_at !== state.generatedAt) {
+          ingest(d, !!LIVE_URL);
+        }
+      })
+      .catch(function () {})
+      .finally(function () { refreshing = false; });
+  }
+
+  fetchJson(SNAPSHOT_URL)
+    .then(function (d) { if (d) ingest(d, false); })
+    .catch(function () {})
+    .finally(function () {
+      // First live pull (in case the live feed is ahead of the snapshot).
+      if (LIVE_URL) refresh();
+      // Background auto-refresh loop.
+      if (REFRESH_MS) {
+        setInterval(refresh, REFRESH_MS);
+        // Catch up immediately when the tab regains focus.
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) refresh();
+        });
+      }
+    });
+})();
+</script>
+
+{{- end }}

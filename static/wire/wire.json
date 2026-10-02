@@ -1,94 +1,16 @@
 {
-  "generated_at": "2026-10-01T09:53:05.224152+00:00",
-  "count": 311,
+  "generated_at": "2026-10-02T15:39:23.914283+00:00",
+  "count": 310,
   "reports": [
     {
-      "slug": "moviereaper-torrent-malware",
-      "name": "MovieReaper",
+      "slug": "miasma-supply-chain-attack",
+      "name": "2026 NetScaler Zero-Day Exploits and ClickFix-based RAT Delivery Campaign",
       "category": "malware",
       "severity": "high",
       "confidence": 1.0,
       "faithfulness": 0.92,
-      "source_count": 1,
-      "ioc_count": 13,
-      "cves": [],
-      "malware_families": [
-        "MovieReaper"
-      ],
-      "threat_actors": [],
-      "ttps": [
-        {
-          "id": "T1195.001",
-          "name": "Compromise Software Dependencies and Development Tools",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1204.001",
-          "name": "Malicious Link",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1608.003",
-          "name": "Install Digital Certificate",
-          "tactic": "resource development"
-        }
-      ],
-      "iocs": {
-        "domain": [
-          "itorrents.org"
-        ],
-        "url": [
-          "https://deadhub.org",
-          "http://193.23.118.155"
-        ],
-        "ipv4": [
-          "193.23.118.155",
-          "208.64.33.90",
-          "208.94.246.53"
-        ],
-        "md5": [
-          "a0b13781edd7cfdab13d79afff3c83c1",
-          "4843f9fafcae492f11e2d4d33dbb4cdd",
-          "5310cabae3fbe6db8742849b588093f9",
-          "70060341caf3338697a7ddfe0fb62875",
-          "ad4643eea15ac286fa47d1131f9ef756",
-          "d0b967571ac8a3863c7f324bf5bde99c",
-          "d88d550d0fb8e60cffff3ea61ff7a067"
-        ]
-      },
-      "affected_products": [
-        "Microsoft Windows (64‑bit)",
-        "Torrent client software"
-      ],
-      "recommendations": [
-        "Block access to known torrent tracker sites and public torrent indexes, especially itorrents.org.",
-        "Educate users about the risks of downloading pirated content and the importance of keeping antivirus solutions enabled.",
-        "Deploy endpoint detection and response (EDR) solutions that can flag the heuristic detection name HEUR:Trojan.Win64.Agent.gen.",
-        "Monitor network traffic for anomalous blockchain queries or connections to blockchain nodes that could indicate C2 activity.",
-        "Implement DNS filtering to prevent resolution of compromised torrent repository domains.",
-        "Share the compromised domain indicator with threat‑intel sharing platforms to aid community detection."
-      ],
-      "first_seen": "2026-10-01T09:37:44.265075+00:00",
-      "last_updated": "2026-10-01T09:37:44.265092+00:00",
-      "summary": "MovieReaper is a modular, multi‑stage crimeware framework distributed via compromised torrent trackers. The threat actors hijacked the public torrent index itorrents.org, causing legitimate magnet links to deliver a malicious loader that installs the MovieReaper payload on Windows systems. The malware uses blockchain‑based command‑and‑control channels, enabling stealthy communication and persistence across a broad victim base spanning multiple continents.",
-      "analysis": "### Overview MovieReaper emerged in mid‑August 2026 as a new Windows‑focused Trojan (detected by Kaspersky as **HEUR:Trojan.Win64.Agent.gen**). The campaign leverages the popularity of peer‑to‑peer (P2P) file‑sharing to reach a large, heterogeneous audience. By compromising the public repository **itorrents.org**, the attackers replaced legitimate torrent files with malicious ones. Users who click a magnet link receive a payload that functions as a loader for the modular MovieReaper framework. ### Infection Vector - **Compromised torrent repository** – The threat actor altered the index at itorrents.org. Any tracker that queried this repository inadvertently served the malicious torrent to its users. This supply‑chain style compromise aligns with ATT&CK **T1195.001 – Supply Chain Compromise: Compromise Software Dependencies**. - **User execution** – Victims download and run the torrent file, which triggers the loader. This reflects ATT&CK **T1204.001 – User Execution: Malicious File**. ### Architecture & Capabilities - **Modular design** – The loader drops additional modules that can provide data theft, credential harvesting, and further payload delivery. - **Blockchain C2** – Communication with the command‑and‑control (C2) infrastructure is routed through blockchain networks, a technique cataloged as ATT&CK **T1608.003 – Dead Drop Resolver: Blockchain**. This makes network‑based detection difficult because traffic appears as legitimate blockchain queries. - **Evasion** – The malware includes anti‑sandbox checks and attempts to evade AV detection, though specific evasion techniques were not enumerated in the source. ### Impact The campaign has infected several hundred victims, including both private users and organizations in Russia, Türkiye, Japan, Kenya, Uganda, Colombia, Spain, the Netherlands, Belgium, and Germany. The widespread distribution method and resilient C2 channel increase the threat’s operational longevity. ### Detection Kaspersky’s products flag the payload under the heuristic name **HEUR:Trojan.Win64.Agent.gen**. No file hashes, IP addresses, or URLs beyond the compromised repository domain were disclosed. ### Mitigation Given the reliance on a public torrent index, traditional perimeter defenses are insufficient. Defensive measures must focus on endpoint hygiene, network monitoring for blockchain traffic, and threat‑intel sharing of the compromised domain.",
-      "sources": [
-        {
-          "title": "The Odyssey and Trojans again: MovieReaper attacks users in multiple countries through compromised torrents",
-          "url": "https://securelist.com/moviereaper-malware-torrent-odyssey-solana/121344/",
-          "source": "Securelist (Kaspersky)"
-        }
-      ]
-    },
-    {
-      "slug": "miasma-supply-chain-attack",
-      "name": "Citrix NetScaler Zero-Day Exploits (CVE-2026-88771 & CVE-2026-88772)",
-      "category": "vulnerability",
-      "severity": "critical",
-      "confidence": 1.0,
-      "faithfulness": 0.95,
-      "source_count": 435,
-      "ioc_count": 898,
+      "source_count": 445,
+      "ioc_count": 921,
       "cves": [
         "CVE-2026-45321",
         "CVE-2026-48027",
@@ -554,7 +476,16 @@
         "CVE-2026-67276",
         "CVE-2026-85706",
         "CVE-2026-88771",
-        "CVE-2026-88772"
+        "CVE-2026-88772",
+        "CVE-2026-7273",
+        "CVE-2026-85102",
+        "CVE-2026-87902",
+        "CVE-2026-93616",
+        "CVE-2026-94127",
+        "CVE-2023-20273",
+        "CVE-2023-46805",
+        "CVE-2024-21887",
+        "CVE-2024-3400"
       ],
       "malware_families": [
         "Hades",
@@ -1028,7 +959,20 @@
         "NetRunner",
         "NightSpire",
         "RansomEXX",
-        "Stormous"
+        "Stormous",
+        "CLOSEDQUORUM",
+        "Storm-2570",
+        "Backdoor/Python.Agent",
+        "Downloader/BAT.Agent",
+        "Dropper/LNK.Generic",
+        "Trojan/HWP.Agent",
+        "Trojan/LNK.Agent",
+        "Trojan/PowerShell.Agent",
+        "Trojan/VBS.Agent",
+        "Lorem Ipsum Loader",
+        "Godzilla-style web shell",
+        "Potato-family",
+        "SweetPotato"
       ],
       "threat_actors": [
         "Famous Chollima",
@@ -1401,7 +1345,10 @@
         "GnosticPlayers",
         "The Dark Overlord",
         "Storm-2570",
-        "Storm-3168"
+        "Storm-3168",
+        "Red Heron",
+        "TeamFiltration",
+        "Blue Mockingbird"
       ],
       "ttps": [
         {
@@ -1410,19 +1357,29 @@
           "tactic": "initial access"
         },
         {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution"
+        },
+        {
           "id": "T1105",
           "name": "Ingress Tool Transfer",
           "tactic": "command and control"
         },
         {
-          "id": "T1505",
-          "name": "Server Software Component",
-          "tactic": "persistence"
+          "id": "T1574.001",
+          "name": "DLL",
+          "tactic": "stealth, execution"
         },
         {
-          "id": "T1021.006",
-          "name": "Windows Remote Management",
+          "id": "T1021.004",
+          "name": "SSH",
           "tactic": "lateral movement"
+        },
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
         }
       ],
       "iocs": {
@@ -1520,6 +1477,10 @@
           "http://aa.amazingshield.xyz/33244556546.py",
           "https://clck.ru/34uJnp",
           "https://discord.com/api/webhooks/995445114254139543/NmpxQmuBCD6sm3UkVvupGtx-Y0M_A86oJHp00O-l8F4jakfVhqFXzMBoy1uBDdj2rBLc",
+          "http://74.48.66.73:9860/ssh",
+          "http://httpbin.org/get\\",
+          "http://ip",
+          "https://ip:port",
           "http://caldav.icloud.com/published/2/MTk1NDMwMDMzNTUxOTU0M1aHCZ-nMxiyGzBTzPiodOf44DtKJ6PpjftAG28_ui2NCYMpL_vu4pF4ddsJ8ysg0QI7pR0VEIEbZYdilVZRw08Contents",
           "https://toria.app",
           "https://warpcast.asia/Toria.dmg",
@@ -1548,6 +1509,17 @@
           "https://bsc-dataseed3.ninicoin.io",
           "https://bsc-dataseed4.ninicoin.io",
           "https://<lookalike-tenant-domain>/?ref=<customer-id>&venc=<due-date",
+          "https://www.wyden.senate.gov/imo/media/doc/wyden-schmitt_dod_letter.pdf",
+          "https://docs.fcc.gov/public/attachments/DOC-402579A1.pdf",
+          "https://www.washingtonpost.com/national-security/2024/11/21/salt-typhoon-china-hack-telecom",
+          "https://docs.fcc.gov/public/attachments/FCC-24-62A1.pdf",
+          "https://www.uscc.gov/sites/default/files/annual_reports/2010-Report-to-Congress.pdf",
+          "https://<gateway>/vpn",
+          "https://<gateway>/vpn/c",
+          "https://www.citrix.com/blogs/2026-01/security-by-design-proven-by-action-with-citrix-netscalerOn",
+          "http://localhost>:*",
+          "http://citrix.com/authentication/response/1>\"><Status>success</Status><Result>update-credentials</Result><StateContext>ctx_hintYYYYYYY</StateContext><AuthenticationRequirements><PostBack>/nf/auth/doCredentialUpdate.do</PostBack><CancelPostBack>/nf/auth/doCancelCredentialUpdate.do</CancelPostBack><CancelButtonText>Cancel</CancelButtonText><Requirements><Requirement><Credential><Type>none</Type></Credential><Label><Text>nsg_changepass</Text><Type>nsg-login-heading</Type></Label><Input/></Requirement><Requirement><Credential><SaveID>login</SaveID><ID>username</ID><Type>username</Type></Credential><Label><Text>nsg_username</Text><Type>nsg-login-label</Type></Label><Input><Text><ReadOnly>true</ReadOnly><InitialValue>pitboss",
+          "https://all-ur-boxen",
           "https://chatgpt.com/g/g-6ab6ba039440819185ed491740b11cf8-plus-5-6",
           "https://chatgpt.com/g/g-6ab595ad6554819181b686d4876efb80-plus-5-6",
           "http://1614733393/app/afafa98279c9/ISOSimple.msi",
@@ -1559,6 +1531,7 @@
           "http://2.26.75.16",
           "http://45.131.66.106",
           "http://aa.amazingshield.xyz",
+          "http://74.48.66.73",
           "http://98.142.252.140"
         ],
         "ipv4": [
@@ -1784,6 +1757,7 @@
           "91.214.78.118",
           "43.204.2.142",
           "3.219.3.2",
+          "74.48.66.73",
           "37.19.210.12",
           "146.70.117.239",
           "149.102.229.154",
@@ -1804,9 +1778,13 @@
           "185.242.3.14",
           "142.11.200.186",
           "34.153.223.102",
+          "206.82.6.22",
+          "65.98.5.158",
+          "102.220.160.104",
           "149.104.78.141",
           "143.198.7.94",
           "157.254.167.12",
+          "149.104.78.208",
           "96.62.224.81",
           "45.140.205.28",
           "104.248.244.66",
@@ -2288,6 +2266,7 @@
           "db491181ece3f319de6567ab6f6daa90c6879911cd890155e6b7d8cc7a1a8c8e",
           "6f98add5d1a7729192b6ad8491d85c505c64836f7881742d6b93bd8e3d2fe461",
           "5bb86c1cd08fe5e1516cba35c85fc03e503bd1b5469113ffa1f1b9e10897f811",
+          "2ff2945b13a4cd0e9a65c85af29ea1539e162a516466c0de682dbf9f8a4000b1",
           "cb09ff86cabde4f8cee2d3cdec370c623bfa6c2b72ae9750fc9a7b299c65d7ca",
           "3744f975113dfc552df982dcae699f9154a448e05a743bdfb641a463352bc13a",
           "ff664112d3215c5d184689fc836e0dc6c1a47e42c34e70b2c3d356864bc4cb4c",
@@ -2312,6 +2291,7 @@
           "eda93a71e656874077aa76d32d5147ea904ef60504b6b1b22b609969c06fb40b",
           "f9b147a2bf6cc53ed4e3c3d4d33efa072c19495ff86fa320a280097d66cb2d92",
           "6f5a2a452a7901323abd21879c6cecccb47c06aeeaccb1b467212f3b11e4b1e7",
+          "ed082f744f035035900f67edf438f2f7d0528ac501234f63d476d65273cdb9a1",
           "14e3376befd4b7b52de0757b6264da294ac6b0f9e4ff51cb9bc5b19b243fe335",
           "c4603646701069ebdeabc96f74e1f947355ace8575560986d8393fcc6b88d0b7",
           "6761aad48a3f987238994d92bca97e4b8550e0150607bd67b47b1b6366a371fc",
@@ -2338,22 +2318,27 @@
         ]
       },
       "affected_products": [
-        "Citrix NetScaler ADC (Application Delivery Controller)",
-        "Citrix NetScaler Gateway"
+        "Citrix NetScaler ADC",
+        "Citrix NetScaler Gateway",
+        "Microsoft Windows (PowerShell, Windows Terminal)",
+        "ChatGPT (OpenAI) Custom GPT feature",
+        "Google Sites (hosting malicious redirects)",
+        "Microsoft Installer (MSI) packages"
       ],
       "recommendations": [
-        "Apply Citrix emergency patches for CVE-2026-88771 and CVE-2026-88772 immediately; verify patch deployment across all NetScaler instances.",
-        "Conduct a full inventory of NetScaler devices and isolate any that are exposed to the internet until patched.",
-        "Search for evidence of the WHIPSHOT PHP web shell (e.g., files named *whipshot.php* or suspicious PHP files in web‑root directories).",
-        "Monitor network traffic for anomalous outbound connections from NetScaler appliances, especially to unknown external IPs or domains.",
-        "Review authentication and privilege configurations; enforce least‑privilege for service accounts and disable DTLS if not required.",
-        "Preserve forensic evidence (memory dumps, logs) before remediation to aid incident response and potential attribution.",
-        "Leverage threat‑intel feeds (e.g., CISA KEV catalog) to stay updated on emerging indicators related to these CVEs."
+        "Apply Citrix patches for CVE-2026-88771 and CVE-2026-88772 immediately; isolate or temporarily disable NetScaler appliances until patched.",
+        "Monitor inbound traffic to NetScaler management interfaces for anomalous command execution and unexpected file uploads.",
+        "Deploy web‑shell detection rules (e.g., look for WHIPSHOT signatures, Base64 payloads in HTTP headers).",
+        "Block execution of unsigned MSI installers from unknown URLs and enforce application whitelisting on Windows endpoints.",
+        "Detect and alert on PowerShell commands that launch Windows Terminal with remote download arguments (TerminalFix pattern).",
+        "Implement DLL sideloading detection by monitoring unexpected DLL loads from non‑standard directories.",
+        "Restrict or monitor usage of OpenAI’s Custom GPT feature within corporate networks; educate users about unsolicited AI‑driven interactions.",
+        "Enforce multi‑factor authentication and network segmentation for critical infrastructure to limit lateral movement via tunneling tools like SLAPSHOT."
       ],
       "first_seen": "2026-06-11T15:22:05.280017+00:00",
-      "last_updated": "2026-10-01T09:37:22.877666+00:00",
-      "summary": "In September 2026, multiple threat actors began exploiting two critical Citrix NetScaler ADC and Gateway zero‑days (CVE-2026-88771 and CVE-2026-88772). The vulnerabilities allow unauthenticated remote code execution, enabling attackers to install web shells (WHIPSHOT) and a Python tunneler (SLAPSHOT) for persistent access and internal reconnaissance. Over 50,000 exposed NetScaler instances have been identified as potentially vulnerable, prompting urgent remediation and forensic review.",
-      "analysis": "### Vulnerability Overview - **CVE-2026-88771** – Remote code execution via improper input validation; no authentication required. - **CVE-2026-88772** – Auth‑bypass that crashes the NetScaler Packet Processing Engine, granting root‑level access. Both receive CVSS v4.0 scores of 9.5. ### Exploitation Chain 1. **Initial Access** – Actors send crafted HTTP requests to vulnerable NetScaler ADC/Gateway endpoints, triggering the RCE bugs. 2. **Web Shell Deployment** – After gaining code execution, attackers upload previously unseen PHP web shells (named *WHIPSHOT*). These shells embed Base64‑encoded C2 payloads in HTTP headers, allowing stealthy command and control. 3. **Tunneling & Lateral Movement** – A companion Python tool (*SLAPSHOT*) is installed to proxy traffic into internal networks, facilitating credential harvesting and further reconnaissance. 4. **Persistence** – The web shells provide long‑term footholds, enabling repeated execution of arbitrary commands and additional payload delivery. ### Observed Activity - Unit 42’s Cortex Xpanse identified **50,277** potentially vulnerable NetScaler instances as of 27 Sept 2026. - Mandiant and Google Threat Intelligence reported exploitation across government, financial, technology, education, and legal sectors in North America and Europe. - Post‑exploitation tooling (WHIPSHOT, SLAPSHOT) was not previously public, indicating a novel threat‑actor toolkit. ### Attribution The reports label the actors as “unknown” but note that the exploitation appears opportunistic and is being leveraged by multiple groups shortly after public disclosure. ### Impact Successful exploitation grants **root‑level execution** on critical load‑balancing and VPN infrastructure, potentially exposing internal services, credentials, and sensitive data.",
+      "last_updated": "2026-10-02T15:24:58.742180+00:00",
+      "summary": "In September 2026 multiple threat actors actively exploited two critical Citrix NetScaler vulnerabilities (CVE-2026-88771, CVE-2026-88772) to gain unauthenticated root access and deploy web shells such as WHIPSHOT and a Python tunneler named SLAPSHOT. Concurrently, adversaries leveraged ChatGPT Custom GPTs to lure victims into ClickFix‑style attacks, delivering malicious MSI installers that employ DLL sideloading, PowerShell‑based TerminalFix commands, and the Lorem Ipsum Loader to install remote access trojans. Both campaigns demonstrate rapid weaponization of newly disclosed flaws and trusted AI platforms, posing a high risk to organizations worldwide.",
+      "analysis": "### NetScaler Zero‑Day Exploitation - **Vulnerabilities**: CVE-2026-88771 (unauthenticated RCE) and CVE-2026-88772 (authentication bypass via NSPPE termination). - **Observed Activity**: Threat actors used these flaws to upload PHP web shells (named *WHIPSHOT*) that hide Base64‑encoded C2 payloads in HTTP headers. - **Post‑Exploitation**: A custom Python tunneler (*SLAPSHOT*) was deployed to proxy traffic into internal networks for reconnaissance and credential harvesting. - **Impact**: Over 50,000 NetScaler instances were identified as potentially vulnerable; dozens of organizations in North America and Europe reported compromise. ### AI‑Driven ClickFix / TerminalFix Campaign - **Delivery Vector**: Attackers created malicious *Custom GPT* instances on the legitimate ChatGPT platform. When victims interacted, the GPT responded with a Google Sites link that redirected to a ClickFix‑style page. - **Execution Chain**: The page prompted users to run a PowerShell command that opened Windows Terminal (the *TerminalFix* variant) and downloaded a ZIP archive containing a legitimate executable and a malicious MSI installer. - **Payload Mechanics**: The MSI initiates a DLL sideloading chain, loading shellcode that launches a persistence script and a remote access trojan. The *Lorem Ipsum Loader* (a shellcode‑based loader first seen in early 2026) is used to inject additional modules. - **Scale**: Huntress observed at least 40 infected users; the campaign is tracked as STAC4924 and has been active since March 2026. ### Overlap & Threat Landscape Both campaigns exploit trust in legitimate services (Citrix NetScaler management interfaces and OpenAI’s ChatGPT) and rely on rapid weaponization of newly disclosed vulnerabilities. The use of web shells, tunneling tools, and DLL sideloading indicates a focus on establishing long‑term footholds and lateral movement within compromised environments.",
       "sources": [
         {
           "title": "CrowdStrike 2026 Technology Threat Landscape Report: China&rsquo;s Ambitions Fuel Attacks",
@@ -4466,6 +4451,11 @@
           "source": "Cisco Talos"
         },
         {
+          "title": "Open Season on Kapibala: Attacker Steals Over 18,000 Government Records Through WordPress Exploitation",
+          "url": "https://www.greynoise.io/blog/open-season-on-kapibala-attacker-steals-government-records-wordpress-exploitation",
+          "source": "GreyNoise Labs"
+        },
+        {
           "title": "Group Policy hijacked: PAYLOAD ransomware weaponizes Active Directory GPO",
           "url": "https://securelist.com/tr/payload-ransomware-via-group-policy/121335/",
           "source": "Securelist (Kaspersky)"
@@ -4474,6 +4464,11 @@
           "title": "The Tale of Two INC Ransom Notes: A Ransomware Timeline | Huntress",
           "url": "https://www.huntress.com/blog/two-inc-ransom-notes",
           "source": "Huntress"
+        },
+        {
+          "title": "Introducing CAIRN: Frontier tracking for AI-integrated malware",
+          "url": "https://blog.talosintelligence.com/introducing-cairn-frontier-tracking-for-ai-integrated-malware/",
+          "source": "Cisco Talos"
         },
         {
           "title": "MacSync under the microscope: new delivery methods and a new payload",
@@ -4501,9 +4496,24 @@
           "source": "Microsoft Security Blog"
         },
         {
+          "title": "Inside the Telecom Attack Surface: SS7, BGP Hijacking, and the Technical Reality of Nation-State Intrusions",
+          "url": "https://cyble.com/blog/ss7-bgp-nation-state-intrusions/",
+          "source": "Cyble Blog"
+        },
+        {
           "title": "Storm-3168: Agentic-driven cloud attacks using compromised service principals",
           "url": "https://www.microsoft.com/en-us/security/blog/2026/09/25/storm-3168-agentic-driven-cloud-attacks-using-compromised-service-principals/",
           "source": "Microsoft Security Blog"
+        },
+        {
+          "title": "Vulnerability Attack Case: Installation of a Web Shell and Execution of a Scanner by Exploiting a Telerik UI Vulnerability",
+          "url": "https://asec.ahnlab.com/en/95561/",
+          "source": "AhnLab ASEC"
+        },
+        {
+          "title": "Beware of phishing emails disguised as quote requests",
+          "url": "https://asec.ahnlab.com/en/95599/",
+          "source": "AhnLab ASEC"
         },
         {
           "title": "Citrix NetScaler Zero-Days FAQ: CVE-2026-88771 & 88772",
@@ -4511,9 +4521,34 @@
           "source": "SOCRadar"
         },
         {
+          "title": "Zero-Day Exploitation of Citrix NetScaler ADC and Gateway: CVE-2026-88771 and CVE-2026-88772",
+          "url": "https://www.rapid7.com/blog/post/etr-zero-day-exploitation-of-citrix-netscaler-adc-and-gateway-cve-2026-88771-and-cve-2026-88772",
+          "source": "Rapid7 Blog"
+        },
+        {
+          "title": "Oh Look, The Foot Gun Went Off Again (Citrix NetScaler PreAuth Command Injection CVE-2026-88771)",
+          "url": "https://labs.watchtowr.com/oh-look-the-foot-gun-went-off-again-citrix-netscaler-preauth-command-injection-cve-2026-88771/",
+          "source": "watchTowr Labs"
+        },
+        {
+          "title": "28th September – Threat Intelligence Report",
+          "url": "https://research.checkpoint.com/2026/28th-september-threat-intelligence-report/",
+          "source": "Check Point Research"
+        },
+        {
           "title": "Attackers Abuse ChatGPT Custom GPTs to Deliver RAT via ClickFix",
           "url": "https://www.huntress.com/blog/chatgpt-custom-gpts-clickfix-rat",
           "source": "Huntress"
+        },
+        {
+          "title": "August 2026 Threat Trend Report on APT Attacks (South Korea)",
+          "url": "https://asec.ahnlab.com/en/95649/",
+          "source": "AhnLab ASEC"
+        },
+        {
+          "title": "TerminalFix and Lorem Ipsum Loader enable covert tunneling",
+          "url": "https://www.sophos.com/en-us/blog/terminalfix-and-lorem-ipsum-loader-enable-covert-tunneling",
+          "source": "Sophos News (X-Ops)"
         },
         {
           "title": "Attackers Exploit NetScaler Flaw for Root Access, Deploy WHIPSHOT and SLAPSHOT",
@@ -4529,6 +4564,84 @@
           "title": "Threat Brief: NetScaler Zero Days CVE-2026-88771 and CVE-2026-88772 Exploited in the Wild (Updated September 30)",
           "url": "https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited/",
           "source": "Unit 42 (Palo Alto)"
+        }
+      ]
+    },
+    {
+      "slug": "moviereaper-torrent-malware",
+      "name": "MovieReaper",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.92,
+      "source_count": 1,
+      "ioc_count": 13,
+      "cves": [],
+      "malware_families": [
+        "MovieReaper"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1195.001",
+          "name": "Compromise Software Dependencies and Development Tools",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1204.001",
+          "name": "Malicious Link",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1608.003",
+          "name": "Install Digital Certificate",
+          "tactic": "resource development"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "itorrents.org"
+        ],
+        "url": [
+          "https://deadhub.org",
+          "http://193.23.118.155"
+        ],
+        "ipv4": [
+          "193.23.118.155",
+          "208.64.33.90",
+          "208.94.246.53"
+        ],
+        "md5": [
+          "a0b13781edd7cfdab13d79afff3c83c1",
+          "4843f9fafcae492f11e2d4d33dbb4cdd",
+          "5310cabae3fbe6db8742849b588093f9",
+          "70060341caf3338697a7ddfe0fb62875",
+          "ad4643eea15ac286fa47d1131f9ef756",
+          "d0b967571ac8a3863c7f324bf5bde99c",
+          "d88d550d0fb8e60cffff3ea61ff7a067"
+        ]
+      },
+      "affected_products": [
+        "Microsoft Windows (64‑bit)",
+        "Torrent client software"
+      ],
+      "recommendations": [
+        "Block access to known torrent tracker sites and public torrent indexes, especially itorrents.org.",
+        "Educate users about the risks of downloading pirated content and the importance of keeping antivirus solutions enabled.",
+        "Deploy endpoint detection and response (EDR) solutions that can flag the heuristic detection name HEUR:Trojan.Win64.Agent.gen.",
+        "Monitor network traffic for anomalous blockchain queries or connections to blockchain nodes that could indicate C2 activity.",
+        "Implement DNS filtering to prevent resolution of compromised torrent repository domains.",
+        "Share the compromised domain indicator with threat‑intel sharing platforms to aid community detection."
+      ],
+      "first_seen": "2026-10-01T09:37:44.265075+00:00",
+      "last_updated": "2026-10-01T09:37:44.265092+00:00",
+      "summary": "MovieReaper is a modular, multi‑stage crimeware framework distributed via compromised torrent trackers. The threat actors hijacked the public torrent index itorrents.org, causing legitimate magnet links to deliver a malicious loader that installs the MovieReaper payload on Windows systems. The malware uses blockchain‑based command‑and‑control channels, enabling stealthy communication and persistence across a broad victim base spanning multiple continents.",
+      "analysis": "### Overview MovieReaper emerged in mid‑August 2026 as a new Windows‑focused Trojan (detected by Kaspersky as **HEUR:Trojan.Win64.Agent.gen**). The campaign leverages the popularity of peer‑to‑peer (P2P) file‑sharing to reach a large, heterogeneous audience. By compromising the public repository **itorrents.org**, the attackers replaced legitimate torrent files with malicious ones. Users who click a magnet link receive a payload that functions as a loader for the modular MovieReaper framework. ### Infection Vector - **Compromised torrent repository** – The threat actor altered the index at itorrents.org. Any tracker that queried this repository inadvertently served the malicious torrent to its users. This supply‑chain style compromise aligns with ATT&CK **T1195.001 – Supply Chain Compromise: Compromise Software Dependencies**. - **User execution** – Victims download and run the torrent file, which triggers the loader. This reflects ATT&CK **T1204.001 – User Execution: Malicious File**. ### Architecture & Capabilities - **Modular design** – The loader drops additional modules that can provide data theft, credential harvesting, and further payload delivery. - **Blockchain C2** – Communication with the command‑and‑control (C2) infrastructure is routed through blockchain networks, a technique cataloged as ATT&CK **T1608.003 – Dead Drop Resolver: Blockchain**. This makes network‑based detection difficult because traffic appears as legitimate blockchain queries. - **Evasion** – The malware includes anti‑sandbox checks and attempts to evade AV detection, though specific evasion techniques were not enumerated in the source. ### Impact The campaign has infected several hundred victims, including both private users and organizations in Russia, Türkiye, Japan, Kenya, Uganda, Colombia, Spain, the Netherlands, Belgium, and Germany. The widespread distribution method and resilient C2 channel increase the threat’s operational longevity. ### Detection Kaspersky’s products flag the payload under the heuristic name **HEUR:Trojan.Win64.Agent.gen**. No file hashes, IP addresses, or URLs beyond the compromised repository domain were disclosed. ### Mitigation Given the reliance on a public torrent index, traditional perimeter defenses are insufficient. Defensive measures must focus on endpoint hygiene, network monitoring for blockchain traffic, and threat‑intel sharing of the compromised domain.",
+      "sources": [
+        {
+          "title": "The Odyssey and Trojans again: MovieReaper attacks users in multiple countries through compromised torrents",
+          "url": "https://securelist.com/moviereaper-malware-torrent-odyssey-solana/121344/",
+          "source": "Securelist (Kaspersky)"
         }
       ]
     },
@@ -13163,38 +13276,6 @@
           "title": "Exploring the Hugging Face Breach: mapping AI agent tactics to Elastic Defend",
           "url": "https://www.elastic.co/security-labs/ai-agent-attack-detection-hugging-face-breach",
           "source": "Elastic Security Labs"
-        }
-      ]
-    },
-    {
-      "slug": "kt-corporation-data-breach",
-      "name": "KT Corporation data breach",
-      "category": "breach",
-      "severity": "unknown",
-      "confidence": 0.65,
-      "faithfulness": 0.8,
-      "source_count": 1,
-      "ioc_count": 0,
-      "cves": [],
-      "malware_families": [
-        "BPFDoor"
-      ],
-      "threat_actors": [
-        "Red Menshen"
-      ],
-      "ttps": [],
-      "iocs": {},
-      "affected_products": [],
-      "recommendations": [],
-      "first_seen": "2026-07-31T09:20:12.278123+00:00",
-      "last_updated": "2026-07-31T09:20:12.278142+00:00",
-      "summary": "",
-      "analysis": "",
-      "sources": [
-        {
-          "title": "South Korea fines telco giant KT $39 million for customer data breach",
-          "url": "https://www.bleepingcomputer.com/news/security/south-korea-fines-telco-giant-kt-39-million-for-customer-data-breach/",
-          "source": "BleepingComputer"
         }
       ]
     },

@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-03T14:30:42.415466+00:00",
-  "count": 311,
+  "generated_at": "2026-10-04T14:53:34.515394+00:00",
+  "count": 312,
   "reports": [
     {
       "slug": "miasma-supply-chain-attack",
-      "name": "ToolShell/NetScaler Zero‑Day Exploitation Campaign",
-      "category": "malware",
-      "severity": "high",
+      "name": "Inconsistent source data",
+      "category": "other",
+      "severity": "informational",
       "confidence": 1.0,
-      "faithfulness": 0.85,
-      "source_count": 452,
-      "ioc_count": 940,
+      "faithfulness": 0.95,
+      "source_count": 458,
+      "ioc_count": 936,
       "cves": [
         "CVE-2026-45321",
         "CVE-2026-48027",
@@ -495,7 +495,10 @@
         "CVE-2026-88775",
         "CVE-2026-88776",
         "CVE-2026-88777",
-        "CVE-2026-88778"
+        "CVE-2026-88778",
+        "CVE-2026-104286",
+        "CVE-2026-76504",
+        "CVE-2026-93952"
       ],
       "malware_families": [
         "Hades",
@@ -988,7 +991,11 @@
         "Warlock",
         "GeniexLoader",
         "GeniexRAT",
-        "Ghost"
+        "Ghost",
+        "Gold Salem",
+        "Longlegs",
+        "Storm-2603",
+        "HellCat"
       ],
       "threat_actors": [
         "Famous Chollima",
@@ -1372,74 +1379,14 @@
         "Warlock",
         "VOODOO BEAR",
         "SilverFox",
-        "UTG-Q-1000"
+        "UTG-Q-1000",
+        "Gold Salem",
+        "HellCat",
+        "Rey",
+        "BreachForums"
       ],
-      "ttps": [
-        {
-          "id": "T1190",
-          "name": "Exploit Public-Facing Application",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1105",
-          "name": "Ingress Tool Transfer",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1566.001",
-          "name": "Spearphishing Attachment",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1566.002",
-          "name": "Spearphishing Link",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1071.001",
-          "name": "Web Protocols",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1574.001",
-          "name": "DLL",
-          "tactic": "stealth, execution"
-        },
-        {
-          "id": "T1055",
-          "name": "Process Injection",
-          "tactic": "stealth, privilege escalation"
-        },
-        {
-          "id": "T1027",
-          "name": "Obfuscated Files or Information",
-          "tactic": "stealth"
-        },
-        {
-          "id": "T1053.005",
-          "name": "Scheduled Task",
-          "tactic": "execution, persistence, privilege escalation"
-        },
-        {
-          "id": "T1486",
-          "name": "Data Encrypted for Impact",
-          "tactic": "impact"
-        }
-      ],
+      "ttps": [],
       "iocs": {
-        "cve": [
-          "CVE-2025-49704",
-          "CVE-2025-49706",
-          "CVE-2025-53770",
-          "CVE-2025-53771",
-          "CVE-2026-88771",
-          "CVE-2026-88772"
-        ],
         "url": [
           "https://cl.distritovagas.com/hte.hta\"\\1",
           "https://resumeacceptable.com",
@@ -1868,7 +1815,9 @@
           "45.61.136.143",
           "66.227.183.84",
           "104.28.215.137",
-          "216.245.184.164"
+          "216.245.184.164",
+          "79.141.169.187",
+          "45.129.0.192"
         ],
         "email": [
           "chenyk@163.com",
@@ -2387,29 +2336,16 @@
           "79c65fa04541032e251fa4796b97800374b63c7982593dd1a2e0db605d429186"
         ]
       },
-      "affected_products": [
-        "Microsoft SharePoint (on‑premises)",
-        "Citrix NetScaler ADC",
-        "Citrix NetScaler Gateway",
-        "Microsoft 365 (Outlook, OneDrive, Graph API)",
-        "Windows 10/11 (PowerShell, Windows Terminal)",
-        "Google Sites (used as lure host)",
-        "ChatGPT Custom GPT platform"
-      ],
+      "affected_products": [],
       "recommendations": [
-        "Patch all on‑premises SharePoint servers and Citrix NetScaler ADC/Gateway devices immediately; apply the latest vendor security updates.",
-        "Implement strict network segmentation and limit inbound access to management interfaces of SharePoint and NetScaler appliances.",
-        "Deploy behavior‑based detection for anomalous Microsoft Graph API calls, especially Outlook/OneDrive traffic originating from non‑standard endpoints.",
-        "Enforce application allow‑listing for PowerShell and Windows Terminal scripts; monitor for unsigned PowerShell execution and scheduled‑task creation.",
-        "Block known malicious domains and URLs used in ClickFix/TerminalFix lures (e.g., suspicious Google Sites links) via web‑proxy and DNS filtering.",
-        "Enable multi‑factor authentication and conditional access for all Microsoft 365 accounts to reduce the impact of compromised credentials.",
-        "Conduct regular threat‑hunt queries for web‑shell signatures (WHIPSHOT, custom PHP shells) and for DLL sideloading patterns on endpoints.",
-        "Educate users about social‑engineering tactics that leverage AI chat platforms and custom GPTs, emphasizing verification of unexpected links."
+        "Treat each identified threat separately and apply relevant mitigations (see individual source recommendations).",
+        "Monitor for the specific IOCs and techniques associated with each campaign.",
+        "Strengthen overall security hygiene: patch known vulnerabilities, enforce least‑privilege, and implement robust email/AI‑tool monitoring."
       ],
       "first_seen": "2026-06-11T15:22:05.280017+00:00",
-      "last_updated": "2026-10-03T14:17:23.243534+00:00",
-      "summary": "A coordinated set of threat actors is actively exploiting newly disclosed zero‑day vulnerabilities in Microsoft SharePoint (ToolShell chain) and Citrix NetScaler ADC/Gateway (CVE‑2026‑88771/88772) to gain initial footholds, deploy web shells and a variety of post‑exploitation payloads—including the Warlock ransomware, Antino backdoor, and custom loaders. The attacks leverage legitimate Microsoft 365 services for command‑and‑control and employ social‑engineering lures such as ClickFix/TerminalFix to drive execution on victim hosts.",
-      "analysis": "### Initial Access - **SharePoint ToolShell chain** – The group behind Warlock ransomware exploited four zero‑day flaws in on‑premises SharePoint (CVE‑2025‑49704, CVE‑2025‑49706, CVE‑2025‑53770, CVE‑2025‑53771) to obtain footholds in water utilities, telecom operators, regional governments and universities. - **Citrix NetScaler ADC/Gateway** – CVE‑2026‑88771 (unauthenticated RCE) and CVE‑2026‑88772 (authentication bypass via DTLS pre‑auth memory overflow) were used to plant PHP web shells (WHIPSHOT) and a Python tunneler (SLAPSHOT) that provide root‑level persistence. - **Phishing & LNK/HTA delivery** – In South Korea, spear‑phishing LNK files and malicious HTA files delivered PowerShell‑based loaders that register scheduled tasks disguised as OneDrive updates. - **AI‑driven lures** – Attackers created malicious Custom GPTs on ChatGPT that responded with Google Sites links leading to ClickFix‑style MSI installers. - **TerminalFix** – A variation of ClickFix that instructs victims to open Windows Terminal, executing a PowerShell command that downloads a ZIP archive containing a legitimate executable and the Lorem Ipsum Loader. ### Execution & Persistence - **PowerShell** (T1059.001) is repeatedly used to download and execute payloads, run in‑memory shellcode, and interact with Microsoft Graph APIs. - **DLL sideloading** (T1574.001) is employed by the ClickFix‑delivered MSI to load malicious shellcode. - **Task Scheduler** entries masquerading as OneDrive updates provide persistence (T1053.005). - **In‑memory shellcode loading** and **file‑less execution** are observed in Antino and the Lorem Ipsum Loader. ### Command‑and‑Control - **Microsoft 365 channels** – Antino communicates exclusively via Outlook and OneDrive using Microsoft Graph, blending with legitimate traffic. - **HTTP header covert channels** – WHIPSHOT encodes Base64 C2 payloads inside native HTTP headers. - **PubNub** – The Korean APT chain uses a PubNub channel for command exchange. ### Impact - **Ransomware encryption** – Warlock ransomware encrypted at least 33 hosts after disabling protection on ~40 machines. - **Data exfiltration** – Multiple campaigns exfiltrate files via encoded Base64 over legitimate cloud services. - **Broad sector reach** – Targets include utilities, telecom, government, education, financial services, and technology across Europe, Africa, Latin America, Asia, and North America. ### Attribution - The SharePoint ToolShell activity is linked to a China‑linked ransomware group tracked as Storm‑2603/Longlegs. - The NetScaler exploits have been observed by a variety of unnamed actors, with state‑backed groups (Linen Typhoon, Violet Typhoon) also using ToolShell. - Antino is attributed to a China‑nexus espionage cluster (UAT‑11587) with overlap to Jewelbug and other CL‑STA‑0049‑related groups. - ClickFix/TerminalFix campaigns are not tied to a single group; they appear in multiple MDR cases tracked as STAC4924. ### Mitigation Gaps - Many victims still run unpatched on‑premises SharePoint and NetScaler appliances, providing a large attack surface. - Use of trusted cloud services for C2 makes detection difficult without behavioral analytics. - Social‑engineering lures that exploit AI platforms and legitimate Windows utilities bypass traditional URL filtering. ---",
+      "last_updated": "2026-10-04T14:43:30.985421+00:00",
+      "summary": "The eight provided sources describe several distinct threat actors and vulnerabilities—including ShinyHunters, Warlock ransomware, Antino backdoor, FortiMail and NetScaler zero‑days, and a ChatGPT custom‑GPT abuse campaign—rather than a single unified threat. Consequently a consolidated technical analysis cannot be produced without conflating unrelated activities.",
+      "analysis": "### Source Overview - **ShinyHunters** – Digital extortion group; recent detention of member “Rey” in Jordan, cooperation with FBI (Sources 1‑2). - **Warlock** – China‑linked ransomware group exploiting Microsoft SharePoint ToolShell zero‑days (CVE‑2025‑49704, CVE‑2025‑49706, CVE‑2025‑53770, CVE‑2025‑53771) to disable security tools and encrypt hosts (Sources 3‑4). - **Antino** – Rust‑compiled Windows backdoor used by a China‑nexus espionage campaign, C2 via Microsoft Graph Outlook/OneDrive (Source 5). - **FortiMail** – Critical CVE‑2026‑104286 allowing unauthenticated arbitrary file write; actively exploited (Source 6). - **NetScaler** – Zero‑day CVE‑2026‑88771 and CVE‑2026‑88772 exploited for web‑shell deployment (Source 7). - **ChatGPT Custom GPT abuse** – Attackers delivering RATs via malicious MSI installers hosted on Google Sites (Source 8). Each of these entities employs different tactics, techniques, and procedures, making a single MITRE ATT&CK mapping or IOC list inappropriate. ### Limitations Because the sources describe unrelated campaigns, any attempt to merge indicators or techniques would misrepresent the threat landscape and could mislead defenders. ### Recommendations - Treat each identified threat separately and apply relevant mitigations (see individual source recommendations). - Monitor for the specific IOCs and techniques associated with each campaign. - Strengthen overall security hygiene: patch known vulnerabilities, enforce least‑privilege, and implement robust email/AI‑tool monitoring.",
       "sources": [
         {
           "title": "CrowdStrike 2026 Technology Threat Landscape Report: China&rsquo;s Ambitions Fuel Attacks",
@@ -4632,6 +4568,11 @@
           "source": "Huntress"
         },
         {
+          "title": "Fake iPhone Duo preorder scam triggers DarkSword attack",
+          "url": "https://www.malwarebytes.com/blog/threat-intel/2026/09/fake-iphone-duo-preorder-scam-triggers-darksword-attack",
+          "source": "Malwarebytes Labs"
+        },
+        {
           "title": "Here We Go Again (Citrix NetScaler DTLS Preauth Memory Overflow CVE-2026-88772)",
           "url": "https://labs.watchtowr.com/here-we-go-again-citrix-netscaler-dtls-preauth-memory-overflow-cve-2026-88772/",
           "source": "watchTowr Labs"
@@ -4639,6 +4580,11 @@
         {
           "title": "August 2026 Threat Trend Report on APT Attacks (South Korea)",
           "url": "https://asec.ahnlab.com/en/95649/",
+          "source": "AhnLab ASEC"
+        },
+        {
+          "title": "Beware of Malware infection in Facebook Ads Offering Cryptocurrency Rewards",
+          "url": "https://asec.ahnlab.com/en/95645/",
           "source": "AhnLab ASEC"
         },
         {
@@ -4662,6 +4608,11 @@
           "source": "Unit 42 (Palo Alto)"
         },
         {
+          "title": "Critical FortiMail Zero-Day Flaw Exploited in Attacks Allows Unauthenticated Arbitrary File Writes",
+          "url": "https://thehackernews.com/2026/10/critical-fortimail-zero-day-flaw.html",
+          "source": "The Hacker News"
+        },
+        {
           "title": "Antino Backdoor Uses Outlook and OneDrive for C2 in China-Nexus Espionage Campaign",
           "url": "https://thehackernews.com/2026/10/antino-backdoor-uses-outlook-and.html",
           "source": "The Hacker News"
@@ -4670,6 +4621,79 @@
           "title": "Warlock ransomware breach SharePoint in water, telecom operator attacks",
           "url": "https://www.bleepingcomputer.com/news/security/warlock-ransomware-breach-sharepoint-in-water-telecom-operator-attacks/",
           "source": "BleepingComputer"
+        },
+        {
+          "title": "Warlock Exploits SharePoint Flaws to Disable Security Tools and Deploy Ransomware",
+          "url": "https://thehackernews.com/2026/10/warlock-exploits-sharepoint-flaws-to.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "ShinyHunters hacker reportedly detained in Jordan, aiding FBI",
+          "url": "https://www.bleepingcomputer.com/news/security/shinyhunters-hacker-reportedly-detained-in-jordan-aiding-fbi/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "ShinyHunters Suspect Rey Reportedly Detained in Jordan, Helping FBI Identify Group Members",
+          "url": "https://thehackernews.com/2026/10/shinyhunters-suspect-rey-reportedly.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
+    {
+      "slug": "citrix-netscaler-zero-day-exploit",
+      "name": "Citrix NetScaler Gateway Zero-Day Exploitation",
+      "category": "vulnerability",
+      "severity": "informational",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 1,
+      "cves": [],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1548.001",
+          "name": "Setuid and Setgid",
+          "tactic": "privilege escalation"
+        },
+        {
+          "id": "T1505.003",
+          "name": "Web Shell",
+          "tactic": "persistence"
+        },
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "tactic": "impact"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "149.104.78.141"
+        ]
+      },
+      "affected_products": [
+        "Citrix NetScaler Gateway"
+      ],
+      "recommendations": [
+        "Apply the latest Citrix NetScaler Gateway patches immediately.",
+        "Block or monitor traffic to/from suspicious IP addresses, including 149.104.78.141.",
+        "Implement host‑based monitoring for changes to file permissions on critical binaries (e.g., setuid/setgid on /bin/sh).",
+        "Deploy detection rules for creation of hidden files (e.g., .ctxs.receiver) and unusual Apache Alias/AliasMatch configurations.",
+        "Enable logging of web server configuration changes and alert on modifications that map non‑PHP files to PHP execution.",
+        "Use IDS/IPS signatures that detect known patterns of this exploitation chain.",
+        "Conduct threat‑hunt queries for processes attempting to kill httpd or restart Apache services unexpectedly."
+      ],
+      "first_seen": "2026-10-04T14:43:25.935950+00:00",
+      "last_updated": "2026-10-04T14:43:25.935963+00:00",
+      "summary": "On 24 September 2026 a malicious actor attempted to exploit an undisclosed zero‑day in Citrix NetScaler Gateway. The attempt was observed by GreyNoise sensors, which identified the malicious behavior within seconds despite the lack of CVE‑specific signatures. Post‑exploitation actions revealed a web‑shell deployment, privilege‑escalation attempts, and server configuration manipulation. Patches are already available, and defenders should prioritize remediation and detection of the described techniques.",
+      "analysis": "### Observation and Initial Exploitation GreyNoise’s Global Observation Grid captured traffic from IP **149.104.78.141** targeting a Citrix NetScaler Gateway. The activity preceded any public disclosure of the vulnerability, meaning no CVE‑specific detections existed at the time. Behavioral analytics flagged the traffic as malicious within seconds. ### Post‑Exploitation Playbook Although the actor did not gain a foothold on the sensor, the attempted post‑exploitation steps were disclosed: 1. **Privilege‑Escalation** – The adversary tried to set the **setuid** and **setgid** bits on `/bin/sh` to obtain a root shell. 2. **Web‑Shell Installation** – A password‑protected web‑shell was to be placed, communicating via a specific cookie value to avoid logging. 3. **Hidden File Abuse** – The web‑shell would reside in a hidden dot file named **`.ctxs.receiver`**. 4. **Apache Alias Manipulation** – The attacker attempted to configure the web server to treat the hidden file as a PHP script despite lacking a `.php` extension. This involved creating an alias for a non‑existent CSS file (`receiver.min.css`) and an `AliasMatch` pattern (`receiver.min.[0-9a-f].css`) that would route requests to the web‑shell. 5. **Service Disruption** – The actor tried to kill the `httpd` process to force a restart, likely to apply the new configuration. ### Impact If successful, the chain would grant the adversary **root‑level command execution**, persistent remote access via a stealthy web‑shell, and the ability to execute arbitrary code on the gateway. The use of hidden files and custom alias rules makes detection via standard log monitoring difficult. ### Mitigations Citrix has released patches that address the underlying vulnerability. Organizations should apply these updates immediately and monitor for the described post‑exploitation behaviors. ### ATT&CK Mapping - **T1548.001 – Abuse Elevation Control Mechanism: Setuid and Setgid** (attempt to set setuid/setgid on `/bin/sh`). - **T1505.003 – Server Software Component: Web Shell** (deployment of `.ctxs.receiver`). - **T1489 – Impact: Service Stop** (killing `httpd` to restart the service).",
+      "sources": [
+        {
+          "title": "Swarming Against Citrix 0-Day Exploitation",
+          "url": "https://www.greynoise.io/blog/swarming-against-citrix-0-day-exploitation",
+          "source": "GreyNoise Labs"
         }
       ]
     },

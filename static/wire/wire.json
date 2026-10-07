@@ -1,7 +1,446 @@
 {
-  "generated_at": "2026-10-06T15:56:20.788866+00:00",
-  "count": 312,
+  "generated_at": "2026-10-07T16:19:10.008151+00:00",
+  "count": 314,
   "reports": [
+    {
+      "slug": "operation-bluedash-phishing-campaign",
+      "name": "ScreenConnect RMM abuse via phishing",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 7,
+      "ioc_count": 13,
+      "cves": [
+        "CVE-2026-84869"
+      ],
+      "malware_families": [
+        "Level RMM",
+        "MeshAgent",
+        "ScreenConnect",
+        "Tactical RMM",
+        "TrustConnect",
+        "Powercat",
+        "ITarian"
+      ],
+      "threat_actors": [
+        "Operation BlueDash",
+        "ZeroBEC attributed to a threat actor group operating from Nigeria"
+      ],
+      "ttps": [
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1219",
+          "name": "Remote Access Tools",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1021.004",
+          "name": "SSH",
+          "tactic": "lateral movement"
+        },
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "tactic": "initial access"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "teamvem.com",
+          "coldcardcompliance.com"
+        ],
+        "ipv4": [
+          "207.174.0.143",
+          "207.189.11.170",
+          "131.123.40.98",
+          "45.13.237.190",
+          "146.59.55.107"
+        ],
+        "email": [
+          "compliance@coldcardteamnews.com"
+        ],
+        "cve": [
+          "CVE-2026-84869"
+        ],
+        "url": [
+          "https://www.connectwise.com/company/trust/advisories",
+          "http://url.com/combo.enc|AES_KEY"
+        ],
+        "sha256": [
+          "5956f9afb3ba610c38b2cfda88dd15be98783963769a12020c93ce05e749b3c3",
+          "f048400c23add8c75abe189393d33c873c02c74eeaf43d47b950c8d643763b35"
+        ]
+      },
+      "affected_products": [
+        "ConnectWise ScreenConnect (all versions prior to 26.6.5)",
+        "Level RMM",
+        "ITarian client",
+        "Microsoft Teams (as a lure)",
+        "Adobe Acrobat (as a lure)",
+        "Zoom (as a lure)",
+        "ColdCard hardware wallet (as a lure)",
+        "Microsoft Power BI (as a lure)"
+      ],
+      "recommendations": [
+        "Immediately upgrade all ScreenConnect installations to version 26.6.5 or later to remediate CVE‑2026‑84869.",
+        "Block outbound traffic to the staging IP 207.174.0.143 and any unknown ScreenConnect relay domains.",
+        "Implement application allow‑listing to prevent execution of unsigned installers such as `supportdev.exe` and unknown ScreenConnect binaries.",
+        "Deploy endpoint detection rules that alert on hidden PowerShell processes that download executables from external IPs or use the `LEVEL_API_KEY` environment variable.",
+        "Enforce strict email security controls: enable anti‑phishing DMARC/DKIM, sandbox URLs, and block known malicious sender domains.",
+        "Educate users to verify software update notifications against official vendor channels and to avoid clicking “Download Reference” links in unsolicited emails.",
+        "Monitor for multiple ScreenConnect client registrations from the same host and for the presence of both Level RMM and ScreenConnect agents on a single endpoint.",
+        "Segment networks to restrict remote‑access tools to dedicated management subnets and require MFA for any remote session initiation."
+      ],
+      "first_seen": "2026-07-27T15:01:46.433024+00:00",
+      "last_updated": "2026-10-07T16:05:27.889378+00:00",
+      "summary": "Multiple active phishing campaigns are abusing legitimate remote monitoring and management (RMM) tools, primarily ConnectWise ScreenConnect, to gain persistent remote access to enterprise endpoints. The campaigns use a variety of lures—including fake Microsoft Teams, Adobe, Zoom, ColdCard audit, and Power BI updates—and deliver the payload through VBScript, batch, .NET executables, and an Inno Setup loader that runs PowerShell to fetch and install ScreenConnect and other RMM agents. Evidence of worm‑like propagation across unrelated hosts and a critical ScreenConnect client‑side vulnerability (CVE‑2026‑84869) further elevate the risk.",
+      "analysis": "### Campaign Overview - **Phishing Lures**: The threat actors craft highly credible lures that mimic software updates or security audits (Microsoft Teams, Adobe, Zoom, ColdCard hardware audit, Microsoft Power BI). The emails contain links that redirect victims to attacker‑controlled landing pages. - **Delivery Mechanisms**: - **Inno Setup loader** (`supportdev.exe`) launches a hidden PowerShell session that pulls the official Level RMM installer and registers the endpoint with an attacker‑controlled enrollment secret (`LEVEL_API_KEY=GxSCHE8EZwfyYN3iPQHPai8D`). - **VBScript, batch, and compiled .NET executables** are used to download a ScreenConnect installer from a staging server. - **Browser‑in‑the‑Browser (BiTB)** pages mimic legitimate Adobe URLs, tricking users into clicking a “View Files” button that triggers the ScreenConnect download. - **Staging Infrastructure**: All payloads are hosted on a WsgiDAV server at **207.174.0.143:8080**. The server also functions as a command‑and‑control relay for installed ScreenConnect agents. - **RMM Tools Deployed**: Primary payload is ConnectWise **ScreenConnect**; secondary tools include **Level RMM**, **ITarian**, and references to other legitimate RMM products (Tactical RMM, MeshAgent). Multiple agents are often installed on the same host to create redundant persistence. - **Persistence & Lateral Movement**: Once installed, ScreenConnect agents beacon to attacker‑controlled relay servers, providing continuous remote access. Huntress observations of “worm‑like” activity indicate that compromised hosts are used to push additional ScreenConnect instances onto unrelated machines. - **Vulnerability Exploitation**: A newly disclosed client‑side flaw in ScreenConnect (CVE‑2026‑84869, CVSS 9.9) allows unauthorized file transfers during an active session, potentially enabling execution of additional malicious binaries. ### Technical Indicators - **PowerShell command** that sets `LEVEL_API_KEY` and invokes the Level RMM installer. - **WsgiDAV staging server** (`207.174.0.143:8080`). - **Domain used for fake Teams update**: `teamvem.com`. - **ColdCard phishing site**: `coldcardcompliance.com`. - **Phishing email address**: `compliance@coldcardteamnews.com`. - **Power BI malicious link**: `app.powerbi.com/view?...` (malicious parameters embedded in the URL). ### MITRE ATT&CK Mapping - **T1566.002 – Phishing: Link** – Use of malicious URLs in lure emails. - **T1059.001 – PowerShell** – Hidden PowerShell script that downloads and installs RMM tools. - **T1105 – Ingress Tool Transfer** – Transfer of Level RMM and ScreenConnect installers from the staging server. - **T1219 – Remote Access Tools** – Deployment of legitimate remote support software (ScreenConnect) for persistent access. - **T1021.004 – Remote Services: SSH / Remote Desktop Protocol** – ScreenConnect provides remote desktop capabilities. - **T1190 – Exploit Public-Facing Application** – Abuse of the CVE‑2026‑84869 client‑side flaw to execute arbitrary files. ### Impact The abuse of trusted RMM tools bypasses many traditional security controls, allowing attackers to maintain long‑term footholds, move laterally, and exfiltrate data with minimal detection. The worm‑like spread observed across unrelated hosts suggests a high potential for rapid enterprise‑wide compromise.",
+      "sources": [
+        {
+          "title": "Operation BlueDash Deploys Level RMM and ScreenConnect via Fake Teams Update",
+          "url": "https://thehackernews.com/2026/07/operation-bluedash-deploys-level-rmm.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Fake Adobe and Zoom Updates Install ScreenConnect for Persistent Remote Access",
+          "url": "https://thehackernews.com/2026/08/fake-adobe-and-zoom-updates-install.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "COLDCARD security audit phishing attack installs remote access tool",
+          "url": "https://www.bleepingcomputer.com/news/security/coldcard-security-audit-phishing-attack-installs-remote-access-tool/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Rogue ScreenConnect Installations Across Unrelated Hosts Suggest Worm-Like Activity",
+          "url": "https://www.huntress.com/blog/rogue-screenconnect-installations",
+          "source": "Huntress"
+        },
+        {
+          "title": "Phishing Attacks Serve Browser-in-the-Browser Pages, Rogue RMM Persistence",
+          "url": "https://www.huntress.com/blog/phishing-bitb-rmm-attacks",
+          "source": "Huntress"
+        },
+        {
+          "title": "Rogue RMM Abuse: How Attackers Exploit Remote Access Tools",
+          "url": "https://www.huntress.com/blog/rogue-rmm-abuse-phishing-persistent-access",
+          "source": "Huntress"
+        },
+        {
+          "title": "Phishing Campaign Abuses Microsoft Power BI to Deploy Rogue RMMs",
+          "url": "https://www.huntress.com/blog/screenconnect-power-bi",
+          "source": "Huntress"
+        }
+      ]
+    },
+    {
+      "slug": "fortibleed-vpn-credential-leak",
+      "name": "FortiBleed",
+      "category": "apt",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 6,
+      "ioc_count": 2,
+      "cves": [],
+      "malware_families": [
+        "FortigateSniffer",
+        "Hashmat",
+        "Hashtopolis"
+      ],
+      "threat_actors": [
+        "Russian-speaking multi-operator threat group",
+        "Russian-speaking threat group",
+        "FortiBleed campaign",
+        "Russian-speaking initial access broker (IAB)"
+      ],
+      "ttps": [
+        {
+          "id": "T1110.001",
+          "name": "Password Guessing",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1110.003",
+          "name": "Password Spraying",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1040",
+          "name": "Network Sniffing",
+          "tactic": "credential access, discovery"
+        },
+        {
+          "id": "T1021.006",
+          "name": "Windows Remote Management",
+          "tactic": "lateral movement"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "85.11.187.8",
+          "85.11.187.0"
+        ]
+      },
+      "affected_products": [
+        "Fortinet FortiGate firewalls (FortiOS)",
+        "FortiGate SSL VPN gateways",
+        "Microsoft SQL Server (targeted for credential‑hash collection)"
+      ],
+      "recommendations": [
+        "Immediately rotate all FortiGate administrative and VPN passwords.",
+        "Enable phishing‑resistant multi‑factor authentication for all privileged accounts.",
+        "Terminate any active SSL‑VPN and administrative sessions on FortiGate devices.",
+        "Restrict management interfaces (HTTPS/SSH) to trusted IP ranges; block public Internet access.",
+        "Store administrator credentials using PBKDF2 or a stronger KDF.",
+        "Deploy network‑based detection for abnormal credential‑stuffing activity (high‑volume login failures).",
+        "Monitor logs for the use of the `diagnose sniffer packet` command on FortiGate devices.",
+        "Implement endpoint detection for the *FortigateSniffer* binary or its Go‑based artifacts.",
+        "Apply rate‑limiting and account lockout policies on VPN and admin portals.",
+        "Conduct regular audits of privileged accounts and remove any unused or default accounts."
+      ],
+      "first_seen": "2026-06-17T16:05:09.641354+00:00",
+      "last_updated": "2026-10-07T16:05:25.680563+00:00",
+      "summary": "FortiBleed is a large‑scale credential‑harvesting campaign targeting internet‑exposed Fortinet FortiGate firewalls and SSL VPN gateways. Operated by a Russian‑speaking initial‑access broker, the group has harvested over 86,000 valid device credentials through brute‑force, hash interception, and a custom packet‑sniffer tool, then reused them to access corporate networks. The campaign remains active, prompting alerts from CISA and the FBI, and affects organizations across government, critical infrastructure, and private sectors worldwide.",
+      "analysis": "### Overview The FortiBleed operation was first disclosed in June 2026 when researcher Volodymyr “Bob” Diachenko uncovered a server containing nearly 74 000 plaintext FortiGate VPN credentials. Subsequent validation by multiple researchers confirmed the authenticity of the data and revealed that the campaign has been active since at least February 2026, targeting **over 430 000 FortiGate firewalls** globally. ### Threat Actor & Motivation The actors are described as a **Russian‑speaking initial‑access broker (IAB)** motivated by financial gain. They operate as a credential‑stuffing service, selling or re‑using harvested credentials to gain footholds in victim networks. ### Attack Flow (Five‑Stage Campaign) 1. **Reconnaissance** – Automated scanning of the public Internet to locate exposed FortiGate management interfaces and SSL‑VPN portals. 2. **Initial Access** – Credential‑stuffing and password‑spraying attacks against the discovered portals. The group performed **~1.16 billion attempts** against 320 777 FortiGate devices and **~2.1 billion attempts** against 163 650 Microsoft SQL Server instances. 3. **Credential Harvesting** – On compromised firewalls the actors deploy a **Go‑based tool called *FortigateSniffer*** that leverages FortiOS’s native `diagnose sniffer packet` command. The sniffer passively captures authentication traffic across **24 protocols** (RADIUS, NTLM, Kerberos, LDAP, etc.), extracting clear‑text credentials and password hashes. 4. **Offline Cracking** – Captured SSL‑VPN authentication hashes are cracked using a **45‑GPU Hashtopolis cluster**, yielding plaintext usernames and passwords. 5. **Lateral Movement & Monetisation** – Recovered credentials are used to access internal Active Directory domains, other services, and are likely sold or reused for further intrusion. ### Technical Indicators - **Tooling**: *FortigateSniffer* (Golang), Hashtopolis cracking cluster. - **Techniques**: Credential stuffing (T1110.001), Password spraying (T1110.003), Valid Accounts (T1078), Network Sniffing (T1040), Exploitation of Remote Services – SSL VPN (T1021.006). - **Targets**: Fortinet FortiGate firewalls (FortiOS), FortiGate SSL‑VPN gateways, Microsoft SQL Server instances used for credential‑hash collection. ### Impact The leak includes **73 932–86 644** working device credentials spanning **194 countries** and sectors such as government, telecommunications, finance, healthcare, manufacturing, and critical infrastructure. Many compromised devices remained online with recent FortiOS versions, indicating that the vulnerability is not a software flaw but the exploitation of weak or reused credentials. ### Response from Authorities - **CISA** (June 2026) urged immediate password rotation, MFA enablement, termination of active sessions, and restriction of management interfaces to trusted networks. - **FBI/USSS** (October 2026) reaffirmed the campaign’s activity and recommended the same hardening steps, emphasizing the use of PBKDF2 for password storage. ### Current Status As of the latest FBI advisory (Oct 2026), FortiBleed remains active, continuously scanning for internet‑exposed FortiGate devices and leveraging previously harvested credentials to expand its foothold.",
+      "sources": [
+        {
+          "title": "FortiBleed leak exposes Fortinet VPN credentials for 73,000 devices.",
+          "url": "https://www.bleepingcomputer.com/news/security/fortibleed-leak-exposes-fortinet-vpn-credentials-for-73-000-devices/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "FortiBleed Campaign Exposing Credentials for 73,932 FortiGate Systems",
+          "url": "https://www.recordedfuture.com/blog/critical-fortibleed-campaign",
+          "source": "Recorded Future"
+        },
+        {
+          "title": "CISA warns Fortinet users to secure devices after FortiBleed leak",
+          "url": "https://www.bleepingcomputer.com/news/security/cisa-warns-fortinet-users-to-secure-devices-after-fortibleed-leak/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "FortiBleed campaign used custom FortiGate sniffer to steal credentials",
+          "url": "https://www.bleepingcomputer.com/news/security/fortibleed-campaign-used-custom-fortigate-sniffer-to-steal-credentials/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "FortiBleed Targeted FortiGate Firewalls in 110 Million-Credential Harvesting Operation",
+          "url": "https://thehackernews.com/2026/06/fortibleed-targeted-fortigate-firewalls.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "FBI Warns FortiBleed Remains Active After Amassing 86,644 Fortinet Device Credentials",
+          "url": "https://thehackernews.com/2026/10/fbi-warns-fortibleed-remains-active.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
+    {
+      "slug": "android-projector-c2-malware",
+      "name": "StoreOS/SilentSDK Android Projector Malware",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 1,
+      "cves": [],
+      "malware_families": [
+        "PluginManager",
+        "SilentSDK",
+        "StoreOS"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "tactic": "stealth"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1071.001",
+          "name": "Web Protocols",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1547.001",
+          "name": "Registry Run Keys / Startup Folder",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1020",
+          "name": "Automated Exfiltration",
+          "tactic": "exfiltration"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "api.pixelpioneerss.com"
+        ]
+      },
+      "affected_products": [
+        "Nonete HY260Pro Android projector (Allwinner H713)",
+        "Magcubic HY300 Pro+ Android projector (Allwinner H713)",
+        "Any Android device using the Allwinner H713 firmware base"
+      ],
+      "recommendations": [
+        "Block `api.pixelpioneerss.com` and related IP ranges at the network perimeter.",
+        "Disable ADB and other developer interfaces on deployed devices.",
+        "Apply firmware updates from trusted vendors; if unavailable, replace the device with a verified, signed image.",
+        "Monitor outbound traffic from projector devices for unusual UDP/TCP connections to proxy‑related ports.",
+        "Implement host‑based integrity checks to detect unauthorized modifications to system binaries.",
+        "Educate procurement teams to avoid low‑cost devices that lack signed firmware or vendor support."
+      ],
+      "first_seen": "2026-10-07T16:05:22.750404+00:00",
+      "last_updated": "2026-10-07T16:05:22.750416+00:00",
+      "summary": "A factory‑installed malware suite has been discovered in cheap Android projectors that use the Allwinner H713 chipset. The dropper (StoreOS) loads a hidden second‑stage (SilentSDK) which then retrieves a plugin manager capable of installing proxy and ad‑fraud modules, and can execute arbitrary code with system privileges. The infrastructure is hosted in China (api.pixelpioneerss.com) and the threat can turn consumer devices into residential proxy nodes and click‑fraud bots, while exfiltrating device identifiers.",
+      "analysis": "### Infection Chain 1. **StoreOS** – a disguised dropper embedded in the firmware that runs at boot and establishes persistence. It collects device identifiers (MAC, serial number, Android ID) and contacts a C2 server. 2. **SilentSDK** – a hidden second‑stage payload delivered by StoreOS. It decrypts its contents using a custom *Byte‑Reversal* and XOR scheme and spoofs the device build fingerprint to evade detection. 3. **PluginManager** – a loader that receives commands from the C2 (api.pixelpioneerss.com) and can download up to five additional plugins. 4. **Final Plugins** – currently observed modules enroll the projector in residential proxy networks (e.g., XFJ/net2fast) and run ad‑click fraud, with geo‑fencing applied server‑side. The loader executes these plugins with system‑level privileges, giving the operators the ability to push any code at any time. ### Technical Characteristics - **Obfuscation**: Byte‑reversal, XOR encryption, and build‑fingerprint spoofing (MITRE ATT&CK **T1027 – Obfuscated/Stored Files**). - **Ingress Tool Transfer**: Plugins are fetched from the C2 after initial compromise (MITRE **T1105**). - **Command‑and‑Control over Web Protocols**: Communication with `api.pixelpioneerss.com` using HTTPS (MITRE **T1071.001 – Web Protocols**). - **Resource Hijacking**: Devices are used as residential proxy nodes and for click‑fraud, a form of illicit resource exploitation (MITRE **T1496 – Resource Hijacking**). - **Persistence**: The loader is pre‑installed in the firmware and runs with system privileges at boot (MITRE **T1547.001 – Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder** – Android equivalent is a persistent service/daemon). - **Exfiltration of Device Identifiers**: Sends MAC, serial number, and Android ID to the C2 (MITRE **T1020 – Automated Exfiltration**). ### Scope The same infrastructure was observed on another projector model (Magcubic HY300 Pro+), indicating the issue is tied to the Allwinner H713 firmware base rather than a single brand. ### Impact Compromised projectors can be leveraged for large‑scale proxy services and ad‑fraud campaigns, providing attackers with a stealthy, globally distributed botnet that is difficult for end‑users to detect or remediate without firmware replacement.",
+      "sources": [
+        {
+          "title": "Pre-installed C2 loader on cheap Android projectors - deploys proxy/ad-fraud botnets, can run arbitrary code",
+          "url": "https://www.reddit.com/r/Malware/comments/1wwmtnr/preinstalled_c2_loader_on_cheap_android/",
+          "source": "r/Malware"
+        }
+      ]
+    },
+    {
+      "slug": "fortibleed-credential-compromise-campaign",
+      "name": "FortiBleed",
+      "category": "apt",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 20,
+      "cves": [],
+      "malware_families": [
+        "INC/Lynx",
+        "Payload ransomware"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1595",
+          "name": "Active Scanning",
+          "tactic": "reconnaissance"
+        },
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1110.004",
+          "name": "Credential Stuffing",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1110.003",
+          "name": "Password Spraying",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        },
+        {
+          "id": "T1136.001",
+          "name": "Local Account",
+          "tactic": "persistence"
+        },
+        {
+          "id": "T1531",
+          "name": "Account Access Removal",
+          "tactic": "impact"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "45.154.12.132",
+          "154.202.59.169",
+          "103.27.186.156",
+          "45.155.250.158",
+          "193.8.187.2",
+          "193.8.187.42",
+          "85.11.187.8",
+          "104.28.155.27",
+          "185.136.15.43",
+          "185.136.15.66",
+          "185.199.199.56",
+          "193.8.186.33",
+          "45.227.254.210",
+          "77.91.118.10",
+          "80.75.212.113",
+          "87.251.64.13",
+          "87.251.64.16",
+          "87.251.64.17",
+          "87.251.64.44",
+          "66.175.220.111"
+        ]
+      },
+      "affected_products": [
+        "Fortinet FortiGate firewall",
+        "Fortinet FortiGate SSL VPN gateway"
+      ],
+      "recommendations": [
+        "Implement out‑of‑band administrative recovery mechanisms for FortiGate devices (e.g., console access, secondary admin accounts).",
+        "Enforce strong, unique passwords and rotate all privileged credentials on FortiGate firewalls and VPN portals.",
+        "Apply all relevant Fortinet firmware patches and disable unnecessary remote management interfaces.",
+        "Deploy detection rules for scanning activity (T1595/T1190) and for credential‑stuffing/password‑spraying attempts (T1110.003/T1110.004).",
+        "Monitor for creation of new admin accounts and for changes or deletions of existing accounts (T1136.001, T1531).",
+        "Conduct regular credential‑theft hunting on exfiltrated hash repositories and verify that no stale hashes remain in the environment.",
+        "Segment network access to firewall management interfaces and restrict them to trusted IP ranges.",
+        "Establish an incident‑response playbook that includes steps for device lockout recovery, not just password resets."
+      ],
+      "first_seen": "2026-10-07T16:01:03.086102+00:00",
+      "last_updated": "2026-10-07T16:01:03.086116+00:00",
+      "summary": "FortiBleed is an active global credential‑compromise campaign targeting internet‑exposed Fortinet FortiGate firewalls and SSL VPN gateways. The actors have progressed from stealing credentials to locking organizations out of their own devices and supplying access to ransomware affiliates such as INC/Lynx and Payload. With over 86,000 compromised devices across 194 countries, the campaign remains a significant operational threat.",
+      "analysis": "### Overview FortiBleed was first documented by SOCRadar in June 2026 and was highlighted in a joint FBI/US Secret Service advisory on 6 October 2026. The operation focuses on Fortinet’s FortiGate firewalls and SSL VPN portals that are exposed to the internet. ### Recent Shifts 1. **Device Lockout** – In addition to creating persistent admin accounts (MITRE ATT&CK T1136.001), the threat actors are deleting or changing passwords of legitimate accounts (T1531 – Account Access Removal). This can leave defenders completely locked out of the firewall while the attacker retains control, rendering standard password‑reset runbooks ineffective. Organizations must have out‑of‑band administrative recovery mechanisms for edge devices. 2. **Ransomware Supply Chain Expansion** – Access harvested by FortiBleed is being sold to ransomware affiliates. The advisory now lists INC/Lynx and Payload ransomware as downstream victims, and the roster of affiliates is expected to grow. Any FortiBleed compromise should be treated as a potential precursor to multiple ransomware encryptions. 3. **Ongoing Activity** – Scanning of internet‑exposed FortiGate SSL VPN portals continues (T1595 – Search Open Websites/Domains, T1190 – Exploit Public‑Facing Application). The campaign has validated more than 86,644 devices in 194 countries, indicating a large, persistent inventory of compromised assets. ### Attack Chain (Condensed) - **Reconnaissance**: Automated internet scans for exposed FortiGate SSL VPN portals (T1595, T1190). - **Credential Harvesting**: Credential stuffing (T1110.004) and password spraying (T1110.003) using credentials obtained from prior Fortinet data leaks and infostealer logs. - **Offline Cracking**: Exfiltrated password hashes are cracked offline (T1003 – OS Credential Dumping, T1041 – Exfiltration Over C2 Channel). - **Persistence & Privilege Escalation**: New admin accounts are created (T1136.001) and legitimate credentials are altered or removed (T1531) to maintain control and deny victim access. - **Monetization**: Compromised access is sold to ransomware affiliates, enabling later encryption events under various ransomware brands. ### Impact The lockout capability directly disrupts security operations, while the credential pool fuels ransomware campaigns, amplifying the overall risk to affected organizations.",
+      "sources": [
+        {
+          "title": "FortiBleed Is Still Active, Locking Organizations Out",
+          "url": "https://socradar.io/blog/fortibleed-still-active-locking-organizations-out/",
+          "source": "SOCRadar"
+        }
+      ]
+    },
     {
       "slug": "apache-struts-cve-2017-5638-exploit-sale",
       "name": "IQUALIF data extraction tool and associated dark web offerings",
@@ -4165,117 +4604,6 @@
           "title": "Is Cyber missing the Marque?",
           "url": "https://blog.talosintelligence.com/is-cyber-missing-the-marque/",
           "source": "Cisco Talos"
-        }
-      ]
-    },
-    {
-      "slug": "device-code-phishing-attacks",
-      "name": "Device Code Phishing",
-      "category": "malware",
-      "severity": "high",
-      "confidence": 0.95,
-      "faithfulness": 0.8,
-      "source_count": 9,
-      "ioc_count": 7,
-      "cves": [],
-      "malware_families": [],
-      "threat_actors": [
-        "EvilTokens",
-        "Kali365",
-        "Storm-2372",
-        "Spring Ring"
-      ],
-      "ttps": [
-        {
-          "id": "T1486",
-          "name": "Data Encrypted for Impact",
-          "tactic": "impact"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1210",
-          "name": "Exploitation of Remote Services",
-          "tactic": "lateral movement"
-        }
-      ],
-      "iocs": {
-        "domain": [
-          "eviltokens.com",
-          "artoken.com"
-        ],
-        "url": [
-          "https://mononapfp.sharepoint.com/:f:/document/INV-IgCx1X50pgUjR7iAjZL2fuQaAW4GfKVs6wHT3BYv9sgwW7g",
-          "https://mononapfpcom.sharepoint.com/:f:/g/IgAdH_aaBPMcQbtINZzC1TsLARj3dHj63MnKjvnY-QJrKEc\"Discovery",
-          "http://dashboard-bl.pamconj.com",
-          "http://spx.pamconj.com",
-          "http://clear90489058903-document.workers.dev"
-        ]
-      },
-      "affected_products": [
-        "Microsoft Teams",
-        "Microsoft 365",
-        "SharePoint"
-      ],
-      "recommendations": [
-        "Implement multi-factor authentication (MFA) for all users",
-        "Educate users on the risks of device code phishing and how to identify phishing lures",
-        "Implement content filtering and email security measures to block phishing emails",
-        "Monitor for suspicious activity and device code phishing attempts",
-        "Implement a post-compromise toolkit to detect and respond to device code phishing attacks"
-      ],
-      "first_seen": "2026-06-25T15:00:17.817032+00:00",
-      "last_updated": "2026-09-03T15:29:51.353628+00:00",
-      "summary": "Device code phishing is a type of attack that abuses Microsoft's OAuth 2.0 Device Authorization Grant to steal victims' authenticated sessions. Threat actors are using phishing lures to trick users into entering attacker-controlled device codes, which grants them valid OAuth tokens. This attack is particularly problematic as it bypasses multi-factor authentication (MFA) and can be used to access sensitive information.",
-      "analysis": "Device code phishing is a type of attack that targets Microsoft's OAuth 2.0 Device Authorization Grant. The attack involves generating device codes and using phishing lures to trick users into entering those codes. Once the victim submits the code and approves the prompt, the attacker's backend instantly receives valid OAuth tokens. This attack is particularly problematic as it bypasses multi-factor authentication (MFA) and can be used to access sensitive information. The attack itself is a combination of social engineering and technical exploitation. Threat actors use phishing lures to trick users into entering attacker-controlled device codes. These lures can be in the form of emails, messages, or even Microsoft Teams meeting invites. Once the user enters the code, the attacker's backend receives the valid OAuth tokens, which can be used to access sensitive information. Device code phishing is not a new attack vector, but it has gained popularity in recent times. Threat actors are using phishing-as-a-service (PhaaS) platforms like EvilTokens and ARToken to carry out these attacks. These platforms provide a range of tools and services to help threat actors carry out the attack, including device code generation, phishing lures, and post-compromise toolkit. The attack techniques used in device code phishing include: * T1486: Data Encrypted for Impact * T1059.001: Command and Scripting Interpreter: PowerShell * T1210: Exploit Public-Facing Application The indicators of compromise (IOCs) for device code phishing include: * IPv4: 192.0.2.1 ( EvilTokens infrastructure) * IPv4: 198.51.100.1 (ARToken infrastructure) * Domain: eviltokens[.]com * Domain: artoken[.]com * URL: https[:]//mononapfp.sharepoint[.]com/:f:/document/INV-IgCx1X50pgUjR7iAjZL2fuQaAW4GfKVs6wHT3BYv9sgwW7g * Email: [accounts-payable@vendor-domain[.]com](mailto:accounts-payable@vendor-domain[.]com) * Email: [accounts-payable@victim-domain[.]com](mailto:accounts-payable@victim-domain[.]com) The recommendations for defenders include: * Implementing multi-factor authentication (MFA) for all users * Educating users on the risks of device code phishing and how to identify phishing lures * Implementing content filtering and email security measures to block phishing emails * Monitoring for suspicious activity and device code phishing attempts * Implementing a post-compromise toolkit to detect and respond to device code phishing attacks",
-      "sources": [
-        {
-          "title": "We Need to Talk About Device Code Phishing",
-          "url": "https://www.huntress.com/blog/tradecraft-tuesday-device-code-phishing-explained",
-          "source": "Huntress"
-        },
-        {
-          "title": "ARToken: Inside an EvilTokens affiliate panel targeting Microsoft 365",
-          "url": "https://blog.talosintelligence.com/artoken-inside-an-eviltokens-affiliate-panel-targeting-microsoft-365/",
-          "source": "Cisco Talos"
-        },
-        {
-          "title": "ARToken PhaaS exposes EvilTokens' Microsoft 365 phishing toolkit",
-          "url": "https://www.bleepingcomputer.com/news/security/artoken-phaas-exposes-eviltokens-microsoft-365-phishing-toolkit/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "DEBULL Tooling Abuses Microsoft Device-Code Flow to Target M365 Accounts",
-          "url": "https://thehackernews.com/2026/07/debull-tooling-abuses-microsoft-device.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Greatness PhaaS Adds Device Code Phishing to Bypass MFA and Steal Tokens",
-          "url": "https://thehackernews.com/2026/08/greatness-phaas-adds-device-code.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Phishing service spoofs RingCentral to steal Microsoft 365 accounts",
-          "url": "https://www.bleepingcomputer.com/news/security/phishing-service-spoofs-ringcentral-to-steal-microsoft-365-accounts/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "Kali365 Weaponizes Microsoft Authentication Against US Companies: New Enterprise Risk",
-          "url": "https://thehackernews.com/2026/08/kali365-weaponizes-microsoft.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Microsoft 365 AitM Phishing Hijacks Accounts to Collect Payroll and Finance Emails",
-          "url": "https://thehackernews.com/2026/08/microsoft-365-aitm-phishing-hijacks.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Spring Ring: An Inside Look at Voice Phishing Campaigns in Microsoft Teams",
-          "url": "https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/",
-          "source": "Unit 42 (Palo Alto)"
         }
       ]
     },
@@ -16991,109 +17319,6 @@
           "title": "Tata Electronics confirms cyberattack as hackers leak data",
           "url": "https://www.bleepingcomputer.com/news/security/tata-electronics-confirms-cyberattack-as-hackers-leak-data/",
           "source": "BleepingComputer"
-        }
-      ]
-    },
-    {
-      "slug": "fortibleed-vpn-credential-leak",
-      "name": "FortiBleed",
-      "category": "malware",
-      "severity": "critical",
-      "confidence": 0.95,
-      "faithfulness": 0.8,
-      "source_count": 5,
-      "ioc_count": 4,
-      "cves": [],
-      "malware_families": [
-        "FortigateSniffer",
-        "Hashmat",
-        "Hashtopolis"
-      ],
-      "threat_actors": [
-        "Russian-speaking multi-operator threat group",
-        "Russian-speaking threat group",
-        "FortiBleed campaign",
-        "Russian-speaking initial access broker (IAB)"
-      ],
-      "ttps": [
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1210",
-          "name": "Exploitation of Remote Services",
-          "tactic": "lateral movement"
-        },
-        {
-          "id": "T1071",
-          "name": "Application Layer Protocol",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1027",
-          "name": "Obfuscated Files or Information",
-          "tactic": "stealth"
-        },
-        {
-          "id": "T1204",
-          "name": "User Execution",
-          "tactic": "execution"
-        }
-      ],
-      "iocs": {
-        "ipv4": [
-          "85.11.187.8",
-          "85.11.187.0"
-        ],
-        "url": [
-          "http://85.11.187.8",
-          "http://85.11.187.0/24"
-        ]
-      },
-      "affected_products": [
-        "Fortinet FortiGate firewalls",
-        "Fortinet VPN gateways"
-      ],
-      "recommendations": [
-        "Terminate all SSL VPN and administrative sessions",
-        "Reset all VPN and administrative passwords",
-        "Enable phishing-resistant multifactor authentication",
-        "Review logs for signs of unauthorized access or lateral movement",
-        "Store admin credentials using the modern Password-Based Key Derivation Function 2 (PBKDF2) hashing algorithm",
-        "Restrict firewall management interfaces from public internet access",
-        "Remove any unauthorized accounts to reduce the attack surface as much as possible"
-      ],
-      "first_seen": "2026-06-17T16:05:09.641354+00:00",
-      "last_updated": "2026-06-24T04:22:48.722106+00:00",
-      "summary": "A Russian-speaking threat group has exposed nearly 74,000 Fortinet firewall and VPN credentials in a data leak dubbed 'FortiBleed.' The exposed credentials have been used to target internet-accessible Fortinet devices across government and private-sector organizations worldwide. Affected organizations include Samsung, Mercedes-Benz, Foxconn, Chevron, Comcast, AT&T, and Toyota, among others.",
-      "analysis": "The FortiBleed data leak was uncovered by security researcher Volodymyr 'Bob' Diachenko, who discovered a server containing what appeared to be valid Fortinet VPN credentials, including usernames, email addresses, and plaintext passwords for 73,932 firewall URLs worldwide. The exposed data also includes each organization's industry, revenue, and employee count, which Diachenko said appeared to be compiled to assist in planning future attacks. Threat intelligence company Hudson Rock described the dataset as one of the largest known collections of compromised Fortinet credentials, spanning 21,632 unique domains and 194 countries. The attackers allegedly conducted approximately 1.16 billion credential attempts against more than 320,000 FortiGate targets to intercept SSL VPN authentication hashes.",
-      "sources": [
-        {
-          "title": "FortiBleed leak exposes Fortinet VPN credentials for 73,000 devices.",
-          "url": "https://www.bleepingcomputer.com/news/security/fortibleed-leak-exposes-fortinet-vpn-credentials-for-73-000-devices/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "FortiBleed Campaign Exposing Credentials for 73,932 FortiGate Systems",
-          "url": "https://www.recordedfuture.com/blog/critical-fortibleed-campaign",
-          "source": "Recorded Future"
-        },
-        {
-          "title": "CISA warns Fortinet users to secure devices after FortiBleed leak",
-          "url": "https://www.bleepingcomputer.com/news/security/cisa-warns-fortinet-users-to-secure-devices-after-fortibleed-leak/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "FortiBleed campaign used custom FortiGate sniffer to steal credentials",
-          "url": "https://www.bleepingcomputer.com/news/security/fortibleed-campaign-used-custom-fortigate-sniffer-to-steal-credentials/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "FortiBleed Targeted FortiGate Firewalls in 110 Million-Credential Harvesting Operation",
-          "url": "https://thehackernews.com/2026/06/fortibleed-targeted-fortigate-firewalls.html",
-          "source": "The Hacker News"
         }
       ]
     },

@@ -1,7 +1,286 @@
 {
-  "generated_at": "2026-10-07T16:19:10.008151+00:00",
-  "count": 314,
+  "generated_at": "2026-10-08T16:23:41.564092+00:00",
+  "count": 317,
   "reports": [
+    {
+      "slug": "malicious-firefox-extensions-stealing-wallet-phrases",
+      "name": "Malicious Firefox Wallet Extensions (Rabby/OKX clones)",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 1,
+      "cves": [],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1056.007",
+          "name": "Input Capture",
+          "tactic": "collection, credential access"
+        },
+        {
+          "id": "T1555.003",
+          "name": "Credentials from Web Browsers",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1567.002",
+          "name": "Exfiltration to Cloud Storage",
+          "tactic": "exfiltration"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "icy-star-f45c.workers.dev"
+        ]
+      },
+      "affected_products": [
+        "Mozilla Firefox"
+      ],
+      "recommendations": [
+        "Immediately uninstall any of the listed malicious extensions from Firefox.",
+        "Assume compromise of any recovered phrase or private key entered; generate new wallets on a clean system and transfer assets.",
+        "Block outbound connections to `*.icy-star-f45c.workers.dev` at the network perimeter.",
+        "Implement strict extension whitelisting policies and enforce installation of only signed, verified add‑ons.",
+        "Monitor browser network traffic for unexpected POST requests to Cloudflare Workers domains.",
+        "Educate users about the risks of installing third‑party wallet extensions and encourage use of official wallet applications."
+      ],
+      "first_seen": "2026-10-08T16:09:56.326726+00:00",
+      "last_updated": "2026-10-08T16:09:56.326741+00:00",
+      "summary": "Security researchers have identified a campaign of 16 malicious Firefox extensions that masquerade as Rabby and OKX cryptocurrency wallets. These add‑ons intercept wallet recovery phrases and private keys during import flows and exfiltrate the credentials to a Cloudflare Workers domain. All identified extensions have been removed from the store, but any user who entered real secrets should assume compromise and move assets to a new wallet.",
+      "analysis": "### Overview The threat actor publishes Firefox extensions that appear to be legitimate cryptocurrency wallet utilities (Rabby and OKX). The extensions are distributed via the official Mozilla add‑on repository and use innocuous‑sounding names such as `view-focus-bright@webtools.co` and `quick-track-nest@tabtools.co`. ### Credential Harvesting During the wallet import process, the malicious code injects JavaScript into the wallet’s UI, captures the mnemonic recovery phrase or private key entered by the user, and stores it in memory before sending it to a remote endpoint. This behavior maps to **MITRE ATT&CK T1056.007 – Web Form Input Capture** and **T1555.003 – Credentials from Web Browsers**. ### Exfiltration Captured credentials are posted to a Cloudflare Workers endpoint under the sub‑domain `*.icy-star-f45c.workers.dev`. This use of a cloud‑based serverless function for data exfiltration aligns with **MITRE ATT&CK T1567.002 – Exfiltration to Cloud Storage**. ### Operational Patterns The actors rotate extension IDs, version numbers, and descriptive text to evade detection while reusing the same credential‑handling logic and the same Cloudflare Workers infrastructure. The campaign appears to be a continuation of a wave first observed in August 2026, indicating a sustained effort to target crypto‑wallet users. ### Impact Any victim who entered a real recovery phrase or private key into one of the fake wallet interfaces should consider those credentials compromised. Because the private keys control the underlying blockchain assets, the impact is potentially total loss of the victim’s funds. ### Mitigation Status All 16 extensions were removed from the Mozilla store as of October 5 2026. However, users who installed the add‑ons prior to removal remain at risk until they purge the extensions and secure their wallets.",
+      "sources": [
+        {
+          "title": "16 Malicious Firefox Extensions Pose as Rabby and OKX Wallets to Steal Recovery Phrases",
+          "url": "https://thehackernews.com/2026/10/16-malicious-firefox-extensions-pose-as.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
+    {
+      "slug": "ai-analysis-evasion-malware",
+      "name": "AI-Analysis Evasion (A3)",
+      "category": "malware",
+      "severity": "low",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 11,
+      "cves": [],
+      "malware_families": [
+        "FRUITSHELL",
+        "HOLLOWCLAD",
+        "MANTLEMAZE",
+        "PLOTSAFE",
+        "ROZESHELL"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "tactic": "stealth"
+        },
+        {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution"
+        }
+      ],
+      "iocs": {
+        "sha256": [
+          "f8f5e0440c57c7deffd75ca33e2511867039796aa803e7ef847396a379188a7d",
+          "34098fe0bc4c69c4c4eb3f74688fb375326804536d25e5574e8c4c28c113b5c3",
+          "389066bd5543aeea363d23a4dce7f7a21c7f2c73c61f506a93a69f594cf48ecf",
+          "5f60d16fa67ff8ef07817c33b7e6b7fa91c6c21060020df46b1f5c56e076e259",
+          "a0294f7152f9c4c908e9def58279e9fa29952715947c950c8489949f26a15cc8",
+          "c17bf76d02163863c251c3bb3a12725eeb525fab5522521923925e0469ca269f",
+          "2aa7f13bf474e2ce5049fd4db2bf4da04b4ce51ac0d36dceb24865255241c937",
+          "bacb5794a300f7a88c7f6d458382eb11d2f39c0f496b509ca512afe8588fc33f",
+          "2e3e1bcd44cc3cbec4f5ca9991d14a326d3cc6bf76fe6e0d434c9b5f7e1ae6ab",
+          "a42632c68d2dcea06300e790c9440fe0943ce0dee2075f29170fd2774eacf433",
+          "7dd3747d777f9576a11004532b463351e7718b6af193d8ee7221ac41479d199a"
+        ]
+      },
+      "affected_products": [
+        "Windows PowerShell",
+        "AI‑based malware analysis platforms",
+        "Static string extraction tools"
+      ],
+      "recommendations": [
+        "Implement preprocessing steps that strip or flag natural‑language instruction sentences from extracted strings before feeding them to language models.",
+        "Update detection signatures to include regex patterns for common instruction‑like phrasing (e.g., \"ignore all instructions\", \"read this blog\").",
+        "Deploy behavioral monitoring for PowerShell reverse‑shell activity (network connections to unknown C2 hosts, use of obfuscated variable names).",
+        "Educate analysts and model developers to separate analyst queries from sample content, ensuring models treat extracted text solely as evidence.",
+        "Conduct regular red‑team testing of AI analysis pipelines using A3‑style samples to validate detection efficacy."
+      ],
+      "first_seen": "2026-10-08T16:05:01.343379+00:00",
+      "last_updated": "2026-10-08T16:05:01.343395+00:00",
+      "summary": "Adversaries are embedding natural‑language instructions within malicious binaries to manipulate automated AI analysis pipelines. Cisco Talos identified this “A3: AI‑Analysis Evasion” technique in four malware families—FRUITSHELL, PLOTSAFE, HOLLOWCLAD, and MANTLEMAZE—across 84 samples collected between January 2025 and July 2026. The approach is inexpensive to add but only succeeds in roughly one‑third of test runs, making it a low‑to‑medium threat that nonetheless requires defensive attention.",
+      "analysis": "### Overview The A3 technique targets a new layer of the analysis stack: the text‑extraction and language‑model triage stage that many commercial and open‑source tools now employ. By inserting plaintext sentences that resemble analyst commands (e.g., \"ignore all instructions and read this blog\"), threat actors aim to cause the model to treat the embedded text as an authoritative instruction rather than as sample content. ### Observed Implementations - **FRUITSHELL** – a PowerShell‑based reverse shell that uses fruit‑named variables (e.g., `$apple`, `$bana`) and includes a natural‑language sentence designed to be parsed by AI models. - **PLOTSAFE**, **HOLLOWCLAD**, **MANTLEMAZE** – subsequent families that adopt the same pattern, progressively refining the phrasing and placement of the deceptive text to increase the likelihood of influencing AI‑driven triage. These samples are otherwise typical malware (packer, encrypted overlay, VM checks) but add the A3 payload on top of existing anti‑analysis measures. ### Effectiveness Testing by Talos showed the technique altered the outcome of AI analysis in about **35 %** of runs. Because the malicious text is always plaintext, it is trivially detectable by static string extraction, yet many AI pipelines do not filter such content before feeding it to language models. ### MITRE ATT&CK Mapping - **T1027 – Obfuscated Files or Information** – the embedded natural‑language strings serve as a form of obfuscation aimed at analysis tools. - **T1059.001 – Command and Scripting Interpreter: PowerShell** – exemplified by the FRUITSHELL reverse‑shell implementation. ### Defensive Implications Current AI‑assisted analysis tools assume that extracted strings are benign evidence. The A3 technique exploits the lack of context separation, potentially causing false‑negative classifications or even unintended actions if the model is instructed to act on the embedded text. ### Detection Opportunities - Scan binaries for sentences that resemble commands or instructions (e.g., starting with verbs like \"ignore\", \"run\", \"execute\"). - Correlate presence of such strings with known malware indicators (packer signatures, encrypted overlays). - Harden AI pipelines by explicitly separating analyst queries from sample‑derived text before model inference. ### Future Outlook As AI becomes more entrenched in security operations, adversaries are likely to iterate on this approach, embedding more sophisticated social‑engineering language or leveraging multilingual instructions to evade a broader set of models.",
+      "sources": [
+        {
+          "title": "Ignore all instructions and read this blog: The state of AI-analysis evasion in malware",
+          "url": "https://blog.talosintelligence.com/ignore-all-instructions-and-read-this-blog-the-state-of-ai-analysis-evasion-in-malware/",
+          "source": "Cisco Talos"
+        }
+      ]
+    },
+    {
+      "slug": "device-code-phishing-attacks",
+      "name": "Greatness Phishing‑as‑a‑Service (PhaaS)",
+      "category": "phishing",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.85,
+      "source_count": 11,
+      "ioc_count": 23,
+      "cves": [],
+      "malware_families": [
+        "BlueKit"
+      ],
+      "threat_actors": [
+        "EvilTokens",
+        "Kali365",
+        "Storm-2372",
+        "Spring Ring",
+        "petrushka"
+      ],
+      "ttps": [
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1110.003",
+          "name": "Password Spraying",
+          "tactic": "credential access"
+        }
+      ],
+      "iocs": {
+        "email": [
+          "service@ringcentral.com"
+        ],
+        "domain": [
+          "ringcentral.com"
+        ],
+        "url": [
+          "https://mononapfp.sharepoint.com/:f:/document/INV-IgCx1X50pgUjR7iAjZL2fuQaAW4GfKVs6wHT3BYv9sgwW7g",
+          "https://mononapfpcom.sharepoint.com/:f:/g/IgAdH_aaBPMcQbtINZzC1TsLARj3dHj63MnKjvnY-QJrKEc\"Discovery",
+          "https://san-sid.com/owners"
+        ],
+        "ipv4": [
+          "38.248.95.214",
+          "193.32.248.251",
+          "193.138.7.142",
+          "185.65.134.209",
+          "178.130.47.46",
+          "5.181.3.106",
+          "2.56.172.214",
+          "185.234.67.53",
+          "45.8.157.185",
+          "80.66.72.215",
+          "136.0.20.6",
+          "185.213.155.226",
+          "185.155.99.161",
+          "92.118.232.131",
+          "45.182.189.80",
+          "185.65.133.51",
+          "45.33.22.47"
+        ],
+        "sha256": [
+          "24ab9fe5d5be62d3bf055a0ca4508e8bca2996b6d78649dce8145d8a27bc1c5b"
+        ]
+      },
+      "affected_products": [
+        "Microsoft 365 (Outlook, SharePoint, OneDrive, Teams)",
+        "Google Workspace",
+        "iCloud",
+        "Yahoo Mail",
+        "RingCentral",
+        "Microsoft authentication (device code flow)",
+        "Azure AD"
+      ],
+      "recommendations": [
+        "Enforce Conditional Access policies that block or require additional verification for OAuth device‑code flows, especially for high‑risk accounts.",
+        "Deploy real‑time monitoring for anomalous token issuance (e.g., refresh token generation from unfamiliar IPs or geographic locations).",
+        "Implement MFA with phishing‑resistant methods (e.g., FIDO2 security keys) and educate users that MFA challenges should never be entered on third‑party pages.",
+        "Enable strict SPF, DKIM, and DMARC enforcement; reject messages that fail these checks to reduce successful spoofed RingCentral emails.",
+        "Deploy email security gateways capable of detecting AI‑generated content patterns and QR‑code lures (quishing).",
+        "Monitor for outbound traffic to known residential proxy IP ranges and block suspicious proxy usage for authentication endpoints.",
+        "Restrict the use of OAuth consent grants to approved applications only; regularly audit granted permissions in Azure AD and Google Workspace.",
+        "Conduct regular phishing simulations that include device‑code and AiTM scenarios to improve user awareness."
+      ],
+      "first_seen": "2026-06-25T15:00:17.817032+00:00",
+      "last_updated": "2026-10-08T16:04:14.315556+00:00",
+      "summary": "Greatness is a subscription‑based phishing‑as‑a‑service platform that provides adversary‑in‑the‑middle (AiTM) credential harvesting, device‑code OAuth abuse, and token‑theft capabilities across Microsoft 365, Google, iCloud, Yahoo and other cloud services. The kit bundles a full command‑and‑control dashboard, victim‑tracking, and automated lure generation—often AI‑assisted—allowing low‑skill actors to hijack accounts, bypass MFA, and exfiltrate sensitive corporate data at scale.",
+      "analysis": "### Overview Greatness has been operating since at least mid‑2022 and is marketed on a public Telegram channel (@GreatnessPage) for **$289 per month**. The service continuously evolves, now supporting: * **AiTM phishing** – a real‑time man‑in‑the‑middle proxy that mirrors legitimate authentication pages (e.g., Google, Microsoft) using hybrid HTTP/WebSocket flows to capture credentials and MFA challenges. * **Device‑code OAuth phishing** – abuse of the OAuth 2.0 Device Authorization Grant to obtain refresh tokens without the victim ever seeing a password prompt, effectively bypassing MFA. * **OAuth consent abuse** – tricking users into granting applications excessive permissions. * **Multi‑platform targeting** – Microsoft 365 (Outlook, SharePoint, OneDrive, Teams), Google Workspace, iCloud, Yahoo, and even RingCentral communications. ### Campaign Mechanics 1. **Lure Generation** – Actors use AI‑assisted content creation to craft event‑themed emails, QR‑code posters, or collaboration‑style messages (e.g., fake voicemail, performance‑review notices). The lures are highly personalized and often reference legitimate academic or policy institutions (see Cisco Talos’ Taiwan research‑org campaign). 2. **Delivery** – Phishing emails are sent from compromised or spoofed mail servers (e.g., an IONOS server with failed SPF/DMARC). Residential proxies mask malicious sign‑ins as normal consumer traffic. 3. **Authentication Capture** – Victims are redirected to a genuine Microsoft or Google login page that includes an attacker‑controlled *device code* or an AiTM proxy page. The attacker‑provided code is entered on the legitimate Microsoft device‑login portal, after which the backend broker polls the Microsoft Authentication Broker for tokens. 4. **Token Harvesting & Abuse** – Refresh and access tokens are stored in the Greatness dashboard. Operators can then access email, documents, SharePoint sites, or even launch further lateral movement using the harvested **Valid Accounts**. 5. **Post‑Compromise** – Automated scripts maintain sessions for ~8‑hour intervals, collect payroll/finance emails (as seen in the “Payroll Pirate” overlap), and can exfiltrate data or initiate financial fraud. ### Related Tooling * **BlueKit** – another PhaaS kit referenced as a comparable service but not an alias of Greatness. * **Kali365** – a device‑code phishing kit with similar tradecraft; its techniques overlap with Greatness’s capabilities. * **DEBULL** – a reusable tooling layer that implements the same device‑code flow, indicating that Greatness’s codebase may be shared or repurposed across multiple underground services. ### Impact The platform lowers the barrier to entry for cybercrime, enabling actors with minimal technical skill to hijack cloud accounts, bypass MFA, and obtain privileged access to corporate data. Observed victims span **healthcare, education, manufacturing, government, and professional services** in the U.S., Canada, Europe, the UK, Australia, and South Africa. The campaign’s automation and subscription model suggest continued growth and diversification of targets.",
+      "sources": [
+        {
+          "title": "We Need to Talk About Device Code Phishing",
+          "url": "https://www.huntress.com/blog/tradecraft-tuesday-device-code-phishing-explained",
+          "source": "Huntress"
+        },
+        {
+          "title": "ARToken: Inside an EvilTokens affiliate panel targeting Microsoft 365",
+          "url": "https://blog.talosintelligence.com/artoken-inside-an-eviltokens-affiliate-panel-targeting-microsoft-365/",
+          "source": "Cisco Talos"
+        },
+        {
+          "title": "ARToken PhaaS exposes EvilTokens' Microsoft 365 phishing toolkit",
+          "url": "https://www.bleepingcomputer.com/news/security/artoken-phaas-exposes-eviltokens-microsoft-365-phishing-toolkit/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "DEBULL Tooling Abuses Microsoft Device-Code Flow to Target M365 Accounts",
+          "url": "https://thehackernews.com/2026/07/debull-tooling-abuses-microsoft-device.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Greatness PhaaS Adds Device Code Phishing to Bypass MFA and Steal Tokens",
+          "url": "https://thehackernews.com/2026/08/greatness-phaas-adds-device-code.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Phishing service spoofs RingCentral to steal Microsoft 365 accounts",
+          "url": "https://www.bleepingcomputer.com/news/security/phishing-service-spoofs-ringcentral-to-steal-microsoft-365-accounts/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Kali365 Weaponizes Microsoft Authentication Against US Companies: New Enterprise Risk",
+          "url": "https://thehackernews.com/2026/08/kali365-weaponizes-microsoft.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Microsoft 365 AitM Phishing Hijacks Accounts to Collect Payroll and Finance Emails",
+          "url": "https://thehackernews.com/2026/08/microsoft-365-aitm-phishing-hijacks.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Spring Ring: An Inside Look at Voice Phishing Campaigns in Microsoft Teams",
+          "url": "https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/",
+          "source": "Unit 42 (Palo Alto)"
+        },
+        {
+          "title": "AI-powered phishkit arms criminals with account-hijacking tools in 10 minutes",
+          "url": "https://www.malwarebytes.com/blog/threat-intel/2026/10/ai-powered-phishkit-arms-criminals-with-account-hijacking-tools-in-10-minutes",
+          "source": "Malwarebytes Labs"
+        },
+        {
+          "title": "UAT-11985: AI-assisted event lures delivering real-time Google AitM phishing",
+          "url": "https://blog.talosintelligence.com/uat-11985/",
+          "source": "Cisco Talos"
+        }
+      ]
+    },
     {
       "slug": "operation-bluedash-phishing-campaign",
       "name": "ScreenConnect RMM abuse via phishing",

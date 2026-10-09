@@ -1,7 +1,127 @@
 {
-  "generated_at": "2026-10-08T16:23:41.564092+00:00",
-  "count": 317,
+  "generated_at": "2026-10-09T16:04:03.586298+00:00",
+  "count": 319,
   "reports": [
+    {
+      "slug": "vercel-oauth-token-breach",
+      "name": "OAuth Token Abuse",
+      "category": "other",
+      "severity": "medium",
+      "confidence": 1.0,
+      "faithfulness": 1.0,
+      "source_count": 1,
+      "ioc_count": 0,
+      "cves": [],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1555.003",
+          "name": "Credentials from Web Browsers",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1133",
+          "name": "External Remote Services",
+          "tactic": "persistence, initial access"
+        }
+      ],
+      "iocs": {},
+      "affected_products": [
+        "Google Workspace",
+        "Microsoft 365",
+        "SaaS applications with OAuth integrations (e.g., Slack, AI note‑takers, task management tools)",
+        "Third‑party OAuth providers (e.g., Context.ai)"
+      ],
+      "recommendations": [
+        "Implement an automated inventory of all active OAuth grants across the enterprise.",
+        "Establish a risk‑based review cadence (e.g., quarterly) to assess scope relevance and revoke unnecessary permissions.",
+        "Enforce least‑privilege principles: require granular scopes and prohibit broad data‑level access unless justified.",
+        "Integrate OAuth token monitoring with SIEM/UEBA to alert on anomalous usage patterns (e.g., token use from unexpected IPs or locations).",
+        "Deploy a solution such as Nudge Security or a CASB that can surface dormant tokens and automate revocation.",
+        "Update onboarding/offboarding processes to include revocation of third‑party OAuth consents when users depart or change roles.",
+        "Educate employees on the security implications of granting OAuth permissions and provide approved app catalogs."
+      ],
+      "first_seen": "2026-10-09T15:51:29.413179+00:00",
+      "last_updated": "2026-10-09T15:51:29.413191+00:00",
+      "summary": "Enterprise OAuth grants create standing trust relationships that outlive user credentials and bypass traditional identity controls. Attackers can leverage a single compromised OAuth token—often from a third‑party app—to gain persistent access to corporate data, as demonstrated in the Vercel breach. Organizations must adopt dedicated lifecycle management and continuous review of OAuth consents to mitigate this growing risk.",
+      "analysis": "### Threat Overview OAuth is a delegation protocol that allows users to grant third‑party applications access to specific resources without sharing passwords. Unlike SSO or MFA, OAuth grants are **independent of user authentication controls** and remain valid until explicitly revoked. This creates a hidden attack surface: tokens can persist after an employee leaves, and many grants receive no ongoing monitoring. ### Real‑World Example The recent Vercel incident illustrates the danger. An employee had previously authorized the AI tool **Context.ai** to access their Google Workspace account. Months later, the OAuth token was compromised and used to infiltrate Vercel’s environment. The breach was possible because the token retained its privileges despite the employee’s account being disabled. ### Scale of the Problem - **Average of 88 OAuth grants per employee** (31 with data‑level scopes). - **~40 SaaS applications per organization** hold programmatic access to sensitive data. - Gartner predicts **50 % of SaaS breaches** will stem from over‑privileged OAuth tokens by 2027. ### Attack Flow (MITRE ATT&CK Mapping) 1. **Initial Access – Valid Accounts (T1078)**: The attacker obtains a legitimate OAuth token issued to a user. 2. **Credential Access – OAuth Token (T1555.003)**: The token is used to authenticate to cloud services without needing passwords or MFA. 3. **Persistence – OAuth Application Access (T1133)**: The token provides continuous access as long as it remains valid. 4. **Impact – Data Exfiltration / Service Disruption**: With the token, the adversary can read, modify, or export corporate data. ### Why Traditional Controls Fail - **No MFA or SSO enforcement** on OAuth tokens. - **Tokens outlive user accounts**; disabling a user does not revoke third‑party grants. - **Low visibility**: Many tokens generate little to no log activity, making them hard to detect. ### Defensive Gaps Organizations typically lack: - Automated inventory of active OAuth grants. - Risk‑based scoring of scopes versus business need. - Continuous revocation workflow for dormant or over‑privileged tokens. ### Mitigation Strategies A dedicated OAuth lifecycle program—combining discovery, risk assessment, and automated revocation—is essential. Solutions like **Nudge Security** provide tooling to surface and triage grants at scale.",
+      "sources": [
+        {
+          "title": "OAuth grants pile up faster than you can review them. Here's how to keep up.",
+          "url": "https://www.bleepingcomputer.com/news/security/oauth-grants-pile-up-faster-than-you-can-review-them-heres-how-to-keep-up/",
+          "source": "BleepingComputer"
+        }
+      ]
+    },
+    {
+      "slug": "midnight-mimosa-android-firmware-malware",
+      "name": "Midnight Mimosa",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 0.9,
+      "faithfulness": 0.85,
+      "source_count": 1,
+      "ioc_count": 0,
+      "cves": [],
+      "malware_families": [
+        "Midnight Mimosa"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1542.003",
+          "name": "Bootkit",
+          "tactic": "stealth, persistence"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "tactic": "command and control"
+        }
+      ],
+      "iocs": {},
+      "affected_products": [
+        "Doogee S200 X",
+        "Cubot KINGKONG X",
+        "Doogee Fire 3 Max",
+        "Low‑cost Android phones with MediaTek chipsets",
+        "Devices impersonating Samsung and Apple products"
+      ],
+      "recommendations": [
+        "Verify firmware signatures and only install OTA updates from trusted, verified sources.",
+        "Work with device manufacturers to obtain clean firmware images and replace compromised system partitions.",
+        "Deploy mobile threat defense solutions that can detect anomalous system‑level applications and unauthorized app installations.",
+        "Monitor network traffic for connections to known C2 infrastructure and block suspicious domains/IPs at the enterprise perimeter.",
+        "Implement endpoint detection rules that flag the presence of suspicious package names such as com.android.system.lite, com.android.non.szcz, com.android.sys.prot, and com.android.sys.gmsprot."
+      ],
+      "first_seen": "2026-10-09T15:51:08.431350+00:00",
+      "last_updated": "2026-10-09T15:51:08.431361+00:00",
+      "summary": "Midnight Mimosa is a supply‑chain malware family pre‑installed in the firmware of low‑cost Android smartphones, primarily those using MediaTek chipsets. The malware gains system‑level privileges, silently installs and removes apps, conducts ad‑fraud, and turns devices into residential proxies, affecting thousands of devices in over 150 countries.",
+      "analysis": "### Overview Midnight Mimosa was uncovered by Bitdefender researchers after their App Anomaly Detection system flagged a system‑level application named **com.android.system.lite** that was repeatedly installing and uninstalling other apps. Unlike typical Android threats that rely on user interaction, this malware is embedded directly into the device’s system partition during manufacturing, giving it persistent, elevated privileges. ### Infection Vector The malicious code appears to be introduced somewhere in the supply chain of low‑cost Android phones that use MediaTek processors. Affected models include the **Doogee S200 X**, **Cubot KINGKONG X**, and **Doogee Fire 3 Max**, as well as devices masquerading as Samsung and Apple products. In at least one case, an official OTA firmware update re‑introduced the malware after a clean reinstall, indicating the payload is baked into the firmware image. ### Capabilities - **System‑level persistence** – The malware resides in the firmware’s system partition and runs with elevated privileges, making it impossible to remove via standard Android uninstall mechanisms. - **Silent app management** – It can silently install, update, or remove other applications, often impersonating legitimate system packages (e.g., `com.android.sys.prot`). - **Modular architecture** – A core stub contacts remote C2 servers to download additional modules for specific functions. - **Ad fraud & proxy services** – Downloaded modules enable the device to generate fraudulent ad revenue and act as a residential proxy, monetizing the compromised hardware. - **Self‑reinstatement** – Even when users manually delete the malicious apps, they reappear, indicating a watchdog component that restores the payload. ### Impact The campaign has been active for roughly two years, compromising thousands of phones across more than 150 countries, with the highest concentrations in Mexico, France, Italy, the United States, Germany, Brazil, and Spain. The embedded nature of the malware makes remediation difficult for end‑users and requires manufacturer‑level firmware remediation. ### Attribution & Mitigation The responsible threat actor remains unidentified, and manufacturers have not publicly disclosed how the firmware was compromised. Some vendors have released clean firmware updates, but the persistence of the threat suggests that future OTA updates could re‑introduce the payload if the underlying firmware image is not rebuilt from a trusted source.",
+      "sources": [
+        {
+          "title": "Low-cost Android phones ship with residential proxy malware",
+          "url": "https://www.bleepingcomputer.com/news/security/low-cost-android-phones-ship-with-residential-proxy-malware/",
+          "source": "BleepingComputer"
+        }
+      ]
+    },
     {
       "slug": "malicious-firefox-extensions-stealing-wallet-phrases",
       "name": "Malicious Firefox Wallet Extensions (Rabby/OKX clones)",

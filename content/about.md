@@ -11,7 +11,7 @@ hideMeta: true
 
 **Melted in Hex** is where threats get melted down to their raw bytes.
 
-I'm a malware analyst, reverse engineer, threat hunter, and AI security researcher. The instinct is the same one that's always driven this work — take the thing apart, understand exactly how it operates, and figure out how to catch it — now pointed at a fast-changing, AI-driven attack surface, with AI in the loop.
+I'm Mohd Sadique — a malware analyst, reverse engineer, and threat hunter who's spent over a decade taking things apart to understand them. The instinct hasn't changed: take it apart, see how it works, hunt down the campaign behind it, and figure out how to catch it. These days that same instinct is pointed at a faster, AI-driven attack surface — with AI on my side too.
 
 ### What you'll find here
 
@@ -28,4 +28,4 @@ Security is shifting under our feet. Attackers are automating, supply chains are
 
 *Some of the earliest posts here were originally published on Blogger and have been migrated over, with their original publication dates preserved.*
 
-Find me on [GitHub](https://github.com/meltedinhex).
+Find me on [LinkedIn](https://www.linkedin.com/in/msadique/) · [GitHub](https://github.com/meltedinhex) · [X](https://x.com/sdkhere).

@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-17T13:03:53.061572+00:00",
+  "generated_at": "2026-10-18T13:18:29.459114+00:00",
   "count": 324,
   "reports": [
     {
       "slug": "miasma-supply-chain-attack",
-      "name": "2026 Multi-Vector Exploitation Campaign",
-      "category": "other",
-      "severity": "high",
+      "name": "BeyondTrust Remote Support Zero-Day (CVE‑2026‑102764)",
+      "category": "vulnerability",
+      "severity": "critical",
       "confidence": 1.0,
       "faithfulness": 0.95,
-      "source_count": 542,
-      "ioc_count": 1169,
+      "source_count": 544,
+      "ioc_count": 1163,
       "cves": [
         "CVE-2026-45321",
         "CVE-2026-48027",
@@ -1684,75 +1684,14 @@
           "tactic": "initial access"
         },
         {
-          "id": "T1105",
-          "name": "Ingress Tool Transfer",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1055",
-          "name": "Process Injection",
-          "tactic": "stealth, privilege escalation"
-        },
-        {
-          "id": "T1106",
-          "name": "Native API",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1027",
-          "name": "Obfuscated Files or Information",
-          "tactic": "stealth"
-        },
-        {
-          "id": "T1195",
-          "name": "Supply Chain Compromise",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1071.001",
-          "name": "Web Protocols",
-          "tactic": "command and control"
-        },
-        {
           "id": "T1068",
           "name": "Exploitation for Privilege Escalation",
           "tactic": "privilege escalation"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1078",
-          "name": "Valid Accounts",
-          "tactic": "stealth, persistence, privilege escalation, initial access"
-        },
-        {
-          "id": "T1486",
-          "name": "Data Encrypted for Impact",
-          "tactic": "impact"
-        },
-        {
-          "id": "T1098",
-          "name": "Account Manipulation",
-          "tactic": "persistence, privilege escalation"
-        },
-        {
-          "id": "T1564.001",
-          "name": "Hidden Files and Directories",
-          "tactic": "stealth"
         }
       ],
       "iocs": {
         "cve": [
-          "CVE-2026-102764",
-          "CVE-2025-61624",
-          "CVE-2026-0257",
-          "CVE-2024-3272",
-          "CVE-2024-3273",
-          "CVE-2021-44228",
-          "CVE-2025-31324"
+          "CVE-2026-102764"
         ],
         "url": [
           "https://cl.distritovagas.com/hte.hta\"\\1",
@@ -2930,27 +2869,23 @@
         ]
       },
       "affected_products": [
-        "npm (imgdecode package)",
-        "AOMEI Backupper",
         "BeyondTrust Remote Support (SaaS and self‑hosted)",
-        "Fortinet FortiOS / FortiPAM / FortiProxy / FortiSwitchManager",
-        "Palo Alto Networks PAN‑OS GlobalProtect / Prisma Access",
-        "D‑Link ShareCenter NAS",
-        "Ubiquiti UniFi Video NVR",
-        "SAP NetWeaver Visual Composer",
-        "Various ARM64 Windows hosts (dllhost.exe)",
-        "Overlord RAT"
+        "BeyondTrust Privileged Remote Access (PRA)"
       ],
       "recommendations": [
-        "Immediately apply the vendor‑released patches for all listed CVEs; for self‑hosted BeyondTrust appliances, verify manual installation of BT26‑05‑RS or later.",
-        "Enforce cryptographic signing and separate checksum verification for all software update files (e.g., AOMEI Backupper).",
-        "Implement strict origin validation for internal messaging components in remote‑support solutions.",
-        "Deploy endpoint detection and response (EDR) rules that alert on"
+        "Apply the BT26‑05‑RS patch to all self‑hosted BeyondTrust Remote Support installations immediately; ensure automatic updates are enabled for SaaS customers.",
+        "Upgrade any self‑hosted BeyondTrust Remote Support version older than 24.3.1 to the latest supported release.",
+        "Patch the Privileged Remote Access (PRA) product even if not directly affected, as a precaution.",
+        "Conduct a thorough forensic review of all Remote Support appliances for signs of web‑shells or unauthorized files; remove any malicious artifacts.",
+        "Implement network segmentation to isolate Remote Support servers from critical internal assets.",
+        "Enable strict outbound traffic monitoring and block unexpected file‑transfer protocols from Remote Support servers.",
+        "Review and harden any custom integrations or APIs that interact with BeyondTrust components to ensure proper origin validation.",
+        "Maintain an inventory of all Remote Support instances and verify their patch status on a regular cadence."
       ],
       "first_seen": "2026-06-11T15:22:05.280017+00:00",
-      "last_updated": "2026-10-17T12:47:12.204471+00:00",
-      "summary": "In late 2026 a series of coordinated exploitation activities targeted Windows, network, and IoT environments. Actors leveraged supply‑chain compromises (malicious npm packages), compromised software‑update mechanisms (AOMEI Backupper), zero‑day vulnerabilities in remote‑support and firewall products (BeyondTrust Remote Support and FortiOS), and edge‑device flaws to install stealthy payloads such as Overlord RAT, PEERSTITCH, and unauthorized bandwidth‑sharing software. The breadth of affected products and the active, in‑the‑wild exploitation warrant immediate remediation and heightened detection. Defenders should patch all disclosed CVEs, enforce cryptographic verification of software updates, and monitor for the specific behaviors described (DLL injection, unsigned DLL loads, anomalous process creation, and unexpected outbound traffic).",
-      "analysis": "### 1. MALFEX npm Supply‑Chain Attack - A malicious npm package **imgdecode** (v1.0.3) was published on 2026‑09‑30 under the user *malfexteste8* and downloaded ~979 times. The package contains a nine‑line JavaScript wrapper that loads a Windows DLL. When required on a Windows host, the DLL contacts a GitHub repository, retrieves encrypted shellcode, decrypts it, and injects the payload into a newly spawned `dllhost.exe` process. - The DLL acts as a loader for the **Overlord RAT**. Similar loaders were found in other MALFEX‑branded packages (e.g., `cdn‑img‑fetch`, `img‑to‑native`). - **ATT&CK techniques**: T1105 (Ingress Tool Transfer), T1055 (Process Injection), T1106 (Native API), T1027 (Obfuscated/Stored Files). ### 2. AOMEI Backupper Update‑Server Tampering - Between May and July 2026 attackers intermittently altered the files served from AOMEI’s legitimate HTTPS update servers. The files `down_html.ini` and `Notifycfg.ini` specify the update package name and checksum, but the checksum is stored in the same unsigned file, allowing the attacker to replace the update with a malicious backdoor without detection. - Victims that checked for updates during the five‑to‑ten‑minute windows automatically downloaded and executed the backdoor. - **ATT&CK techniques**: T1195 (Supply Chain Compromise), T1071.001 (Web Protocols), T1068 (Exploitation for Privilege Escalation – via unsigned update). ### 3. BeyondTrust Remote Support Zero‑Day (CVE‑2026‑102764) - An **improper origin validation** flaw in an internal messaging component allowed unauthenticated remote attackers to perform arbitrary file operations on the appliance. The vulnerability was exploited as a zero‑day by the China‑linked espionage group **Armory Castle** (formerly UNC5221/Warp Panda) on 2026‑08‑29. - Exploitation resulted in web‑shell upload and subsequent privilege escalation to root on both SaaS and self‑hosted installations. - Patches were released on 2026‑10‑08 for SaaS and manually for self‑hosted versions. - **ATT&CK techniques**: T1190 (Exploit Public‑Facing Application), T1105 (Ingress Tool Transfer), T1059.001 (Command‑Line Interface), T1068 (Exploitation for Privilege Escalation). ### 4. PEERSTITCH Malware via FortiOS Path‑Traversal (CVE‑2025‑61624) - Threat actors exploited a path‑traversal/ arbitrary‑write flaw in FortiOS, FortiPAM, FortiProxy, and FortiSwitchManager to plant a memory‑resident ARM64 malware named **PEERSTITCH**. The malware leaves no disk artifact, does not open listening ports, and piggybacks on legitimate process traffic, making it hard to detect with traditional endpoint or network sensors. - The initial foothold in the observed case stemmed from a prior FortiManager exploit (CVE‑2024‑47575, “FortiJump”). - **ATT&CK techniques**: T1190 (Exploit Public‑Facing Application), T1055 (Process Injection), T1027 (Obfuscated/Stored Files), T1564.001 (Hide Artifacts: Disk). ### 5. Ransomware Exploitation of PAN‑OS GlobalProtect (CVE‑2026‑0257) - The authentication‑bypass vulnerability in Palo Alto Networks PAN‑OS GlobalProtect and Prisma Access (CV​E‑2026‑0257) is being actively leveraged by the **Qilin** and **Settra** ransomware groups. Because the exploit works through the organization’s own VPN, malicious activity can blend with legitimate remote‑work traffic. - **ATT&CK techniques**: T1190 (Exploit Public‑Facing Application), T1078 (Valid Accounts), T1486 (Data Encrypted for Impact). ### 6. Proxy‑Jacking Campaign Using Pawns.app - Attackers compromised D‑Link ShareCenter NAS devices (CVE‑2024‑3272, CVE‑2024‑3273), Ubiquiti UniFi Video NVR (CVE‑2021‑44228), and SAP NetWeaver Visual Composer (CVE‑2025‑31324) to install the legitimate bandwidth‑sharing client **Pawns.app** without user consent. The compromised devices were then enlisted into a commercial residential proxy network, generating revenue for the operators. - At least 143 devices across 34 countries were observed, with some attackers configuring SSH keys for persistent access. - **ATT&CK techniques**: T1190 (Exploit Public‑Facing Application), T1071.001 (Web Protocols), T1098 (Account Manipulation – SSH keys). ### Cross‑Campaign Observations - All incidents rely on **lack of proper verification** (unsigned update files, missing origin validation, unpatched software). - The attackers favor **in‑memory or process‑injection techniques** to evade traditional file‑based detection. - Rapid patching and verification of software supply chains are repeatedly highlighted as the primary mitigation. --- **Key Takeaways** 1. Verify the integrity of all third‑party packages and software updates (digital signatures, checksums stored separately). 2. Deploy endpoint detection that can monitor DLL loads, process injection, and anomalous network traffic from legitimate processes. 3. Prioritize patching of disclosed CVEs, especially CVE‑2026‑102764, CVE‑2025‑61624, CVE‑2026‑0257, and the older D‑Link/Ubiquiti flaws. 4. Harden remote‑access solutions (VPN, remote‑support tools) with multi‑factor authentication and strict origin validation. 5. Conduct regular inventory of IoT/edge devices and enforce least‑privilege SSH key management.",
+      "last_updated": "2026-10-18T13:03:41.658747+00:00",
+      "summary": "A critical remote‑support vulnerability (CVE‑2026‑102764) in BeyondTrust Remote Support was actively exploited as a zero‑day by the China‑linked espionage group Armory Castle beginning in late August 2026. The flaw enables unauthenticated attackers to perform arbitrary file operations on both SaaS and self‑hosted appliances, leading to web‑shell deployment and full system compromise. Patches have been released for SaaS customers, while self‑hosted installations require manual updates.",
+      "analysis": "### Vulnerability Overview - **CVE‑2026‑102764** is an *improper origin validation* issue (CWE‑290) in an internal messaging component of BeyondTrust Remote Support. The component fails to verify the source of received messages, allowing a remote, unauthenticated attacker to trigger file‑system operations. - The vulnerability received a **CVSS v4.0 score of 9.3 (Critical)**. ### Threat Actor Activity - The group **Armory Castle** (previously tracked as UNC5221/Warp Panda) exploited the flaw on **August 29, 2026** against a self‑hosted appliance and again on **September 27‑28, 2026** against additional installations. - Attackers used the flaw to upload web‑shells, then escalated to **root** privileges on the compromised appliance. - The campaign was uncovered through proactive hunting by BeyondTrust and later corroborated by Google Threat Intelligence Group, Mandiant, and other vendors. ### Exploitation Timeline | Date | Event | |------|-------| | Aug 29 2026 | First known exploitation of a self‑hosted Remote Support appliance. | | Sep 27‑28 2026 | Additional successful exploits observed; evidence of web‑shell upload and privilege escalation. | | Sep 28 2026 | BeyondTrust detects the hosted incident during proactive hunting. | | Oct 8 2026 | Patches released for SaaS customers. | | Oct 9 2026 | Patch availability announced for self‑hosted customers (BT26‑05‑RS). | | Oct 15 2026 | Public disclosure of CVE‑2026‑102764 and attribution to Armory Castle. | ### Impact - **File operations without authentication** – attackers can write, delete, or replace files on the appliance. - **Web‑shell deployment** – enables persistent remote command execution. - **Privilege escalation to root** – full control over the remote‑support server and any connected network resources. ### Mitigations Implemented by Vendor - Immediate patching of the vulnerable component for all SaaS customers (automatic). - Manual patch release for self‑hosted installations (versions 24.3.1‑26.2.3 require update to BT26‑05‑RS; older versions must upgrade to a newer major release). - Advisory to also patch the related **Privileged Remote Access (PRA)** product as a precaution. ### Remaining Risks - Systems that were compromised before patch deployment retain the back‑door/web‑shell. - Organizations that run self‑hosted appliances without automatic update mechanisms remain exposed until the manual patch is applied. - Potential for the same exploitation technique to be repurposed against other remote‑support or management solutions that perform insufficient origin validation.",
       "sources": [
         {
           "title": "CrowdStrike 2026 Technology Threat Landscape Report: China&rsquo;s Ambitions Fuel Attacks",
@@ -5483,6 +5418,11 @@
           "source": "r/Malware"
         },
         {
+          "title": "September 2026 Dark Web Breach Incident Trend Report",
+          "url": "https://asec.ahnlab.com/en/95764/",
+          "source": "AhnLab ASEC"
+        },
+        {
           "title": "CyberXero Uses Claude Code in Campaign That Stole Over 628,000 Ukrainian Records",
           "url": "https://thehackernews.com/2026/10/cyberxero-uses-claude-code-in-campaign.html",
           "source": "The Hacker News"
@@ -5603,6 +5543,11 @@
           "source": "Unit 42 (Palo Alto)"
         },
         {
+          "title": "skynox7: Proxyjacking Edge Devices Into Residential Proxies",
+          "url": "https://www.greynoise.io/blog/proxyjacking-edge-devices-residential-proxies",
+          "source": "GreyNoise Labs"
+        },
+        {
           "title": "Langflow's Critical Authenticated RCE Flaw Targeted in 1,423 Honeypot Exploit Attempts",
           "url": "https://thehackernews.com/2026/10/langflows-critical-authenticated-rce.html",
           "source": "The Hacker News"
@@ -5667,11 +5612,11 @@
     {
       "slug": "connectwise-credential-abuse",
       "name": "ConnectWise Cloud Backup credential compromise",
-      "category": "other",
-      "severity": "high",
+      "category": "breach",
+      "severity": "medium",
       "confidence": 1.0,
       "faithfulness": 0.95,
-      "source_count": 2,
+      "source_count": 3,
       "ioc_count": 1,
       "cves": [],
       "malware_families": [],
@@ -5691,6 +5636,11 @@
           "id": "T1098.001",
           "name": "Additional Cloud Credentials",
           "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1098.004",
+          "name": "SSH Authorized Keys",
+          "tactic": "persistence, privilege escalation"
         }
       ],
       "iocs": {
@@ -5700,23 +5650,27 @@
       },
       "affected_products": [
         "ConnectWise Cloud Backup (formerly SkyKick)",
-        "Microsoft 365 (Exchange Online, OneDrive, SharePoint, Teams, Azure AD)",
-        "Microsoft Graph API"
+        "Microsoft 365 (Exchange Online, OneDrive, SharePoint, Teams)",
+        "Microsoft Entra ID (Azure AD)",
+        "Microsoft Graph API",
+        "ConnectWise Cloud Management app for Microsoft Teams",
+        "Huntress Security Platform",
+        "Todyl MSP management platform"
       ],
       "recommendations": [
-        "Immediately revoke the compromised client assertion and any associated client secrets in Azure AD.",
-        "Remove the ConnectWise Cloud Backup application from all tenants until the vendor confirms remediation.",
-        "Audit Azure AD for newly added Global Administrator assignments and unexpected service principal modifications.",
-        "Enforce Conditional Access policies that block sign‑ins from unknown public IP ranges for privileged applications.",
-        "Enable MFA for all privileged accounts and require MFA for any service principal that can obtain Graph tokens.",
-        "Monitor Microsoft Entra sign‑in logs for anomalous IP addresses, especially traffic originating outside Azure datacenter ranges.",
-        "Implement least‑privilege scopes for backup solutions; limit permissions to only the data required for backup/restore.",
-        "Conduct a credential rotation for all third‑party applications integrated with the tenant, and verify that no stale secrets remain."
+        "Immediately revoke the compromised ConnectWise Cloud Backup service principal and generate a new client secret.",
+        "Audit all Azure AD service principals for excessive permissions; apply the principle of least privilege.",
+        "Enforce Conditional Access policies that require MFA for any privileged app consent, even for service‑principal logins where possible.",
+        "Monitor Azure AD sign‑in logs for authentication attempts from non‑Azure IP ranges and for token requests using client‑assertion grants.",
+        "Detect and alert on unexpected Global Administrator role assignments, especially those performed by service‑principal accounts.",
+        "Review and rotate client secrets for all third‑party applications (e.g., Huntress, Todyl) that have been granted admin‑level permissions.",
+        "Implement automated detection of rapid, sequential tenant sign‑ins (sorted GUID order) indicative of scripted token harvesting.",
+        "Communicate with affected MSPs and customers about the incident, provide guidance on credential rotation, and confirm the integrity of backup archives."
       ],
       "first_seen": "2026-10-17T12:40:55.218055+00:00",
-      "last_updated": "2026-10-17T12:45:37.983647+00:00",
-      "summary": "A compromised client assertion belonging to the ConnectWise Cloud Backup (formerly SkyKick) application was used to obtain Microsoft Graph tokens and gain unauthorized access to at least 173 Microsoft 365 tenants. The attacker leveraged a single IP address (144.172.64.128) to perform password‑spraying, scripted token requests, and, in at least one tenant, escalated privileges by adding the app to the Global Administrator role and injecting new client secrets into other trusted applications. Because the backup service holds broad read/write permissions across mail, files, and directory data, the breach exposes extensive tenant data and can serve as a foothold for further lateral movement.",
-      "analysis": "### Overview ConnectWise Cloud Backup is a SaaS backup and recovery solution for Managed Service Providers (MSPs) that requires wide‑ranging Microsoft Graph permissions (mailboxes, OneDrive, SharePoint, Teams, and Azure AD directory data) in every tenant where it is installed. On **October 15, 2026**, threat actors gained access to the vendor’s **client assertion** – a credential stored in the ConnectWise tenant – and used it to request Microsoft Graph access tokens for each customer tenant. ### Attack Timeline & Methodology | Date (UTC) | Activity | |------------|----------| | **Oct 13‑14** | Password‑spraying against four law‑firm tenants from **144.172.64.128** using a `curl/7.88.1` user‑agent. No successful user sign‑ins were observed, but two accounts were locked out. | | **Oct 15 01:58‑08:34** | Automated authentication to the compromised ConnectWise app using custom tooling, mimicking the legitimate backup service. Tokens were issued for **~173** tenants (Huntress observed 162‑173). The script iterated tenants in GUID order, a few seconds apart, indicating a scripted target list. | | **Post‑compromise** | In at least one tenant, the **ConnectWise Cloud Management app for Microsoft Teams** (App ID `24205314-2b89-4e07-a2a4-579e898a5640`) added itself to the **Global Administrator** role and executed a Python script (`Python-urllib/3.12`) that injected new client secrets into two other privileged applications – an MSP management app and the Huntress Security Platform. | ### Impact * **Data Exposure** – Tokens inherit the backup app’s permissions, allowing read/write access to mailboxes, files, SharePoint sites, Teams chats, and directory objects. * **Privilege Escalation** – By granting Global Administrator rights to the compromised app, attackers can create or modify additional service principals, extending access beyond the single tenant. * **Lateral Movement** – Injected client secrets into other MSP‑managed applications enable the adversary to pivot into additional customer environments that trust those apps. ### MITRE ATT&CK Mapping * **T1078.004 – Valid Accounts: Cloud Accounts** – Use of the stolen client assertion to obtain valid Graph tokens. * **T1110.003 – Password Spraying** – Initial attempts against law‑firm tenants. * **T1078.001 – Valid Accounts: Default Accounts** (implicit) – Adding the compromised app to the Global Administrator role. * **T1098.001 – Account Manipulation: Add Account to Privileged Role** – Elevating the app to Global Administrator. ### Indicators of Compromise (IOCs) | Type | Value | |------|-------| | ipv4 | 144.172.64.128 | | user-agent | curl/7.88.1 | | user-agent | Python-urllib/3.12 | | application-id | 24205314-2b89-4e07-a2a4-579e898a5640 | ### Defensive Observations Huntress detected the anomalous sign‑ins via Microsoft Entra sign‑in logs, noting that legitimate traffic for the backup service originates from Azure private IP ranges, not the public datacenter address used by the attacker. The activity was scripted, moving quickly between tenants, and left artifacts such as newly added client secrets in privileged applications.",
+      "last_updated": "2026-10-18T12:59:51.521166+00:00",
+      "summary": "A compromised service‑principal credential for ConnectWise Cloud Backup (formerly SkyKick) was used by an unknown threat actor to obtain Microsoft Graph tokens and gain unauthorized access to at least 173 Microsoft 365 tenants. The attacker leveraged the broad backup permissions to read mail, files, and directory data, and in at least one tenant escalated privileges by assigning the app to the Global Administrator role and injecting new client secrets into other trusted applications. The activity originated from a single external IP address and involved automated password‑spraying and scripted OAuth token requests, bypassing MFA. Immediate remediation is required to revoke the compromised credential and tighten cloud‑app governance.",
+      "analysis": "### Overview ConnectWise Cloud Backup provides MSPs with backup and recovery for Microsoft 365 and Google Workspace. The service operates via a **service principal** (application identity) that is granted wide‑scope permissions (mailbox, OneDrive, SharePoint, Teams, directory) in every tenant where the app is consented. ### Compromise Timeline - **Oct 13‑14, 2026** – The attacker performed password‑spraying against four law‑firm tenants from **144.172.64.128**, using a scripted `curl/7.88.1` user‑agent. No successful user logins were observed. - **Oct 15, 2026 (06:13‑08:34 UTC)** – Using the stolen client secret of the ConnectWise Cloud Backup service principal, the adversary authenticated directly to Microsoft Entra ID and requested Microsoft Graph access tokens for each tenant. The script iterated through tenant GUIDs in sorted order, issuing a token every few seconds. - **Oct 15‑16, 2026** – Unauthorized sign‑ins were logged in **162‑173** tenants (different counts reported by Huntress and The Hacker News). Tokens granted the same read/write capabilities as the legitimate backup service. - **Escalation** – In at least one tenant, the compromised **ConnectWise Cloud Management app for Microsoft Teams** (App ID `24205314-2b89-4e07-a2a4-579e898a5640`) added itself to the **Global Administrator** role and executed a Python script (`Python-urllib/3.12`) that injected new client secrets into two other privileged applications (an MSP management app and Huntress Security Platform). This created a **privilege‑escalation chain** that could extend access to additional customer tenants. ### Impact - **Data exposure** – The attacker can read any mailbox, file, or Teams conversation the backup service can, effectively exposing all customer data stored in Microsoft 365. - **Privilege creep** – By granting Global Administrator rights and adding secrets to other trusted apps, the threat actor can pivot to additional services and potentially exfiltrate data from downstream tenants. - **Bypass of MFA** – Because the authentication is performed by the service principal (not a user), MFA controls are ineffective. ### Detection Gaps - Normal backup traffic originates from Azure private IP ranges; the malicious activity originated from a public datacenter IP, which was not flagged by default. - The use of client‑assertion authentication and service‑principal tokens is not always monitored by standard user‑account security solutions. ### Mitigation Status ConnectWise has disabled the compromised service principal for all customers and issued a public advisory. Microsoft has logged the unauthorized authentication attempts and is working with the vendor on remediation. No evidence suggests that backup data itself was exfiltrated; the archive remains intact.",
       "sources": [
         {
           "title": "ConnectWise (SkyKick) Vendor Credentials Abused in M365 Attacks",
@@ -5727,6 +5681,11 @@
           "title": "Hackers Use Compromised ConnectWise Credential to Sign In to 173 Microsoft 365 Tenants",
           "url": "https://thehackernews.com/2026/10/hackers-use-compromised-connectwise.html",
           "source": "The Hacker News"
+        },
+        {
+          "title": "Hackers breach Microsoft 365 tenants via ConnectWise supply-chain attack",
+          "url": "https://www.bleepingcomputer.com/news/security/hackers-breach-microsoft-365-tenants-via-connectwise-supply-chain-attack/",
+          "source": "BleepingComputer"
         }
       ]
     },

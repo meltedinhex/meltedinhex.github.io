@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-18T13:18:29.459114+00:00",
-  "count": 324,
+  "generated_at": "2026-10-19T16:28:50.853980+00:00",
+  "count": 325,
   "reports": [
     {
       "slug": "miasma-supply-chain-attack",
-      "name": "BeyondTrust Remote Support Zero-Day (CVE‑2026‑102764)",
+      "name": "BeyondTrust Remote Support CVE-2026-102764 Exploitation",
       "category": "vulnerability",
-      "severity": "critical",
+      "severity": "high",
       "confidence": 1.0,
-      "faithfulness": 0.95,
-      "source_count": 544,
-      "ioc_count": 1163,
+      "faithfulness": 0.85,
+      "source_count": 551,
+      "ioc_count": 1186,
       "cves": [
         "CVE-2026-45321",
         "CVE-2026-48027",
@@ -631,7 +631,10 @@
         "CVE-2025-25257",
         "CVE-2024-3272",
         "CVE-2024-3273",
-        "CVE-2025-31324"
+        "CVE-2025-31324",
+        "CVE-2026-35029",
+        "CVE-2026-59823",
+        "CVE-2026-97229"
       ],
       "malware_families": [
         "Hades",
@@ -1236,7 +1239,14 @@
         "Adaptix C2",
         "CROSSROAD",
         "SHINYROAD",
-        "Pawns.app"
+        "Pawns.app",
+        "CoGUI",
+        "Haozi",
+        "Iron Man System",
+        "WHIPSHOT/SLAPSHOT",
+        "Miasma worm",
+        "Shai-Hulud worm",
+        "LuaJIT-loader"
       ],
       "threat_actors": [
         "Famous Chollima",
@@ -1675,24 +1685,28 @@
         "Bob Research Labs",
         "THE GRIM REAPER",
         "UNC5221",
-        "UNC7017"
+        "UNC7017",
+        "Edward Dubrovsky",
+        "Pepijn van der Stap"
       ],
       "ttps": [
-        {
-          "id": "T1190",
-          "name": "Exploit Public-Facing Application",
-          "tactic": "initial access"
-        },
         {
           "id": "T1068",
           "name": "Exploitation for Privilege Escalation",
           "tactic": "privilege escalation"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1505.003",
+          "name": "Web Shell",
+          "tactic": "persistence"
         }
       ],
       "iocs": {
-        "cve": [
-          "CVE-2026-102764"
-        ],
         "url": [
           "https://cl.distritovagas.com/hte.hta\"\\1",
           "https://resumeacceptable.com",
@@ -1856,6 +1870,10 @@
           "http://imagefiles-backup.oss-ap-southeast-7.aliyuncs.com/javas/Office/win/config.json",
           "http://imagefiles-backup.oss-ap-southeast-7.aliyuncs.com/javas/Office/win/WinRing0x64.sys",
           "http://target:9191",
+          "https://preview.redd.it/7fooqrtg4dvh1.png?width=1419&format=png&auto=webp&s=116efd93c29662dc9cb782cfc800c30b2873ffab",
+          "https://urlhaus.abuse.ch/url/3931216",
+          "https://preview.redd.it/h3hsewii4dvh1.png?width=1172&format=png&auto=webp&s=58e61a3e7a953fa4999d99e4c7fbe1a211ebb7dd",
+          "https://preview.redd.it/17yfdd6j4dvh1.png?width=1136&format=png&auto=webp&s=53eb7db310b96d28f3c28bffc08024c7ff7034b0",
           "http://23.240.77.233:8085",
           "http://23.240.77.233:8085/pM.js",
           "http://47.18.167.159:8085/pM.js",
@@ -1864,6 +1882,8 @@
           "http://23.240.77.233:8084/acme/order/11111",
           "http://23.240.77.233:8084/acme/authz/1",
           "http://23.240.77.233:8084/acme/finalize/61924744/774083503",
+          "https://v5v.in/r.sh?k=<token>|shThe",
+          "https://www.cve.org/CVERecord?id=CVE-2026-88771https://www.cve.org/CVERecord?id=CVE-2026-88779https://www.rapid7.com/blog/post/etr-zero-day-exploitation-of-citrix-netscaler-adc-and-gateway-cve-2026-88771-and-cve-2026-88772/https://www.rapid7.com/blog/post/etr-zero-day-exploitation-of-citrix-netscaler-adc-and-gateway-cve-2026-88771-and-cve-2026-88772/https://www.cisa.gov/news-events/alerts/2026/09/27/critical-zero-day-vulnerabilities-exploited-citrix-netscaler-adc-gatewayhttps://unit42.paloaltonetworks.com/netscaler-zero-days-exploited",
           "http://77.110.122.58:23205/cons_1.0.1.msi",
           "http://77.110.122.58:44479",
           "http://77.110.122.58",
@@ -2258,7 +2278,18 @@
           "8.210.84.56",
           "8.218.65.184",
           "47.239.60.117",
-          "104.234.65.75"
+          "104.234.65.75",
+          "209.74.64.192",
+          "179.60.146.241",
+          "45.92.1.17",
+          "62.133.62.80",
+          "46.151.182.18",
+          "132.243.166.140",
+          "199.233.217.13",
+          "31.56.197.72",
+          "64.94.85.67",
+          "130.94.20.222",
+          "173.231.39.244"
         ],
         "email": [
           "chenyk@163.com",
@@ -2278,7 +2309,8 @@
           "mark@hessattorneys.co.za",
           "schipkealfred@gmail.com",
           "funhouseraas@proton.me",
-          "funhouse8764@tutamail.com"
+          "funhouse8764@tutamail.com",
+          "dtobok@me.com"
         ],
         "md5": [
           "1f65544978b8ea0e745e573b8ee9684b",
@@ -2552,7 +2584,10 @@
           "a926889bab31f3c34663d18c05c4e862ef367028",
           "026f892630d0a4fe854a75984695ba99af0022c4",
           "6d72b56b86fd5ed9bd188c8c88cfc69476f836e7",
-          "06d58967fc049479241903e8ab95c003f27c9c42"
+          "06d58967fc049479241903e8ab95c003f27c9c42",
+          "116efd93c29662dc9cb782cfc800c30b2873ffab",
+          "58e61a3e7a953fa4999d99e4c7fbe1a211ebb7dd",
+          "53eb7db310b96d28f3c28bffc08024c7ff7034b0"
         ],
         "sha256": [
           "7790fd1035266000ed6d6cc35822f7683f5271663af8a5b5effadff85316df6d",
@@ -2865,27 +2900,29 @@
           "b7ae166fd49a7ecfe6322a80b8aa56d6aa0825d8f5d106dab2e4fb7d14ce15a8",
           "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
           "dc14e215269a93fdbc4c1a80b984c23faf7af0911c6dbb85309796a6f2ae95fb",
-          "1f19b9a27d79c11bda00a1e8faf74a7fdd683d38ccef1b60df2fd0307e3aa462"
+          "1f19b9a27d79c11bda00a1e8faf74a7fdd683d38ccef1b60df2fd0307e3aa462",
+          "6774bfed99da38cec82e721de4bd64a67db7840efadcc71e7df02eb6f0a03c44",
+          "56a892d80096a9db4ca473a9c3109729c60a5ba901d6ba65948bdb1f4a6fb186",
+          "8e8b9532ce40eacfe1b4cf2b11241878b70b910aabd90b453b1460df19b51a4d"
         ]
       },
       "affected_products": [
-        "BeyondTrust Remote Support (SaaS and self‑hosted)",
-        "BeyondTrust Privileged Remote Access (PRA)"
+        "BeyondTrust Remote Support (versions 26.2.3 and earlier)",
+        "BeyondTrust Hosted Remote Support instances"
       ],
       "recommendations": [
-        "Apply the BT26‑05‑RS patch to all self‑hosted BeyondTrust Remote Support installations immediately; ensure automatic updates are enabled for SaaS customers.",
-        "Upgrade any self‑hosted BeyondTrust Remote Support version older than 24.3.1 to the latest supported release.",
-        "Patch the Privileged Remote Access (PRA) product even if not directly affected, as a precaution.",
-        "Conduct a thorough forensic review of all Remote Support appliances for signs of web‑shells or unauthorized files; remove any malicious artifacts.",
-        "Implement network segmentation to isolate Remote Support servers from critical internal assets.",
-        "Enable strict outbound traffic monitoring and block unexpected file‑transfer protocols from Remote Support servers.",
-        "Review and harden any custom integrations or APIs that interact with BeyondTrust components to ensure proper origin validation.",
-        "Maintain an inventory of all Remote Support instances and verify their patch status on a regular cadence."
+        "Apply the BT26‑05‑RS patch (or later) to all BeyondTrust Remote Support appliances immediately.",
+        "Isolate and block network traffic to/from compromised Remote Support instances pending investigation.",
+        "Conduct forensic triage on affected systems as required by CISA KEV guidance.",
+        "Search for uploaded web shells or unexpected files in Remote Support installation directories.",
+        "Review authentication and origin validation logs for anomalous messaging activity.",
+        "Implement network segmentation to limit the reach of a compromised Remote Support appliance.",
+        "Monitor for indicators of ARMORY CASTLE activity, such as known command‑and‑control domains or IP ranges reported by threat‑intel feeds."
       ],
       "first_seen": "2026-06-11T15:22:05.280017+00:00",
-      "last_updated": "2026-10-18T13:03:41.658747+00:00",
-      "summary": "A critical remote‑support vulnerability (CVE‑2026‑102764) in BeyondTrust Remote Support was actively exploited as a zero‑day by the China‑linked espionage group Armory Castle beginning in late August 2026. The flaw enables unauthenticated attackers to perform arbitrary file operations on both SaaS and self‑hosted appliances, leading to web‑shell deployment and full system compromise. Patches have been released for SaaS customers, while self‑hosted installations require manual updates.",
-      "analysis": "### Vulnerability Overview - **CVE‑2026‑102764** is an *improper origin validation* issue (CWE‑290) in an internal messaging component of BeyondTrust Remote Support. The component fails to verify the source of received messages, allowing a remote, unauthenticated attacker to trigger file‑system operations. - The vulnerability received a **CVSS v4.0 score of 9.3 (Critical)**. ### Threat Actor Activity - The group **Armory Castle** (previously tracked as UNC5221/Warp Panda) exploited the flaw on **August 29, 2026** against a self‑hosted appliance and again on **September 27‑28, 2026** against additional installations. - Attackers used the flaw to upload web‑shells, then escalated to **root** privileges on the compromised appliance. - The campaign was uncovered through proactive hunting by BeyondTrust and later corroborated by Google Threat Intelligence Group, Mandiant, and other vendors. ### Exploitation Timeline | Date | Event | |------|-------| | Aug 29 2026 | First known exploitation of a self‑hosted Remote Support appliance. | | Sep 27‑28 2026 | Additional successful exploits observed; evidence of web‑shell upload and privilege escalation. | | Sep 28 2026 | BeyondTrust detects the hosted incident during proactive hunting. | | Oct 8 2026 | Patches released for SaaS customers. | | Oct 9 2026 | Patch availability announced for self‑hosted customers (BT26‑05‑RS). | | Oct 15 2026 | Public disclosure of CVE‑2026‑102764 and attribution to Armory Castle. | ### Impact - **File operations without authentication** – attackers can write, delete, or replace files on the appliance. - **Web‑shell deployment** – enables persistent remote command execution. - **Privilege escalation to root** – full control over the remote‑support server and any connected network resources. ### Mitigations Implemented by Vendor - Immediate patching of the vulnerable component for all SaaS customers (automatic). - Manual patch release for self‑hosted installations (versions 24.3.1‑26.2.3 require update to BT26‑05‑RS; older versions must upgrade to a newer major release). - Advisory to also patch the related **Privileged Remote Access (PRA)** product as a precaution. ### Remaining Risks - Systems that were compromised before patch deployment retain the back‑door/web‑shell. - Organizations that run self‑hosted appliances without automatic update mechanisms remain exposed until the manual patch is applied. - Potential for the same exploitation technique to be repurposed against other remote‑support or management solutions that perform insufficient origin validation.",
+      "last_updated": "2026-10-19T16:11:30.085876+00:00",
+      "summary": "A critical authentication bypass (CVE-2026-102764) in BeyondTrust Remote Support was actively exploited in the wild beginning in August 2026. The flaw allows unauthenticated attackers to perform arbitrary file operations, upload web shells, and obtain root privileges on both hosted and self‑hosted appliances. The activity has been linked to the ARMORY CASTLE (formerly UNC5221) espionage group, prompting emergency remediation and forensic triage recommendations.",
+      "analysis": "### Vulnerability Overview - **CVE‑2026‑102764** is an improper origin validation issue (CWE‑290) in an internal messaging component of BeyondTrust Remote Support. It permits remote, unauthenticated attackers to trigger file‑system operations without any user interaction. The vulnerability received a CVSS v4.0 score of **9.3 (Critical)**. ### Exploitation Timeline - **August 29, 2026** – First known compromises: one BeyondTrust‑hosted Remote Support instance and one self‑hosted appliance were breached. - **September 28, 2026** – BeyondTrust detected the hosted compromise during proactive hunting and reproduced the attack vector. - **September 30, 2026** – Mandiant independently corroborated the self‑hosted compromise. - **October 8, 2026** – Patches (BT26‑05‑RS) were released for versions 26.2.3 and earlier. - **October 15, 2026** – Public disclosure of the vulnerability. - **October 16, 2026** – CISA added CVE‑2026‑102764 to its Known Exploited Vulnerabilities (KEV) catalog, mandating forensic triage. ### Attack Flow 1. **Initial Access** – The attacker sends a crafted message to the Remote Support component, exploiting the lack of origin validation. 2. **File Operations** – The malicious request triggers arbitrary file reads/writes, enabling the upload of a web shell onto the appliance. 3. **Privilege Escalation** – With the web shell, the adversary executes commands to obtain root/administrator privileges. 4. **Persistence & Lateral Movement** – The compromised appliance can be used to pivot within the victim network, though specific lateral techniques were not detailed in the sources. ### Attribution - The activity has been attributed to **ARMORY CASTLE**, a suspected PRC‑nexus espionage actor previously tracked as UNC5221. The group is known for targeting edge appliances and remote‑access tools. ### Impact - Full control of Remote Support appliances, which manage endpoint troubleshooting for many enterprises. - Potential for further compromise of internal networks through the compromised appliance. - Exposure of sensitive data stored or transmitted via the Remote Support platform. ### Mitigations Implemented by Vendor - Release of patch **BT26‑05‑RS** for versions 26.2.3 and earlier. - Guidance to apply the patch on an emergency basis and to conduct forensic investigations on potentially affected systems.",
       "sources": [
         {
           "title": "CrowdStrike 2026 Technology Threat Landscape Report: China&rsquo;s Ambitions Fuel Attacks",
@@ -5488,6 +5525,11 @@
           "source": "BleepingComputer"
         },
         {
+          "title": "⚠️ URGENT WARNING: Fake \"VRChat-DLSS5-Cam\" GitHub repository is a dangerous Infostealer Malware (SmartLoader)",
+          "url": "https://www.reddit.com/r/Malware/comments/1x5iauj/urgent_warning_fake_vrchatdlss5cam_github/",
+          "source": "r/Malware"
+        },
+        {
           "title": "Ivanti Connect Secure Zero-Day CVE-2026-104935 Exploited in Chained Attacks",
           "url": "https://socradar.io/blog/cve-2026-104935-ivanti-connect-secure/",
           "source": "SOCRadar"
@@ -5593,6 +5635,11 @@
           "source": "The Hacker News"
         },
         {
+          "title": "Your AI Agent Doesn’t Have MFA",
+          "url": "https://cyble.com/blog/ai-agent-security-awareness-month/",
+          "source": "Cyble Blog"
+        },
+        {
           "title": "CVE-2026-102764: BeyondTrust Zero-Day Exploited",
           "url": "https://socradar.io/blog/cve-2026-102764-beyondtrust-zero-day/",
           "source": "SOCRadar"
@@ -5605,6 +5652,292 @@
         {
           "title": "MALFEX npm Package 'imgdecode' Hides Shellcode Loader in Windows Native Addon",
           "url": "https://thehackernews.com/2026/10/malfex-npm-package-imgdecode-hides.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Feds Suspect Ransom Negotiator Ran ShinyHunters Extortion Site",
+          "url": "https://krebsonsecurity.com/2026/10/feds-suspect-ransom-negotiator-ran-shinyhunters-extortion-site/",
+          "source": "Krebs on Security"
+        },
+        {
+          "title": "⚡ Weekly Recap: 98 Zero-Days, Rogue AI Agents, $100M Crypto Theft, 700 Supermarkets Hit and More",
+          "url": "https://thehackernews.com/2026/10/weekly-recap-98-zero-days-rogue-ai.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "CVE-2026-102764: Critical BeyondTrust Remote Support Authentication Bypass Exploited in the Wild",
+          "url": "https://www.rapid7.com/blog/post/etr-cve-2026-102764-critical-beyondtrust-remote-support-authentication-bypass-exploited-in-the-wild",
+          "source": "Rapid7 Blog"
+        },
+        {
+          "title": "19th October – Threat Intelligence Report",
+          "url": "https://research.checkpoint.com/2026/19th-october-threat-intelligence-report/",
+          "source": "Check Point Research"
+        },
+        {
+          "title": "NetScaler intrusions chaining CVE-2026-88771 and CVE-2026-88779",
+          "url": "https://www.rapid7.com/blog/post/ra-netscaler-intrusions-chaining-cve-2026-88771-and-cve-2026-88779",
+          "source": "Rapid7 Blog"
+        }
+      ]
+    },
+    {
+      "slug": "ghostaction-github-actions-credential-theft",
+      "name": "GhostAction",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 2,
+      "ioc_count": 4,
+      "cves": [],
+      "malware_families": [
+        "GhostAction"
+      ],
+      "threat_actors": [
+        "GhostAction"
+      ],
+      "ttps": [
+        {
+          "id": "T1195.001",
+          "name": "Compromise Software Dependencies and Development Tools",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "tactic": "stealth"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        },
+        {
+          "id": "T1567.001",
+          "name": "Exfiltration to Code Repository",
+          "tactic": "exfiltration"
+        },
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "193.32.204.199"
+        ],
+        "domain": [
+          "my-github.com",
+          "my-gitlab.com"
+        ],
+        "email": [
+          "noreply@my-github.com"
+        ]
+      },
+      "affected_products": [
+        "GitHub",
+        "GitHub Actions",
+        "GitLab",
+        "PyPI",
+        "npm",
+        "DockerHub",
+        "Amazon Web Services",
+        "Anthropic",
+        "OpenAI",
+        "OpenRouter"
+      ],
+      "recommendations": [],
+      "first_seen": "2026-10-10T15:02:45.103424+00:00",
+      "last_updated": "2026-10-19T16:06:43.808562+00:00",
+      "summary": "GhostAction is an active credential‑stealing campaign that compromises high‑profile open‑source maintainer accounts to inject malicious GitHub Actions workflows into thousands of repositories. The workflows exfiltrate a wide range of cloud, AI, and SaaS tokens to a hard‑coded IP address, while a parallel phishing operation delivers a stealer disguised as a font and harvests OAuth tokens via a fake GitHub security alert. The campaign has impacted hundreds of repositories and exfiltrated thousands of secrets, representing a significant supply‑chain risk for developers and organizations that rely on GitHub Actions.",
+      "analysis": "### Overview GhostAction first surfaced in September 2025 and has evolved into a multi‑vector supply‑chain operation. The core tactic remains the injection of malicious GitHub Actions workflow files (e.g., `security-audit.yml` and `github_actions_security.yml`) into compromised repositories. The attacker obtains a maintainer’s personal access token (PAT) – typically from prior credential dumps – and uses the legitimate account to push the workflow to the default branch. The workflow is triggered on `workflow_dispatch` and any push, runs with full repository history (`fetch-depth: 0`), and performs four actions: 1. **Secret enumeration** – reads the repository’s named GitHub Actions secrets. 2. **Credential pattern scanning** – searches the working tree and full git history for 13 known patterns (AWS keys, Anthropic, OpenAI, OpenRouter, npm, PyPI, DockerHub, GitHub/GitLab tokens, etc.). 3. **Key pairing** – matches AWS access‑key IDs with their corresponding secret keys. 4. **Exfiltration** – sends the harvested data via a plain‑HTTP `curl` request to `http://193.32.204.199`. ### Expansion to Phishing In October 2026 the threat actor added a phishing component. A domain `my-github.com` (pointing to the same IP) was registered and used in a spoofed GitHub security‑alert email (`noreply@my-github.com`). The email directs the victim to a reverse‑proxy login page that captures the password and 2FA code, then runs JavaScript to automatically complete a GitHub OAuth device‑flow authorization. The resulting repository‑scoped OAuth token grants `repo`, `workflow`, and `read:org` scopes, enabling the attacker to modify workflows programmatically – essentially automating the GhostAction supply‑chain attack without the victim’s explicit consent. ### Impact - **Scope**: >500 GitHub accounts, >10 000 repositories, >800 public repos across 327 users/organizations. - **Exfiltrated secrets**: 3 325 tokens, including AWS access keys, AI service API keys (Anthropic, OpenAI, OpenRouter), and package‑registry credentials (PyPI, npm, DockerHub). - **Infrastructure reuse**: The same IP address (`193.32.204.199`) is used for both workflow exfiltration and phishing data collection. ### MITRE ATT&CK Mapping - **T1195.001 – Supply Chain Compromise: Compromise Software Supply Chain** – injection of malicious workflows into third‑party projects. - **T1078 – Valid Accounts** – use of stolen PATs and OAuth tokens to act as legitimate maintainers. - **T1566.002 – Phishing: Spearphishing Link** – spoofed GitHub security‑alert email with malicious link. - **T1036 – Masquerading** – workflow files named “Security Audit” to appear benign. - **T1041 – Exfiltration Over Command and Control Channel** – plain‑HTTP exfiltration to a hard‑coded IP. - **T1567.001 – Exfiltration Over Web Services** – use of HTTP(S) to send harvested credentials. - **T1110 – Brute Force (Credential Dumping)** – leveraging previously leaked PATs. - **T1105 – Ingress Tool Transfer** – `curl` download of attacker‑controlled payloads within the workflow. ### Indicators of Compromise (IOCs) - **IPv4**: `193.32.204.199` - **Domain**: `my-github.com` (registered 2026‑10‑09) - **Domain**: `my-gitlab.com` (registered 2026‑09‑22, associated pattern) - **Email**: `noreply@my-github.com` - **Workflow filenames**: `security-audit.yml`, `github_actions_security.yml` - **GitHub accounts**: `TakashiKitao` (author of Pyxel), `henrywoo` (author of athenadriver) – used to push malicious workflows. ### Affected Products & Services - GitHub & GitHub Actions - GitLab (tokens harvested) - PyPI, npm, DockerHub (package‑registry tokens) - Amazon Web Services (access keys) - Anthropic, OpenAI, OpenRouter (AI service API keys) - General SaaS platforms that store API tokens in repository secrets ### Recommendations 1. **Enforce least‑privilege PAT scopes** and rotate all tokens immediately if compromise is suspected. 2. **Enable GitHub secret scanning** and require pull‑request reviews for any workflow file changes. 3. **Adopt signed GitHub Actions workflows** and enforce branch‑protection rules that prevent direct pushes to default branches. 4. **Block outbound traffic to `193.32.204.199`** (or any unknown IP used for exfiltration) at the network perimeter. 5. **Implement multi‑factor authentication (MFA) enforcement** and monitor for OAuth device‑flow authorizations with high‑privilege scopes. 6. **Educate developers** about phishing emails that mimic GitHub security alerts; verify URLs before entering credentials. 7. **Deploy secret‑management solutions** that keep credentials out of repository history and enable automated secret rotation. 8. **Monitor GitHub audit logs** for unusual `workflow_dispatch` events, PAT creations, and OAuth app authorizations. 9. **Leverage threat‑intel feeds** to watch for newly registered domains matching the `my-<code‑host>.com` pattern. 10. **Conduct regular repository hygiene** to purge historic secrets from git history using tools like `git filter-repo`.",
+      "sources": [
+        {
+          "title": "Credential-Stealing GitHub Actions Workflows Planted in Tens of Thousands of Repositories",
+          "url": "https://thehackernews.com/2026/10/credential-stealing-github-actions.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "GhostAction Attackers Plant Credential Stealer Disguised as Font in 94 GitHub Repositories",
+          "url": "https://thehackernews.com/2026/10/ghostaction-attackers-plant-credential.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
+    {
+      "slug": "macos-infostealer-via-deceptive-installers",
+      "name": "Atomic Infostealer Supply‑Chain Campaign",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 10,
+      "ioc_count": 16,
+      "cves": [],
+      "malware_families": [
+        "AMOS",
+        "MacSync",
+        "Odyssey",
+        "Poseidon",
+        "infostealer",
+        "rootkit",
+        "eBPF Rootkit",
+        "ClickFix",
+        "Atomic Stealer (AMOS)",
+        "CloudSyncD"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1204.002",
+          "name": "Malicious File",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "tactic": "stealth"
+        },
+        {
+          "id": "T1566.001",
+          "name": "Spearphishing Attachment",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1547.001",
+          "name": "Registry Run Keys / Startup Folder",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1564.001",
+          "name": "Hidden Files and Directories",
+          "tactic": "stealth"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "getmacouscloud.com"
+        ],
+        "url": [
+          "https://macostruecloud.xyz/?h=2f9548d041648a8030c040ae0e1e530b&z=304",
+          "https://getmacouscloud.com/?FSSbmnNdviEDE5S?io=16vwsb0rgIiPNIgM",
+          "https://render65.com/curl/f5509695dd98a9732378e5256d6235415d64d92194459bb08525c7ce5991a0c9",
+          "https://grove-89.com/api/metrics/run?event=pasted",
+          "https://render65.com/2kqYRM0DCrnyJgoS4gVLl_FHJRRdTUhGCbjyuYwpZ6c/m1/update"
+        ],
+        "ipv4": [
+          "188.166.78.138"
+        ],
+        "md5": [
+          "2f9548d041648a8030c040ae0e1e530b",
+          "49359f77ebb4ffd9a95568d27a8ff3e7"
+        ],
+        "sha256": [
+          "6144d433f8a0316869877b5f834c801251bbb936e5f1577c5680878c7443c98b",
+          "f5509695dd98a9732378e5256d6235415d64d92194459bb08525c7ce5991a0c9",
+          "b9ec3261d633c289e51c5fa8842af4350efe68446df39cb995de82e0941d0f3c",
+          "13b868b3ea8b492e7fbab1ca04535c53d0930650185b5a082cd59c1974689cd5",
+          "9f25ec533cb23d020e568fb771500d7776b1300f07119ad9d0876f4329ce22ab",
+          "0a03cf18de28017c0ea591dffc380a6b41fedd2acc3a39e901e58d9188c01836",
+          "01a0d5332b09bb299f7784bf0d0c43c4199269ed6a0712377279eeb999847d20"
+        ]
+      },
+      "affected_products": [
+        "npm (Node.js package manager)",
+        "Arch User Repository (AUR) – Arch Linux",
+        "macOS (any recent version)",
+        "Windows (via npm‑delivered backdoors)",
+        "Web browsers on macOS (Safari, Chrome, Firefox) used to access ClickFix domains"
+      ],
+      "recommendations": [
+        "Block execution of unknown or newly published npm and AUR packages until they are verified; enforce signed packages where possible.",
+        "Implement strict allow‑list controls for package manager registries and monitor for sudden spikes in new package publications.",
+        "Educate developers and end‑users not to copy‑paste commands from web pages or terminal prompts, especially those that invoke `curl|wget | sh` pipelines.",
+        "Deploy endpoint detection that flags Base64/hex‑encoded shell commands and the creation of hidden files in `/tmp` or other temporary directories.",
+        "Use browser‑fingerprinting detection or sandboxing that mimics macOS characteristics to expose cloaked ClickFix lures during analysis.",
+        "Monitor DNS queries and HTTP traffic for connections to the identified malicious domains and for large numbers of requests to package registry APIs.",
+        "Apply kernel‑level security controls (e.g., eBPF verification, seccomp) to prevent unauthorized loading of eBPF programs on Linux systems."
+      ],
+      "first_seen": "2026-06-11T16:53:53.948833+00:00",
+      "last_updated": "2026-10-19T16:05:45.566737+00:00",
+      "summary": "A coordinated campaign is abusing open‑source package ecosystems (npm and Arch User Repository) and malicious web‑lures to deliver information‑stealing malware to macOS, Windows and Linux hosts. The operation distributes backdoors, credential stealers (Atomic MacOS Stealer, Atomic Arch) and repackaged AI‑assistant tools, leveraging social engineering (fake AI credits, fake Web3 accelerator) and browser‑fingerprinting gates to evade automated analysis. The threat is active in the wild, targeting developers, cryptocurrency startups and general macOS users.",
+      "analysis": "### Overview The campaign operates across three primary delivery vectors: 1. **Compromised npm packages** – Two packages, `@apexacc/cli` and `@apexacc/audit`, were published under the guise of a \"Web3 accelerator\" offering free AI credits for Anthropic Claude and Google Gemini. Once installed, the packages drop Windows and macOS information‑stealers and backdoors, and they also repurpose a legitimate coding agent to proxy AI model requests through attacker‑controlled servers. 2. **Malicious Arch User Repository (AUR) packages** – Over 400 AUR packages were hijacked (campaign named *Atomic Arch*). The build scripts were altered to compile a Rust‑based credential stealer that, when run as root, loads an eBPF rootkit for stealth. No vulnerability in Arch’s official repositories was exploited; the attackers simply adopted abandoned packages and modified their PKGBUILDs. 3. **Web‑based ClickFix lures** – A large network of >250 look‑alike domains serves a server‑side fingerprinting gate that only shows the malicious command to browsers that appear to be genuine macOS instances. The gate delivers an obfuscated shell command that fetches and executes the *Atomic MacOS Stealer* (AMOS) payload. The stealer harvests credentials, browser data, crypto wallets and files from `/tmp` before persisting in hidden directories. ### Tradecraft * **Social engineering** – Fake AI‑credit offers, a \"Web3 accelerator\" brand, and impersonation of legitimate development studios (e.g., Cheesy Studios) are used to convince victims to run a single command or install a package. * **User‑execution** – Victims are instructed to copy‑paste a Base64‑encoded command into Terminal (T1204.002 – Malicious File Execution). * **Obfuscation & download** – The command retrieves additional scripts/binaries via `curl`/`wget` (T1105 – Ingress Tool Transfer) and uses Base64/hex encoding to hide the payload (T1027 – Obfuscated Files or Information). * **Browser fingerprinting gate** – JavaScript checks for macOS‑specific user‑agent strings, screen resolution, and other heuristics to hide the lure from crawlers and sandboxes, a form of *environment‑based evasion*. * **Persistence** – The macOS stealer writes files to `/tmp` and creates hidden directories; the Linux eBPF rootkit loads at kernel level to remain resident. * **Credential harvesting** – Collected data includes OS credentials, browser password stores, cryptocurrency wallet files, and developer secrets from IDE configuration files. ### Impact The campaign targets developers (npm/AUR users), cryptocurrency founders, and general macOS users. Because the payload runs with the privileges of the installing user (or root on Linux when the package is built with `sudo`), attackers can obtain high‑value credentials and potentially pivot to further compromise of cloud or on‑premises resources.",
+      "sources": [
+        {
+          "title": "Deceptive Installers: How Fake Apps Target macOS",
+          "url": "https://www.huntress.com/blog/deceptive-installers-macos-infostealers",
+          "source": "Huntress"
+        },
+        {
+          "title": "Over 400 Arch Linux packages compromised to push rootkit, infostealer",
+          "url": "https://www.bleepingcomputer.com/news/security/over-400-arch-linux-packages-compromised-to-push-rootkit-infostealer/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Over 400 Arch Linux AUR Packages Hijacked to Deploy Infostealer and eBPF Rootkit",
+          "url": "https://thehackernews.com/2026/06/over-400-arch-linux-aur-packages.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "24 billion stolen records exposed online. Here&#8217;s what to do",
+          "url": "https://www.malwarebytes.com/blog/news/2026/06/24-billion-stolen-records-found-in-giant-data-dump-check-if-youre-affected",
+          "source": "Malwarebytes Labs"
+        },
+        {
+          "title": "Roblox developers are losing entire games to malware attacks",
+          "url": "https://www.malwarebytes.com/blog/scams/2026/06/roblox-developers-are-losing-entire-games-to-malware-attacks",
+          "source": "Malwarebytes Labs"
+        },
+        {
+          "title": "ThreatsDay Bulletin: Claude Chat Abuse, NastyC2 npm Packages, Device-Code Phishing + 25 More Stories",
+          "url": "https://thehackernews.com/2026/06/threatsday-bulletin-claude-chat-abuse.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Atomic MacOS (AMOS) stealer infection, (Sun, Aug 2nd)",
+          "url": "https://isc.sans.edu/diary/rss/33208",
+          "source": "SANS Internet Storm Center"
+        },
+        {
+          "title": "From open lures to cloaked gates: How a macOS ClickFix campaign learned to hide",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/08/05/macos-clickfix-campaign-learned-hide/",
+          "source": "Microsoft Security Blog"
+        },
+        {
+          "title": "Over 250 ClickFix Domains Use Browser Fingerprinting to Hide macOS Malware Lures",
+          "url": "https://thehackernews.com/2026/08/over-250-clickfix-domains-use-browser.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Fake Web3 Accelerator Uses npm Packages to Spread Malware and Hijack AI Agent Traffic",
+          "url": "https://thehackernews.com/2026/10/fake-web3-accelerator-uses-npm-packages.html",
           "source": "The Hacker News"
         }
       ]
@@ -14391,115 +14724,6 @@
           "title": "22 Seconds to Compromise: How Automated SSH Actors Move From Login to Persistence Before You Can Blink &#x5b;Guest Diary&#x5d;, (Thu, Aug 6th)",
           "url": "https://isc.sans.edu/diary/rss/33220",
           "source": "SANS Internet Storm Center"
-        }
-      ]
-    },
-    {
-      "slug": "macos-infostealer-via-deceptive-installers",
-      "name": "Infostealer and eBPF Rootkit Campaign",
-      "category": "malware",
-      "severity": "critical",
-      "confidence": 0.95,
-      "faithfulness": 0.8,
-      "source_count": 9,
-      "ioc_count": 2,
-      "cves": [],
-      "malware_families": [
-        "AMOS",
-        "MacSync",
-        "Odyssey",
-        "Poseidon",
-        "infostealer",
-        "rootkit",
-        "eBPF Rootkit",
-        "ClickFix",
-        "Atomic Stealer (AMOS)"
-      ],
-      "threat_actors": [],
-      "ttps": [
-        {
-          "id": "T1486",
-          "name": "Data Encrypted for Impact",
-          "tactic": "impact"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1210",
-          "name": "Exploitation of Remote Services",
-          "tactic": "lateral movement"
-        }
-      ],
-      "iocs": {
-        "domain": [
-          "temp.sh"
-        ],
-        "sha256": [
-          "6144d433f8a0316869877b5f834c801251bbb936e5f1577c5680878c7443c98b"
-        ]
-      },
-      "affected_products": [
-        "Arch Linux",
-        "macOS"
-      ],
-      "recommendations": [
-        "Review affected packages and rotate credentials",
-        "Enable multi-factor authentication",
-        "Check for exposed passwords using a digital footprint portal",
-        "Change exposed passwords immediately and avoid reusing them across multiple accounts"
-      ],
-      "first_seen": "2026-06-11T16:53:53.948833+00:00",
-      "last_updated": "2026-08-05T19:53:54.042242+00:00",
-      "summary": "A sophisticated campaign has compromised over 400 Arch Linux packages and numerous macOS installers, distributing a credential stealer and eBPF rootkit. The malware targets developer secrets, browser data, and other sensitive information, with the potential to exfiltrate data to a command-and-control server. Users are advised to review affected packages, rotate credentials, and enable multi-factor authentication.",
-      "analysis": "The campaign uses social engineering to trick users into installing compromised packages or installers, which then execute a malicious payload. The payload, written in Rust, collects sensitive information from developer workstations and build systems, including browser cookies, tokens, and local storage, as well as GitHub, npm, and HashiCorp Vault tokens. The malware also includes an optional eBPF rootkit, which hides the malware's processes and socket inodes from standard tools. The campaign has been linked to a database containing 24 billion stolen records, which was exposed online before being taken offline.",
-      "sources": [
-        {
-          "title": "Deceptive Installers: How Fake Apps Target macOS",
-          "url": "https://www.huntress.com/blog/deceptive-installers-macos-infostealers",
-          "source": "Huntress"
-        },
-        {
-          "title": "Over 400 Arch Linux packages compromised to push rootkit, infostealer",
-          "url": "https://www.bleepingcomputer.com/news/security/over-400-arch-linux-packages-compromised-to-push-rootkit-infostealer/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "Over 400 Arch Linux AUR Packages Hijacked to Deploy Infostealer and eBPF Rootkit",
-          "url": "https://thehackernews.com/2026/06/over-400-arch-linux-aur-packages.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "24 billion stolen records exposed online. Here&#8217;s what to do",
-          "url": "https://www.malwarebytes.com/blog/news/2026/06/24-billion-stolen-records-found-in-giant-data-dump-check-if-youre-affected",
-          "source": "Malwarebytes Labs"
-        },
-        {
-          "title": "Roblox developers are losing entire games to malware attacks",
-          "url": "https://www.malwarebytes.com/blog/scams/2026/06/roblox-developers-are-losing-entire-games-to-malware-attacks",
-          "source": "Malwarebytes Labs"
-        },
-        {
-          "title": "ThreatsDay Bulletin: Claude Chat Abuse, NastyC2 npm Packages, Device-Code Phishing + 25 More Stories",
-          "url": "https://thehackernews.com/2026/06/threatsday-bulletin-claude-chat-abuse.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Atomic MacOS (AMOS) stealer infection, (Sun, Aug 2nd)",
-          "url": "https://isc.sans.edu/diary/rss/33208",
-          "source": "SANS Internet Storm Center"
-        },
-        {
-          "title": "From open lures to cloaked gates: How a macOS ClickFix campaign learned to hide",
-          "url": "https://www.microsoft.com/en-us/security/blog/2026/08/05/macos-clickfix-campaign-learned-hide/",
-          "source": "Microsoft Security Blog"
-        },
-        {
-          "title": "Over 250 ClickFix Domains Use Browser Fingerprinting to Hide macOS Malware Lures",
-          "url": "https://thehackernews.com/2026/08/over-250-clickfix-domains-use-browser.html",
-          "source": "The Hacker News"
         }
       ]
     },

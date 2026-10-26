@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-25T13:53:11.420375+00:00",
-  "count": 328,
+  "generated_at": "2026-10-26T16:04:07.310111+00:00",
+  "count": 329,
   "reports": [
     {
       "slug": "miasma-supply-chain-attack",
-      "name": "BlackX UEFI Bootkit",
-      "category": "malware",
+      "name": "Active Exploitation of Critical Vulnerabilities (2026)",
+      "category": "vulnerability",
       "severity": "high",
       "confidence": 1.0,
       "faithfulness": 0.95,
-      "source_count": 586,
-      "ioc_count": 1327,
+      "source_count": 591,
+      "ioc_count": 1334,
       "cves": [
         "CVE-2026-45321",
         "CVE-2026-48027",
@@ -658,7 +658,11 @@
         "CVE-2026-53959",
         "CVE-2026-7873",
         "CVE-2026-93674",
-        "CVE-2026-93680"
+        "CVE-2026-93680",
+        "CVE-2026-110264",
+        "CVE-2026-111497",
+        "CVE-2026-89078",
+        "CVE-2026-93577"
       ],
       "malware_families": [
         "Hades",
@@ -1300,7 +1304,8 @@
         "QuickLine",
         "WormGPT-MCP",
         "rks3",
-        "PHP2Shell"
+        "PHP2Shell",
+        "Plex2Shell"
       ],
       "threat_actors": [
         "Famous Chollima",
@@ -1749,28 +1754,58 @@
         "CryptoFeel",
         "Member19",
         "QazWsxShop",
-        "k0t"
+        "k0t",
+        "Storm-1865"
       ],
       "ttps": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1566.001",
+          "name": "Spearphishing Attachment",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1550.003",
+          "name": "Pass the Ticket",
+          "tactic": "lateral movement"
+        },
         {
           "id": "T1542.003",
           "name": "Bootkit",
           "tactic": "stealth, persistence"
         },
         {
-          "id": "T1068",
-          "name": "Exploitation for Privilege Escalation",
-          "tactic": "privilege escalation"
+          "id": "T1110.003",
+          "name": "Password Spraying",
+          "tactic": "credential access"
         },
         {
-          "id": "T1547.001",
-          "name": "Registry Run Keys / Startup Folder",
-          "tactic": "persistence, privilege escalation"
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1071.001",
+          "name": "Web Protocols",
+          "tactic": "command and control"
         }
       ],
       "iocs": {
         "cve": [
-          "CVE-2022-21894"
+          "CVE-2026-109618",
+          "CVE-2026-109619",
+          "CVE-2022-21894",
+          "CVE-2026-110447",
+          "CVE-2026-114625"
         ],
         "url": [
           "https://cl.distritovagas.com/hte.hta\"\\1",
@@ -2455,7 +2490,10 @@
           "103.147.220.17",
           "5.2.3.18",
           "6.1.3.10",
-          "6.4.2.12"
+          "6.4.2.12",
+          "204.76.203.7",
+          "193.26.115.0",
+          "193.26.115.221"
         ],
         "email": [
           "chenyk@163.com",
@@ -3112,22 +3150,22 @@
         ]
       },
       "affected_products": [
-        "Microsoft Windows 11 (UEFI firmware)",
-        "UEFI firmware on x86_64 platforms",
-        "Kaspersky security solutions",
-        "Avast security solutions"
+        "PHP (Apache mod_php 8.4.26 and earlier)",
+        "Microsoft 365 / Azure AD / Entra ID",
+        "Windows (mshta.exe, PowerShell)",
+        "UEFI firmware (Secure Boot implementations)",
+        "Collabora Online Built‑in CODE Server (Nextcloud integration)",
+        "Arista VeloCloud Orchestrator",
+        "Booking.com web portal (brand‑spoofed phishing)",
+        "Kaspersky and Avast security suites (targeted by BlackX)"
       ],
       "recommendations": [
-        "Apply firmware updates that revoke vulnerable Machine Owner Keys and patch the Baton Drop vulnerability.",
-        "Enable Secure Boot with strict key management and monitor for unauthorized MOK enrollment events.",
-        "Deploy endpoint detection that can monitor EFI driver loading and anomalous firmware activity.",
-        "Conduct forensic imaging of firmware and validate the integrity of the UEFI boot chain on affected systems.",
-        "Isolate and investigate any compromised diplomatic endpoints; consider full system rebuild if bootkit infection is confirmed."
+        "Patch all PHP installations to the latest version"
       ],
       "first_seen": "2026-06-11T15:22:05.280017+00:00",
-      "last_updated": "2026-10-25T13:38:30.662605+00:00",
-      "summary": "BlackX is a UEFI bootkit observed in early 2026 that leverages the Baton Drop vulnerability (CVE-2022-21894) to bypass Secure Boot and load malicious drivers on patched Windows 11 systems. Attributed with medium confidence to the Chinese state‑sponsored group APT41, the bootkit targets diplomatic agencies in Central Asia and is designed to subvert security solutions from vendors such as Kaspersky and Avast while providing long‑term, stealthy persistence.",
-      "analysis": "## Technical Overview BlackX builds on the code base of the earlier BlackLotus bootkit, re‑using the same Baton Drop exploit to enroll custom Machine Owner Keys (MOKs) and load arbitrary EFI binaries before the operating system boots. The bootkit’s workflow is: 1. **Privilege/Physical Access** – The attacker must have administrator privileges or physical access to trigger the exploit. 2. **Baton Drop Exploitation (CVE‑2022‑21894)** – By abusing a flaw in the UEFI Secure Boot validation chain, BlackX injects a malicious EFI driver. 3. **MOK Enrollment** – Custom keys are added to the firmware’s trust store, allowing the malicious driver to be accepted as trusted. 4. **Driver Deployment** – A kernel‑mode driver is loaded that interferes with endpoint security products (e.g., Kaspersky, Avast) and establishes a covert persistence mechanism. 5. **Payload Execution** – Follow‑on payloads are delivered post‑boot, providing remote access and data‑exfiltration capabilities.",
+      "last_updated": "2026-10-26T15:50:21.297593+00:00",
+      "summary": "In late 2026 a wave of actively exploited critical vulnerabilities surfaced across a wide range of software stacks, from PHP web servers to Microsoft 365, UEFI firmware, and network orchestration platforms. Exploits such as PHP2Shell (CVE‑2026‑109618/109619) have been confirmed in the wild, delivering remote code execution and credential theft, while separate campaigns leverage phishing (ClickFix), token‑replay attacks, and a UEFI bootkit (BlackX) to bypass security controls. The breadth of affected products and the demonstrated in‑the‑wild activity demand immediate patching, network segmentation, and enhanced detection.",
+      "analysis": "### PHP2Shell (CVE‑2026‑109618 / CVE‑2026‑109619) - **Vulnerability description**: Both CVEs stem from improper handling of out‑of‑memory errors in PHP’s `longjmp()` error path, leaving request memory uninitialized or pointing to freed regions. This enables unauthenticated remote code execution on any server running vulnerable PHP (e.g., Apache mod_php 8.4.26). - **Exploitation evidence**: Perplexity honeypots recorded full RCE against an Apache mod_php instance, delivering an 800 KiB decoded cookie dump and a function address used in a follow‑on payload. The activity was corroborated by Expel researcher Marcus Hutchins. - **Post‑exploitation activity**: Unit 42 observed attackers using AI platforms to enumerate compromised hosts, exfiltrate password hashes and MFA secrets, and establish NTLM‑relay tunnels for privilege escalation within an European government network. - **Scanning activity**: Cloudflare reported millions of exploitation attempts within hours of public disclosure, indicating broad automated scanning. ### ClickFix Campaign (Booking.com brand abuse) - **Tactics**: Threat actor *Storm‑1865* sent spear‑phishing emails masquerading as Booking.com, directing victims to a fake CAPTCHA page that copied a PowerShell/`mshta.exe` command to the clipboard. When executed, the command launched commodity malware (e.g., XWorm, Lumm). - **Impact**: The campaign targeted hospitality staff across multiple continents and remained active for months. ### Microsoft 365 Token‑Replay Attack - **Technique**: An adversary‑in‑the‑middle login page captured credentials and MFA codes, then replayed the resulting Azure AD access token to gain mailbox access without re‑authenticating. - **Scope**: 497 successful sign‑in events across 79 organizations, compromising 97 accounts and registering 48 rogue Entra devices. - **Infrastructure**: Attack traffic originated from the IPv4 /24 block **193.26.115.0/24**. ### BlackX UEFI Bootkit - **Exploitation**: BlackX leveraged the legacy *Baton Drop* vulnerability (CVE‑2022‑21894) to enroll a malicious Machine Owner Key and bypass Secure Boot, loading a custom EFI driver that disables Kaspersky and Avast security components. - **Attribution**: Medium confidence link to APT41 (aka Brass Typhoon, Wicked Panda, Barium). - **Target set**: Diplomatic agencies in Central Asian states. ### CISA‑Flagged Vulnerabilities - **Collabora Online CODE Server (CVE‑2026‑110447)** – OS command injection via `proxy.php` leading to RCE; observed back‑doors in Nextcloud servers used for credential and crypto‑wallet harvesting. - **Arista VeloCloud Orchestrator (CVE‑2026‑114625)** – SQL injection granting privileged internal functionality; exploitation requires network reach to the VCO web interface. ### Common Themes 1. **Unauthenticated RCE** on public‑facing services (PHP, Collabora, Arista). 2. **Credential theft and token replay** to bypass MFA (Microsoft 365, NTLM‑relay). 3. **Supply‑chain and firmware abuse** to achieve persistence (BlackX bootkit). 4. **Heavy automated scanning** and rapid weaponisation of newly disclosed CVEs. Defenders must treat these as a coordinated surge of exploitation activity rather than isolated incidents.",
       "sources": [
         {
           "title": "CrowdStrike 2026 Technology Threat Landscape Report: China&rsquo;s Ambitions Fuel Attacks",
@@ -6058,6 +6096,104 @@
           "title": "BlackX UEFI bootkit exploits Baton Drop flaw to bypass Secure Boot",
           "url": "https://www.bleepingcomputer.com/news/security/blackx-uefi-bootkit-exploits-baton-drop-flaw-to-bypass-secure-boot/",
           "source": "BleepingComputer"
+        },
+        {
+          "title": "PHP2Shell Exploitation Attempts Continue Amid Suspected N. Korea Global Scanning Activity",
+          "url": "https://thehackernews.com/2026/10/php2shell-exploitation-hits-government.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Microsoft 365 Token-Replay Attacks Compromise 97 Accounts at 79 Organizations",
+          "url": "https://thehackernews.com/2026/10/microsoft-365-token-replay-attacks.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "PHP2Shell security flaws now sucessfully exploited in the wild",
+          "url": "https://www.bleepingcomputer.com/news/security/php2shell-security-flaws-now-sucessfully-exploited-in-the-wild/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Know How Cyble Brand Intelligence Can Help Stop ClickFix Campaigns in its Tracks",
+          "url": "https://cyble.com/blog/booking-com-brand-intelligence-clickfix-campaign/",
+          "source": "Cyble Blog"
+        },
+        {
+          "title": "⚡ Weekly Recap: This2Shell, That2Shell, Everything's an RCE? Rogue AI, Supply Chain Chaos and More",
+          "url": "https://thehackernews.com/2026/10/weekly-recap-this2shell-that2shell.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
+    {
+      "slug": "gheist-github-token-theft",
+      "name": "Gheist",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 1.0,
+      "source_count": 1,
+      "ioc_count": 4,
+      "cves": [],
+      "malware_families": [
+        "Gheist"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1078.004",
+          "name": "Cloud Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1087.004",
+          "name": "Cloud Account",
+          "tactic": "discovery"
+        },
+        {
+          "id": "T1567.002",
+          "name": "Exfiltration to Cloud Storage",
+          "tactic": "exfiltration"
+        }
+      ],
+      "iocs": {
+        "sha1": [
+          "f3da2b8b357dcda02fd455d314be2a95007516a6",
+          "d09535857a741bbb976bdc084a9a021713133291",
+          "1dc5af9cce950aad1eb1546ecce8565b117540c4",
+          "c665b778b2d822453293003e7ca0bbb2cb08e39d"
+        ]
+      },
+      "affected_products": [
+        "GitHub",
+        "GitHub Actions",
+        "GitHub Enterprise Server",
+        "AWS (Secrets Manager, IAM roles)",
+        "CloudTrail"
+      ],
+      "recommendations": [
+        "Rotate all repository secrets and revoke any compromised GitHub tokens.",
+        "Enforce branch protection policies that require pull‑request review before merges.",
+        "Enable GitHub secret scanning and require manual approval for all GitHub Actions workflows, especially in private repositories and Enterprise Server.",
+        "Monitor GitHub audit logs for creation of branches matching the pattern `ci-sync-*` and for rapid deletion of workflow runs.",
+        "Set up alerts for the `gheist` user‑agent string in GitHub API traffic.",
+        "Implement CloudTrail and IAM Access Analyzer alerts for unusual role assumptions originating from GitHub Actions.",
+        "Restrict PAT scopes to the minimum required permissions and use short‑lived tokens where possible.",
+        "Deploy runtime detection to flag base‑32 encoded secret values appearing in Action logs."
+      ],
+      "first_seen": "2026-10-26T15:48:30.008463+00:00",
+      "last_updated": "2026-10-26T15:48:30.008473+00:00",
+      "summary": "Gheist is an automated threat actor campaign that leverages stolen GitHub access tokens to inject malicious GitHub Actions workflows into private repositories and GitHub Enterprise Server instances. The injected workflows exfiltrate repository secrets via Action logs, which the attackers retrieve before deleting the runs, and subsequently use harvested cloud credentials to enumerate AWS Secrets Manager. The campaign has compromised over 850 accounts and remains active.",
+      "analysis": "### Overview Gheist, named after the `gheist` user‑agent observed in GitHub API traffic, has been active since at least 15 September 2026. The adversary obtains GitHub personal access tokens (PATs) or automation‑account tokens that have **write** permissions on repositories. With these credentials the group creates a new branch on the target repository, named `ci-sync-XXXXXX` (six random characters), and pushes a single file: `.github/workflows/sync-check.yml`. ### Workflow Injection & Secret Exfiltration The workflow is triggered automatically by the push. Its job performs the following actions: 1. **Prints the job environment** – exposing any environment variables the runner inherits. 2. **Enumerates every secret** the repository can read and encodes each value in Base‑32. GitHub’s log‑masking does not apply to transformed values, so the full secret appears in the Action log. 3. **Uploads the log** (implicitly via the standard GitHub Actions logging mechanism). The attackers then download the logs via the GitHub API before the run and its branch are deleted. GitHub’s safeguard that pauses suspicious workflow runs only applies to public repositories; private repositories and GitHub Enterprise Server are not protected, allowing the exfiltration to proceed unchecked. ### Post‑Exfiltration Activity After harvesting repository secrets (including cloud credentials), the adversary leverages the stolen AWS credentials to **enumerate AWS Secrets Manager** within the victim organization. The campaign cycles through multiple tokens from different users and automation accounts within minutes, cloning private repositories before planting the malicious workflow. CloudTrail logs show the organization’s own workflows executing on the malicious branches and assuming AWS IAM roles, indicating that the compromised GitHub Actions were used to obtain further cloud access without explicit approval. ### Persistence & Cleanup The malicious branch and workflow run are deleted shortly after execution, erasing most evidence from the repository view. However, the secrets have already been exposed, and the compromised tokens remain valid until manually revoked. Approximately two‑thirds of the compromised GitHub accounts have disappeared, suggesting that victims have responded by deleting or disabling the accounts. ### Impact - Exposure of **all repository‑level secrets** (API keys, cloud credentials, tokens, etc.). - Potential **lateral movement** into cloud environments (AWS) via harvested credentials. - **Supply‑chain risk**: compromised repositories may be used as a source of malicious code for downstream consumers. ### Detection Gaps - Lack of GitHub‑provided protection for private repositories and Enterprise Server. - Insufficient monitoring of newly created branches and workflow files. - Absence of alerts for unusual `gheist` user‑agent strings or rapid token cycling. --- **Key Observables** - Branch naming pattern: `ci-sync-******` - Workflow file path: `.github/workflows/sync-check.yml` - User‑agent string in GitHub API calls: `gheist` - Token usage: any PAT with **repo** write scope. --- **Mitigations** - Rotate **all** secrets in compromised repositories immediately. - Revoke any GitHub tokens that have been used to create branches or push workflow files. - Enforce **branch protection rules** that require pull‑request review and disallow direct pushes to default branches. - Enable **GitHub secret scanning** and **required approvals for GitHub Actions** on private repositories and Enterprise Server. - Monitor **GitHub audit logs** for creation of branches matching `ci-sync-*` and for workflow runs that are quickly deleted. - Implement **cloud‑credential monitoring** (e.g., AWS IAM Access Analyzer, CloudTrail alerts) for anomalous role assumption originating from GitHub Actions. - Deploy **runtime detection** for base‑32 encoded secret values appearing in Action logs. - Educate developers on the principle of **least‑privilege** for PATs and automation tokens.",
+      "sources": [
+        {
+          "title": "Gheist Uses Stolen GitHub Tokens to Steal Private Repository Secrets via Actions Logs",
+          "url": "https://thehackernews.com/2026/10/gheist-uses-stolen-github-tokens-to.html",
+          "source": "The Hacker News"
         }
       ]
     },

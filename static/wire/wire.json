@@ -1,7 +1,564 @@
 {
-  "generated_at": "2026-10-27T15:28:37.592349+00:00",
-  "count": 328,
+  "generated_at": "2026-10-28T16:08:50.980753+00:00",
+  "count": 331,
   "reports": [
+    {
+      "slug": "camera-management-software-compromise-malware",
+      "name": "Camera Management Software (CMS) Compromise",
+      "category": "malware",
+      "severity": "medium",
+      "confidence": 1.0,
+      "faithfulness": 0.92,
+      "source_count": 1,
+      "ioc_count": 6,
+      "cves": [],
+      "malware_families": [
+        "rs.win32"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1574.002",
+          "name": "Hijack Execution Flow",
+          "tactic": "stealth, execution"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1071.001",
+          "name": "Web Protocols",
+          "tactic": "command and control"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "144.172.116.37"
+        ],
+        "domain": [
+          "cloudapi.3r-dataware.com"
+        ],
+        "url": [
+          "http://cloudapi.3r-dataware.com/sso"
+        ],
+        "sha256": [
+          "1fb4af4862643dcab1459872f723f574f1a588855b020916b600df5c20681144",
+          "8f8e88c54a9c56174974711eff99b4beb79536642fcca1902acdc3d4b1fd1035",
+          "70b2345302264c41504d59e6a63d6d908969740424b42b7373f10b4c8d74c87a"
+        ]
+      },
+      "affected_products": [
+        "Camera Management Software (CMS.exe)",
+        "Windows Process Camera Monitor (WpcMon.exe)",
+        "Microsoft Windows (any version supporting WpcMon.exe)"
+      ],
+      "recommendations": [
+        "Block outbound traffic to 144.172.116.37 and the domain cloudapi.3r-dataware.com at the firewall or proxy level.",
+        "Implement application allow‑listing to restrict execution of unsigned binaries in user AppData directories, especially `WpcMon.exe` when not required.",
+        "Monitor for DLL sideloading patterns: legitimate binaries loading unexpected DLLs from `%AppData%` or other non‑system locations.",
+        "Conduct a software supply‑chain audit of all camera management tools; verify hash signatures against vendor‑provided values and remove any unverified installations.",
+        "Deploy endpoint detection rules that flag the creation of `rs.win32.exe` or execution of unknown binaries launched from the CMS installation path.",
+        "Perform threat hunting queries for the strings `developerslavery` and `d3e3v4e3l9o9p0e3r4s2l9a1v4e3r4y6` in memory and on disk."
+      ],
+      "first_seen": "2026-10-28T15:45:20.301550+00:00",
+      "last_updated": "2026-10-28T15:45:20.301565+00:00",
+      "summary": "In September–October 2026, threat actors compromised a legitimate camera management application (CMS.exe) to gain footholds in multiple customer environments. The attackers dropped a malicious payload (rs.win32.exe), performed DLL sideloading via the trusted Windows binary WpcMon.exe, and established a command‑and‑control beacon to 144.172.116.37. Indicators such as the malicious domain cloudapi.3r-dataware.com and embedded strings point to a supply‑chain compromise of the camera management software.",
+      "analysis": "### Initial Access The adversary leveraged a compromised camera management platform (identified on endpoints as `C:\\Program Files (x86)\\CMS\\CMS.exe`). The binary lacks proper version information, but contains the strings `developerslavery`, `d3e3v4e3l9o9p0e3r4s2l9a1v4e3r4y6`, and a hard‑coded URL `hxxp://cloudapi.3r-dataware.com/sso/`. The domain resolves to a Korean company (3R Global) and appears on the download page of `kvision.ai`, suggesting a supply‑chain insertion point. ### Payload Delivery & Execution After the compromised CMS.exe executed, it dropped a second-stage executable named `rs.win32.exe` into the victim’s file system. The attackers then used **DLL sideloading** by invoking the legitimate Windows binary `WpcMon.exe` (Windows Process Camera Monitor) located in the user’s `%AppData%` directory. This technique allowed the malicious DLL to run under the guise of a trusted process. ### Command & Control The sideloaded payload opened a persistent beacon to the external IP address **144.172.116.37**, using HTTP(S) traffic to the previously observed domain `cloudapi.3r-dataware.com`. This C2 channel enables further instructions, additional payloads, and data exfiltration. ### Observations & Attribution - The campaign was observed across several unrelated customer environments, indicating a broad targeting of any organization that deployed the compromised camera management software. - No definitive vendor relationship could be established between the compromised binary and the download site, but the shared strings and domain strongly suggest a maliciously altered distribution of the CMS package. - The use of a legitimate Windows binary for DLL sideloading demonstrates a focus on evading traditional endpoint detection. ### MITRE ATT&CK Mapping - **T1574.002 – Signed Binary Proxy Execution: DLL Side‑Loading** – Leveraging `WpcMon.exe` to load malicious code. - **T1105 – Ingress Tool Transfer** – Dropping `rs.win32.exe` onto the endpoint. - **T1071.001 – Application Layer Protocol: Web Protocols** – Beaconing to an external IP/domain over HTTP(S).",
+      "sources": [
+        {
+          "title": "Camera Management Software Compromise Leads to Malware Deployment",
+          "url": "https://www.huntress.com/blog/camera-management-software-compromise-malware",
+          "source": "Huntress"
+        }
+      ]
+    },
+    {
+      "slug": "device-code-phishing-attacks",
+      "name": "Kali365 / Skyw4lker Device Code Phishing Kit",
+      "category": "phishing",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 14,
+      "ioc_count": 21,
+      "cves": [],
+      "malware_families": [
+        "BlueKit",
+        "CoGUI",
+        "Haozi",
+        "Iron Man System"
+      ],
+      "threat_actors": [
+        "EvilTokens",
+        "Kali365",
+        "Storm-2372",
+        "Spring Ring",
+        "petrushka",
+        "UAT-11985"
+      ],
+      "ttps": [
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1528",
+          "name": "Steal Application Access Token",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1557.001",
+          "name": "Name Resolution Poisoning and SMB Relay",
+          "tactic": "credential access, collection"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        }
+      ],
+      "iocs": {
+        "url": [
+          "https://mononapfp.sharepoint.com/:f:/document/INV-IgCx1X50pgUjR7iAjZL2fuQaAW4GfKVs6wHT3BYv9sgwW7g",
+          "https://mononapfpcom.sharepoint.com/:f:/g/IgAdH_aaBPMcQbtINZzC1TsLARj3dHj63MnKjvnY-QJrKEc\"Discovery",
+          "https://san-sid.com/owners"
+        ],
+        "ipv4": [
+          "38.248.95.214",
+          "193.32.248.251",
+          "193.138.7.142",
+          "185.65.134.209",
+          "178.130.47.46",
+          "5.181.3.106",
+          "2.56.172.214",
+          "185.234.67.53",
+          "45.8.157.185",
+          "80.66.72.215",
+          "136.0.20.6",
+          "185.213.155.226",
+          "185.155.99.161",
+          "92.118.232.131",
+          "45.182.189.80",
+          "185.65.133.51",
+          "45.33.22.47"
+        ],
+        "sha256": [
+          "24ab9fe5d5be62d3bf055a0ca4508e8bca2996b6d78649dce8145d8a27bc1c5b"
+        ]
+      },
+      "affected_products": [
+        "Microsoft 365 (Azure AD, Outlook, SharePoint, OneDrive)",
+        "Google Workspace (Gmail, Google Auth)",
+        "Any cloud‑hosted phishing landing pages (Google Cloud, Microsoft Azure)",
+        "QR‑code scanning applications"
+      ],
+      "recommendations": [
+        "Block or restrict the OAuth device‑code flow for regular user accounts via Azure AD conditional access.",
+        "Monitor Azure AD sign‑in logs for token issuance events (grant_type=device_code) from unusual IPs or geolocations.",
+        "Deploy email security gateways that sandbox URLs and detect AI‑generated or QR‑code‑laden phishing content.",
+        "Enforce MFA with contextual prompts and educate users to reject unexpected device‑code approval requests.",
+        "Blacklist residential proxy IP ranges and enforce corporate VPN for all cloud authentication traffic.",
+        "Integrate threat‑intel feeds that contain known phishing‑kit domains, URLs, and hash indicators into SIEM/EDR solutions.",
+        "Conduct regular phishing awareness training that includes examples of device‑code and QR‑code phishing attacks."
+      ],
+      "first_seen": "2026-06-25T15:00:17.817032+00:00",
+      "last_updated": "2026-10-28T15:43:38.852968+00:00",
+      "summary": "A rapidly evolving phishing‑as‑a‑service ecosystem is abusing Microsoft’s OAuth device‑code flow to hijack corporate accounts. The kits, known as Kali365 and Skyw4lker, lure victims with SharePoint, OneDrive or other business‑service themed pages, redirect them to Microsoft’s legitimate login portal, and capture access and refresh tokens once the victim approves an attacker‑controlled device code. The campaign is active across the United States, targeting manufacturing, technology, healthcare and other sectors, and has been observed in dozens of public sandbox sessions each week.",
+      "analysis": "### Overview Multiple open‑source investigations (ANY.RUN, Microsoft Security, Cisco Talos, Arctic Wolf, Malwarebytes) describe a unified phishing‑as‑a‑service (PhaaS) offering that automates the creation and operation of device‑code phishing campaigns. The core workflow is identical across the observed kits: 1. **Lure Generation** – Attackers distribute business‑oriented documents or event invitations (e.g., SharePoint‑styled pages, fake conference flyers) that contain a malicious URL. 2. **OAuth Device‑Code Flow Abuse** – The URL redirects the victim to Microsoft’s legitimate device‑login portal. The attacker supplies a device code; the victim is prompted to approve it on the Microsoft page. Once approved, Microsoft issues an **access token** and a **refresh token** to the attacker’s application. 3. **Post‑Compromise Activity** – With a valid token, the adversary can read email, download documents, enumerate Azure AD users, and impersonate the victim in Microsoft 365 services. ### Technical Highlights - **Infrastructure** – Campaigns host phishing pages on Google Cloud and other legitimate cloud services, making detection based on hosting provider difficult. Residential proxy networks are used to disguise malicious sign‑ins as normal consumer traffic (Arctic Wolf). - **AI‑Assisted Lures** – Some operators (e.g., the UAT‑11985 campaign) employ large‑language‑model generation to craft personalized event invitations and QR‑code‑based “quishing” lures, expanding the attack surface to printed materials. - **Adversary‑in‑the‑Middle (AitM) Framework** – The phishing kit can act as a real‑time proxy, mirroring Google or Microsoft authentication pages over HTTP/WebSocket, allowing the capture of credentials and MFA challenges without alerting the user. - **Phishing‑as‑a‑Service** – BlueKit, another PhaaS platform, provides a turnkey dashboard for campaign management, demonstrating that sophisticated phishing operations are now commoditized and can be launched in minutes. - **Ecosystem Context** – Microsoft’s investigation of the Storm‑3119 ecosystem shows that these kits are part of a broader Chinese‑language cyber‑crime marketplace that supplies phishing kits, compromised cloud credentials, and infrastructure to threat actors worldwide. ### Impact Successful token theft grants **Valid Accounts** (T1078) and **OAuth Token Abuse** (T1528), enabling long‑term, stealthy access to corporate data, financial workflows, and the ability to exfiltrate or manipulate information. The low‑visibility nature of device‑code flows means traditional credential‑theft alerts often miss these compromises. ### Detection Gaps - Normal user‑initiated device‑code flows are rare in enterprise environments, so anomalous token issuance often goes unnoticed. - Use of legitimate cloud providers and residential proxies masks malicious traffic. - QR‑code phishing and AI‑generated lures bypass many content‑filtering signatures. ### Mitigations - Enforce conditional access policies that block **device‑code flow** for all users except explicitly approved service accounts. - Deploy real‑time monitoring for OAuth token grants (Azure AD sign‑in logs) and flag approvals from unfamiliar IP ranges or geographic locations. - Require MFA push notifications that include device information and enforce user verification of any MFA prompt. - Implement URL reputation and sandboxing for all links in emails, especially those referencing cloud services. - Educate users to verify the authenticity of any request to approve a device code, and to avoid scanning unknown QR codes. - Block known residential proxy IP ranges and enforce corporate VPN usage for cloud authentication. - Leverage threat‑intel feeds that list phishing‑kit infrastructure domains and hash signatures (e.g., from ANY.RUN, Cisco Talos, Malwarebytes).",
+      "sources": [
+        {
+          "title": "We Need to Talk About Device Code Phishing",
+          "url": "https://www.huntress.com/blog/tradecraft-tuesday-device-code-phishing-explained",
+          "source": "Huntress"
+        },
+        {
+          "title": "ARToken: Inside an EvilTokens affiliate panel targeting Microsoft 365",
+          "url": "https://blog.talosintelligence.com/artoken-inside-an-eviltokens-affiliate-panel-targeting-microsoft-365/",
+          "source": "Cisco Talos"
+        },
+        {
+          "title": "ARToken PhaaS exposes EvilTokens' Microsoft 365 phishing toolkit",
+          "url": "https://www.bleepingcomputer.com/news/security/artoken-phaas-exposes-eviltokens-microsoft-365-phishing-toolkit/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "DEBULL Tooling Abuses Microsoft Device-Code Flow to Target M365 Accounts",
+          "url": "https://thehackernews.com/2026/07/debull-tooling-abuses-microsoft-device.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Greatness PhaaS Adds Device Code Phishing to Bypass MFA and Steal Tokens",
+          "url": "https://thehackernews.com/2026/08/greatness-phaas-adds-device-code.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Phishing service spoofs RingCentral to steal Microsoft 365 accounts",
+          "url": "https://www.bleepingcomputer.com/news/security/phishing-service-spoofs-ringcentral-to-steal-microsoft-365-accounts/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Kali365 Weaponizes Microsoft Authentication Against US Companies: New Enterprise Risk",
+          "url": "https://thehackernews.com/2026/08/kali365-weaponizes-microsoft.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Microsoft 365 AitM Phishing Hijacks Accounts to Collect Payroll and Finance Emails",
+          "url": "https://thehackernews.com/2026/08/microsoft-365-aitm-phishing-hijacks.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Spring Ring: An Inside Look at Voice Phishing Campaigns in Microsoft Teams",
+          "url": "https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/",
+          "source": "Unit 42 (Palo Alto)"
+        },
+        {
+          "title": "AI-powered phishkit arms criminals with account-hijacking tools in 10 minutes",
+          "url": "https://www.malwarebytes.com/blog/threat-intel/2026/10/ai-powered-phishkit-arms-criminals-with-account-hijacking-tools-in-10-minutes",
+          "source": "Malwarebytes Labs"
+        },
+        {
+          "title": "UAT-11985: AI-assisted event lures delivering real-time Google AitM phishing",
+          "url": "https://blog.talosintelligence.com/uat-11985/",
+          "source": "Cisco Talos"
+        },
+        {
+          "title": "The hidden network: Inside the phishing infrastructure ecosystem powering global cybercrime",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/10/14/the-hidden-network-inside-the-phishing-infrastructure-ecosystem-powering-global-cybercrime/",
+          "source": "Microsoft Security Blog"
+        },
+        {
+          "title": "UAT-11985 Uses Fake Event Invites to Target Taiwan Research Affiliates With Google AitM Phishing",
+          "url": "https://thehackernews.com/2026/10/uat-11985-uses-fake-event-invites-to.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "American Organizations Under Attack: Skyw4lker Device Code Phishing Campaign Exposed",
+          "url": "https://thehackernews.com/2026/10/american-organizations-under-attack.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
+    {
+      "slug": "inj3ctor3-pbx-toll-fraud-campaign",
+      "name": "INJ3CTOR3 FreePBX Webshell Campaign",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.92,
+      "source_count": 1,
+      "ioc_count": 19,
+      "cves": [
+        "CVE-2019-19006"
+      ],
+      "malware_families": [
+        "EncystPHP",
+        "JOMANGY"
+      ],
+      "threat_actors": [
+        "INJ3CTOR3"
+      ],
+      "ttps": [
+        {
+          "id": "T1110.001",
+          "name": "Password Guessing",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1059.004",
+          "name": "Unix Shell",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1005",
+          "name": "Data from Local System",
+          "tactic": "collection"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "160.119.69.4",
+          "45.95.147.178",
+          "160.119.76.250"
+        ],
+        "url": [
+          "http://45.95.147.178/hima_data/index.php",
+          "http://160.119.69.4/hima_data/index.php",
+          "http://160.119.69.4",
+          "http://45.95.147.178"
+        ],
+        "md5": [
+          "a2f6863413c4192a4abfa360577b9961",
+          "8b3a1d970fda0c17a0b785a990fb7b6a",
+          "e1ebf9066a951be519a24140711839ea",
+          "bd42a8a0d23ae16c85dede7d2abaec05",
+          "7544725ebaaadac217dfaa7ca8e8fe7e"
+        ],
+        "sha256": [
+          "c6e64453ea8bc0856333b6f57567c9efd8c440410787cae135d1c4a248c07c0d",
+          "38edbfc4ac89619d2bdb3f4bb2626deaaf422868d6d7af640f59d7959903f838",
+          "1c14a761620691a43b1a554a9eccd38d21c15d59463945250d4f57b10d20fce9",
+          "b54a8d9e98ff36dfe63b2aea97a2003b670f7311595bb4dd072850fed5900a0b",
+          "aa6dfd7ee90d9aea5af29ae39c14ff70cf8687118abadd7aa4fc98923f01ffd1",
+          "adeb015fdb37814edc3ed45230f48d2b0e87bb195a5a7e4487c01549b47c744c",
+          "d345671e688ee807e1bb9b6fc45e6bb0611bbb1331c33888c8030ec2db47e672"
+        ]
+      },
+      "affected_products": [
+        "FreePBX",
+        "Issabel",
+        "Elastix"
+      ],
+      "recommendations": [
+        "Patch known PBX vulnerabilities (e.g., CVE‑2019‑19006) and apply vendor security updates immediately.",
+        "Enforce strong, unique passwords for all PBX admin, AMI, SIP, and mail‑relay accounts; enable account lockout after failed attempts.",
+        "Deploy network‑level segmentation to isolate PBX systems from the internet and restrict outbound traffic to only required SIP and management endpoints.",
+        "Implement file‑integrity monitoring on `/etc/asterisk` and FreePBX configuration directories to detect unauthorized modifications.",
+        "Block outbound HTTP/HTTPS traffic to the identified staging IPs (160.119.69.4, 45.95.147.178) at the firewall or proxy level.",
+        "Conduct a full credential rotation for all 17 compromised configuration files after cleaning the host.",
+        "Monitor for anomalous SIP registration and call‑origin patterns, especially calls originating from unknown IP ranges.",
+        "Deploy web‑application firewalls (WAF) with rules to detect and block PHP webshell upload attempts and encoded request payloads."
+      ],
+      "first_seen": "2026-10-28T15:43:06.314076+00:00",
+      "last_updated": "2026-10-28T15:43:06.314091+00:00",
+      "summary": "INJ3CTOR3 has upgraded its long‑running PBX compromise operation. The group now deploys a PHP webshell (JOMANGY) on FreePBX, Issabel, and Elastix systems that exfiltrates 17 configuration files—including SIP trunk, AMI, database, and mail‑relay credentials—every minute to two staging servers. The stolen SIP credentials enable the operators to place toll‑fraud calls from anywhere, rendering host rebuilding ineffective unless all secrets are rotated.",
+      "analysis": "### Overview INJ3CTOR3 has been targeting Asterisk‑based PBX platforms since at least 2020. The latest generation, observed in September 2026, builds on the previously documented JOMANGY PHP webshell but adds persistent credential exfiltration and a second C2 staging host. ### Infection Chain 1. **Recon & Initial Access** – Scans for exposed FreePBX/Issabel/Elastix instances and either exploits known vulnerabilities (e.g., CVE‑2019‑19006) or brute‑forces weak admin passwords (ATT&CK T1110.001 – *Brute Force*). 2. **Webshell Deployment** – Uploads the password‑gated PHP webshell (ATT&CK T1105 – *Ingress Tool Transfer*; T1059.004 – *Unix Shell* for command execution). 3. **Persistence** – The shell maintains a self‑healing persistence mechanism that re‑installs if removed. 4. **Credential Harvesting** – On each execution, the shell reads 17 PBX configuration files (e.g., `sip_additional.conf`, `amportal.conf`, database and mail‑relay configs) and POSTs them to `/hima_data/index.php` on two staging hosts (ATT&CK T1005 – *Data from Local System*; T1041 – *Exfiltration Over C2 Channel*). 5. **Toll‑Fraud Execution** – Stolen SIP trunk secrets are used by the operators to register rogue endpoints and place calls at the victim’s expense, eliminating the need for the compromised PBX to remain online. ### New Behaviors - **Dual Staging Hosts** – Plain‑text commands point to `160.119.69.4`; base64‑encoded commands reference `45.95.147.178`. - **Continuous Exfiltration** – Credentials are uploaded every minute while the host stays infected. - **Stealth Logging** – Requests are encoded with a leading space to bypass standard access‑log entries; trunk files are written directly to `/etc/asterisk` and do not appear in the FreePBX GUI. ### Impact Because the stolen SIP credentials can be used from any location, simply cleaning or rebuilding the PBX does not stop the fraud. Victims must rotate all secrets in the 17 compromised configuration files after the system is sanitized. ### Mitigations Observed - Rotation of a per‑build watermark and webshell gate hash to evade signature‑based detection. - Use of encoded command strings to hide C2 traffic from naïve log analysis. ### ATT&CK Mapping - **T1110.001** – Brute‑Force (password‑gated webshell login) - **T1059.004** – Unix Shell (PHP webshell executing OS commands) - **T1105** – Ingress Tool Transfer (webshell upload) - **T1005** – Data from Local System (exfil of PBX config files) - **T1041** – Exfiltration Over C2 Channel (upload to staging hosts) - **T1078** – Valid Accounts (use of stolen SIP/AMI credentials for fraud)",
+      "sources": [
+        {
+          "title": "From Hijacked PBX to Stolen Trunk: INJ3CTOR3’s Campaign Evolves",
+          "url": "https://cyble.com/blog/hijacked-pbx-to-stolen-trunk-inj3ctor3s-campaign/",
+          "source": "Cyble Blog"
+        }
+      ]
+    },
+    {
+      "slug": "cyberstrikeai-ai-driven-attacks",
+      "name": "CyberStrikeAI",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 0,
+      "cves": [],
+      "malware_families": [
+        "CyberStrikeAI"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1595",
+          "name": "Active Scanning",
+          "tactic": "reconnaissance"
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "tactic": "discovery"
+        },
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "tactic": "privilege escalation"
+        },
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        },
+        {
+          "id": "T1560",
+          "name": "Archive Collected Data",
+          "tactic": "collection"
+        },
+        {
+          "id": "T1566.001",
+          "name": "Spearphishing Attachment",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1046",
+          "name": "Network Service Discovery",
+          "tactic": "discovery"
+        },
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "tactic": "stealth"
+        }
+      ],
+      "iocs": {},
+      "affected_products": [
+        "Fortinet FortiGate appliances",
+        "Cisco networking equipment",
+        "Citrix application delivery controllers",
+        "F5 BIG‑IP devices",
+        "Yamaha network devices",
+        "Geographic Information System (GIS) servers (default credentials)",
+        "AI workflow platforms / inference services"
+      ],
+      "recommendations": [
+        "Implement continuous monitoring for abnormal scanning activity and the presence of AI‑generated tool signatures.",
+        "Enforce strong, unique passwords and multi‑factor authentication on all exposed services, especially GIS and edge devices.",
+        "Patch known vulnerabilities in Cisco, Citrix, F5, Yamaha, and FortiGate products promptly; maintain an up‑to‑date vulnerability management program.",
+        "Deploy web‑application firewalls and anti‑phishing controls to detect and block fake login pages in Japanese or other languages.",
+        "Network‑segment critical infrastructure and restrict outbound traffic to only approved C2 endpoints; use DNS‑level monitoring for anomalous domains.",
+        "Conduct threat‑hunting queries for the creation of automated reports, mass credential dumping, and bulk exfiltration patterns associated with AI‑driven workflows.",
+        "Educate staff on the risks of AI‑assisted social engineering and enforce verification of any credential‑request communications."
+      ],
+      "first_seen": "2026-10-28T15:42:25.821259+00:00",
+      "last_updated": "2026-10-28T15:42:25.821274+00:00",
+      "summary": "CyberStrikeAI is an open‑source AI‑driven penetration testing platform that has been weaponized to automate full attack lifecycles against Japanese organizations. By orchestrating 44 autonomous agents, the platform conducts reconnaissance, vulnerability validation, exploitation, C2, persistence, data exfiltration and even generates fake Japanese‑language login pages. The campaign impacted at least 19 organizations in a matter of weeks, demonstrating a high‑risk, automated threat model.",
+      "analysis": "### Overview Researchers observed three distinct cyber‑attacks against Japanese targets that leveraged artificial intelligence in different capacities. The most sophisticated of these employed **CyberStrikeAI**, an AI‑enabled penetration testing framework, to fully automate the attack workflow. The platform distributes tasks across **44 autonomous agents**, each handling a specific phase of the kill chain—from initial reconnaissance to post‑exploitation reporting. ### Attack Workflow 1. **Reconnaissance & Vulnerability Discovery** – The agents scan target networks, enumerate services, and validate vulnerabilities (e.g., default credentials on GIS servers, known CVEs in Cisco, Citrix, F5, Yamaha devices). This aligns with ATT&CK **T1595** (Active Scanning) and **T1087** (Account Discovery). 2. **Exploitation & Persistence** – Validated weaknesses are exploited using publicly disclosed exploits, followed by the deployment of persistence mechanisms. Relevant techniques include **T1068** (Exploitation for Privilege Escalation) and **T1547** (Boot or Logon Autostart Execution). 3. **Command‑and‑Control** – Compromised hosts communicate with a central C2 server using encrypted channels, matching **T1071** (Application Layer Protocol) and **T1090** (Proxy). 4. **Data Exfiltration & Reporting** – Stolen data (cadastral records, Windows credentials, email) is exfiltrated and automatically compiled into structured reports, reflecting **T1041** (Exfiltration Over C2 Channel) and **T1560** (Archive Collected Data). 5. **Social Engineering Artifacts** – The platform auto‑generates phishing‑style fake login pages in Japanese, a clear use of **T1566.001** (Spearphishing Attachment) and **T1566.002** (Spearphishing Link). ### Variants of AI Use - **Fully Automated Campaign** – CyberStrikeAI orchestrates the entire operation without human intervention beyond initial target selection. - **Human‑Led with LLM Assistance** – In a second case, operators used a large language model to accelerate planning and tool development, targeting AI workflow platforms to harvest inference capacity. - **Tool Development Aid** – A third instance limited AI involvement to script generation for attacks against edge devices (Cisco, Citrix, F5, Yamaha) using known vulnerabilities. ### Impact At least **19 organizations** (16 in Japan) received automated validation reports, indicating successful compromise and data collection. The rapid, repeatable nature of the platform raises the threat level for any organization with exposed services or unpatched edge devices.",
+      "sources": [
+        {
+          "title": "CyberStrikeAI Uses 44 AI Agents to Automate Hacking Operations Against Japan Targets",
+          "url": "https://thehackernews.com/2026/10/cyberstrikeai-uses-44-ai-agents-to.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
+    {
+      "slug": "n0n-maritime-extortion-wave",
+      "name": "n0n",
+      "category": "ransomware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 1.0,
+      "source_count": 2,
+      "ioc_count": 7,
+      "cves": [],
+      "malware_families": [
+        "n0n"
+      ],
+      "threat_actors": [
+        "n0n"
+      ],
+      "ttps": [
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1110.001",
+          "name": "Password Guessing",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1133",
+          "name": "External Remote Services",
+          "tactic": "persistence, initial access"
+        },
+        {
+          "id": "T1021.001",
+          "name": "Remote Desktop Protocol",
+          "tactic": "lateral movement"
+        },
+        {
+          "id": "T1486",
+          "name": "Data Encrypted for Impact",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1565.001",
+          "name": "Stored Data Manipulation",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "tactic": "discovery"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "185.157.161.148",
+          "185.157.161.93",
+          "81.161.239.10",
+          "188.214.135.130",
+          "198.13.158.143",
+          "45.132.114.241",
+          "217.18.55.185"
+        ]
+      },
+      "affected_products": [
+        "FortiGate SSL‑VPN",
+        "Cisco Firepower Management Center",
+        "AWS (cloud accounts)",
+        "Remote Desktop Protocol (RDP)",
+        "Windows Remote Management (WinRM)",
+        "Various hosting‑management portals"
+      ],
+      "recommendations": [
+        "Enforce multi‑factor authentication and strong password policies on all VPN, RDP, and cloud accounts; monitor for credential‑stuffing activity.",
+        "Segment and restrict access to critical infrastructure such as Cisco Firepower Management Center; enable logging of policy changes and alert on mass BLOCK actions.",
+        "Deploy credential‑access monitoring (e.g., Azure AD Identity Protection, FortiGuard) to detect use of stolen or weak credentials.",
+        "Implement immutable, offline backups and verify restoration procedures; consider ransomware‑specific backup hardening (air‑gap, write‑once media).",
+        "Monitor network traffic for anomalous exfiltration patterns and for the presence of the “.n0n” file extension on endpoints.",
+        "Block or closely inspect outbound connections to known AI‑service endpoints that could be used for automated script generation.",
+        "Regularly scan for exposed directories and misconfigured services (e.g., open HTTP file servers) in the organization’s attack surface.",
+        "Subscribe to threat‑intel feeds covering n0n’s dark‑web leak site to receive early warnings of newly listed victims."
+      ],
+      "first_seen": "2026-10-14T14:19:49.577642+00:00",
+      "last_updated": "2026-10-28T15:42:23.215858+00:00",
+      "summary": "The n0n group, first observed in September 2026, is a financially motivated data‑theft and destructive‑extortion operation that leverages stolen or weak credentials to infiltrate organizations worldwide. In October 2026 the group posted a large batch of maritime and logistics victims, demanding up to USD 14 million per target and threatening to publish the data on a dark‑web leak site. Their infrastructure includes an openly exposed staging server and AI‑assisted tooling that automates script creation and encryptor development. The campaign has impacted at least 93 organizations across 14‑18 countries, with total ransom demands exceeding USD 283 million.",
+      "analysis": "### Overview - **Actor**: n0n is a data‑exfiltration and destructive‑extortion group tracked since September 2026. The group brands itself with the exact spelling “n0n” and the slogan “n0n | no js | no mercy”. - **Motivation**: Purely financial – the group monetizes stolen data via public leak postings and ransom demands. - **Geography**: Likely Russian‑based, targeting victims in North America, Europe, Asia, and Latin America. ### Campaign Timeline & Scope - **September 2026**: Initial compromises discovered via an exposed staging server (185.157.161.148:8877) containing 1,719 files, including C++ encryptor source code and 829 attack scripts. - **October 12 2026**: A “maritime wave” added 38 port, shipping, and logistics organizations from 18 countries to the group’s dark‑web leak site, doubling the public victim count. - **October 19 2026**: Publication deadline for the maritime data set (13:27 UTC). No settlements were reported. - **As of October 19 2026**: 93 victims listed, total ransom demands of **USD 283.7 million**. ### Attack Infrastructure & Tools - **Credential‑only access**: No exploit of software vulnerabilities was observed. Initial access relied on: - Credential‑stuffing campaigns against **FortiGate SSL‑VPN** devices (≈305 devices). - Stolen or weak **RDP/WinRM** credentials. - Compromised **AWS** access keys (cloud accounts). - Hijacked hosting‑management portals. - **AI‑assisted tooling**: An AI coding agent (≈150 LLM models) generated hundreds of scripts and contributed to the development of the encryptor, incurring >$7,200 in LLM API usage. - **Operational tools**: - **Cisco Firepower Management Center** instances were commandeered to set all firewall policies to **BLOCK**, causing service disruption. - Custom **C++ encryptor** (source code found) that appends a “.n0n” extension to encrypted files. - **Infostealer** components that harvest Active Directory mappings, legal documents, and other high‑value data. - **Infrastructure exposure**: A Python HTTP file server on **185.157.161.148:8877** publicly exposed the operator’s workspace. ### Victim Profile - **Sector focus**: Maritime and logistics (ports, container terminals, shipping lines) – 12 of the 38 maritime victims are South Korean operators. - **Other sectors**: Retail (U.S. sports retailer), cloud services, education (teachers’ union), telecommunications (Venezuelan ISP), government (Argentine ministry), pharmaceuticals. - **Geographic spread**: Victims in Brazil, Spain, Morocco, India, Vietnam, Singapore, China, Taiwan, Kuwait, Indonesia, Germany, South Korea, United States, Argentina, Venezuela, and others. ### Impact - **Data exposure**: Sensitive corporate documents, AD topology, and operational data. - **Service disruption**: Blocking of firewall policies via compromised Cisco devices. - **Destruction**: The group deletes data and backups after exfiltration; encryption is used in some cases, though no encryptor has been publicly linked to a specific victim. ### MITRE ATT&CK Mapping - **T1078** – Valid Accounts (use of stolen/weak credentials, including cloud accounts – T1078.004). - **T1110.001** – Password Guessing / Credential Stuffing. - **T1133** – External Remote Services (FortiGate SSL‑VPN, RDP/WinRM). - **T1021.001** – Remote Services: RDP. - **T1562.004** – Impair Defenses: Modify Cloud Firewall (Cisco Firepower policy block). - **T1486** – Data Encrypted for Impact (use of .n0n encryptor). - **T1565.001** – Data Destruction (deletion of data and backups). - **T1041** – Exfiltration Over Command and Control Channel. - **T1087** – Account Discovery (harvesting AD mappings).",
+      "sources": [
+        {
+          "title": "n0n Group Puts Dozens of Global Ports and Shipping on Its Leak Site",
+          "url": "https://socradar.io/blog/n0n-group-global-ports-shipping-leak/",
+          "source": "SOCRadar"
+        },
+        {
+          "title": "n0n Ransomware: Inside an AI-Assisted Extortion Operation",
+          "url": "https://socradar.io/blog/n0n-ransomware-ai-assisted-extortion/",
+          "source": "SOCRadar"
+        }
+      ]
+    },
     {
       "slug": "ai-themed-phishing-campaigns",
       "name": "AI‑themed Fake Application Campaigns",
@@ -1231,173 +1788,6 @@
       ]
     },
     {
-      "slug": "device-code-phishing-attacks",
-      "name": "Adversary-in-the-Middle Phishing (AitM) Service",
-      "category": "phishing",
-      "severity": "high",
-      "confidence": 1.0,
-      "faithfulness": 0.85,
-      "source_count": 13,
-      "ioc_count": 21,
-      "cves": [],
-      "malware_families": [
-        "BlueKit",
-        "CoGUI",
-        "Haozi",
-        "Iron Man System"
-      ],
-      "threat_actors": [
-        "EvilTokens",
-        "Kali365",
-        "Storm-2372",
-        "Spring Ring",
-        "petrushka",
-        "UAT-11985"
-      ],
-      "ttps": [
-        {
-          "id": "T1557",
-          "name": "Adversary-in-the-Middle",
-          "tactic": "credential access, collection"
-        },
-        {
-          "id": "T1566.002",
-          "name": "Spearphishing Link",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1566.001",
-          "name": "Spearphishing Attachment",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1204.001",
-          "name": "Malicious Link",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1110.003",
-          "name": "Password Spraying",
-          "tactic": "credential access"
-        },
-        {
-          "id": "T1621",
-          "name": "Multi-Factor Authentication Request Generation",
-          "tactic": "credential access"
-        }
-      ],
-      "iocs": {
-        "url": [
-          "https://mononapfp.sharepoint.com/:f:/document/INV-IgCx1X50pgUjR7iAjZL2fuQaAW4GfKVs6wHT3BYv9sgwW7g",
-          "https://mononapfpcom.sharepoint.com/:f:/g/IgAdH_aaBPMcQbtINZzC1TsLARj3dHj63MnKjvnY-QJrKEc\"Discovery",
-          "https://san-sid.com/owners"
-        ],
-        "ipv4": [
-          "38.248.95.214",
-          "193.32.248.251",
-          "193.138.7.142",
-          "185.65.134.209",
-          "178.130.47.46",
-          "5.181.3.106",
-          "2.56.172.214",
-          "185.234.67.53",
-          "45.8.157.185",
-          "80.66.72.215",
-          "136.0.20.6",
-          "185.213.155.226",
-          "185.155.99.161",
-          "92.118.232.131",
-          "45.182.189.80",
-          "185.65.133.51",
-          "45.33.22.47"
-        ],
-        "sha256": [
-          "24ab9fe5d5be62d3bf055a0ca4508e8bca2996b6d78649dce8145d8a27bc1c5b"
-        ]
-      },
-      "affected_products": [
-        "Google Workspace (Google authentication)",
-        "Microsoft 365 (Exchange Online, SharePoint, OneDrive, Teams)",
-        "Azure AD / Microsoft Identity Platform",
-        "RingCentral communications platform",
-        "DocuSign",
-        "iCloud",
-        "Yahoo Mail"
-      ],
-      "recommendations": [],
-      "first_seen": "2026-06-25T15:00:17.817032+00:00",
-      "last_updated": "2026-10-17T12:43:07.317168+00:00",
-      "summary": "A rapidly evolving phishing‑as‑a‑service ecosystem is leveraging adversary‑in‑the‑middle (AitM) techniques to harvest credentials from Google and Microsoft 365 accounts. The kits employ AI‑generated lures, malicious QR codes, device‑code flows, and real‑time proxy infrastructure to bypass MFA and maintain long‑lived sessions, affecting organizations across multiple sectors worldwide.",
-      "analysis": "### Overview Multiple security researchers have documented a shared threat model in which phishing kits provide a turnkey platform for credential harvesting. The core capability is an **adversary‑in‑the‑middle (AitM) framework** that proxies authentication pages from Google or Microsoft, captures usernames, passwords, and MFA challenges, and then forwards the traffic to the legitimate service, allowing the victim to authenticate unaware. ### Campaigns & Actors - **UAT‑11985** (Cisco Talos) – Targets Taiwanese research affiliates with AI‑generated event invitation emails. The lures embed malicious URLs and QR codes (quishing) that direct victims to a hybrid HTTP/WebSocket AitM page mimicking Google login. - **Microsoft 365 AitM Campaign** (Arctic Wolf) – Uses residential proxies to disguise sign‑ins and harvest payroll‑related mailboxes across healthcare, education, manufacturing, and government sectors in North America and Europe. - **Kali365** (ANY.RUN) – Device‑code phishing kit that tricks users into approving attacker‑provided codes on Microsoft’s legitimate device login portal, then steals OAuth access and refresh tokens for SharePoint, OneDrive, and DocuSign. - **Greatness PhaaS** (ZeroBEC) – Phishing‑as‑a‑service platform that spoofs RingCentral communications to deliver AitM attacks against Microsoft 365, iCloud, Yahoo, and Google Workspace accounts. Sold for $289/month via a Telegram channel. - **BlueKit** (Malwarebytes) – A subscription‑based phishing kit that bundles campaign management, victim tracking, and credential‑harvesting modules, lowering the technical barrier for attackers. ### Technical Characteristics - **AI‑assisted content generation** for rapid, personalized lure creation (UAT‑11985). - **QR code manipulation** on legitimate event posters to expand the attack surface beyond email (quishing). - **Hybrid HTTP/WebSocket architecture** to synchronize authentication flows in real time, enabling seamless credential capture. - **Device‑code OAuth flow abuse** – attackers present a legitimate Microsoft device login page, supply a malicious device code, and harvest access/refresh tokens after victim approval. - **Infrastructure** – use of compromised or fraudulent Microsoft/Google cloud environments, residential proxy networks, and illicit marketplaces for phishing kits. - **Persistence** – compromised sessions are refreshed approximately every eight hours, allowing continuous access. ### Impact Successful exploitation results in full compromise of cloud email, document repositories, and financial workflow mailboxes. Attackers can exfiltrate payroll data, reroute payments, and conduct further lateral movement within victim environments. ### MITRE ATT&CK Mapping - **T1557 – Adversary-in-the-Middle** (core AitM proxy technique) - **T1566.002 – Phishing: Spearphishing Link** (malicious URLs in lures) - **T1566.001 – Phishing: Spearphishing Attachment** (QR code images as attachments) - **T1204.001 – User Execution: Malicious Link** (victim clicks lure) - **T1110.003 – Credential Stuffing** (use of harvested credentials for further compromise) - **T1621 – Multi‑Factor Authentication Request Generation** (intercepting MFA challenges) ### Defensive Gaps - Traditional email filters often miss QR‑code payloads and device‑code flow lures. - MFA implementations that rely solely on push notifications are vulnerable to real‑time interception. - Lack of visibility into residential proxy traffic and illicit cloud infrastructure. ### Recommendations 1. Deploy **phishing‑resistant MFA** (e.g., FIDO2 security keys) and enforce MFA challenge verification out‑of‑band. 2. Enable **DMARC, SPF, and DKIM enforcement** for all inbound mail; quarantine messages failing authentication. 3. Implement **URL and QR‑code sandboxing** to detect malicious redirects before delivery to end‑users. 4. Monitor for **device‑code OAuth flows** and anomalous token issuance patterns in Azure AD and Google Workspace logs. 5. Block known **residential proxy IP ranges** and enforce geo‑IP restrictions for cloud service sign‑ins. 6. Use **behavioral analytics** to detect rapid, repeated authentication attempts and long‑lived session refreshes. 7. Conduct regular **security awareness training** focusing on AI‑generated lures, QR‑code phishing, and device‑code scams. 8. Leverage threat‑intel feeds that track **phishing‑as‑a‑service marketplaces** (e.g., Greatness, BlueKit) to proactively block associated command‑and‑control domains. --- The convergence of AI‑driven lure creation, turnkey phishing platforms, and real‑time AitM proxying represents a significant escalation in credential‑theft capabilities. Organizations must adopt a layered defense that combines technical controls, threat‑intel integration, and user education to mitigate this high‑severity threat.",
-      "sources": [
-        {
-          "title": "We Need to Talk About Device Code Phishing",
-          "url": "https://www.huntress.com/blog/tradecraft-tuesday-device-code-phishing-explained",
-          "source": "Huntress"
-        },
-        {
-          "title": "ARToken: Inside an EvilTokens affiliate panel targeting Microsoft 365",
-          "url": "https://blog.talosintelligence.com/artoken-inside-an-eviltokens-affiliate-panel-targeting-microsoft-365/",
-          "source": "Cisco Talos"
-        },
-        {
-          "title": "ARToken PhaaS exposes EvilTokens' Microsoft 365 phishing toolkit",
-          "url": "https://www.bleepingcomputer.com/news/security/artoken-phaas-exposes-eviltokens-microsoft-365-phishing-toolkit/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "DEBULL Tooling Abuses Microsoft Device-Code Flow to Target M365 Accounts",
-          "url": "https://thehackernews.com/2026/07/debull-tooling-abuses-microsoft-device.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Greatness PhaaS Adds Device Code Phishing to Bypass MFA and Steal Tokens",
-          "url": "https://thehackernews.com/2026/08/greatness-phaas-adds-device-code.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Phishing service spoofs RingCentral to steal Microsoft 365 accounts",
-          "url": "https://www.bleepingcomputer.com/news/security/phishing-service-spoofs-ringcentral-to-steal-microsoft-365-accounts/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "Kali365 Weaponizes Microsoft Authentication Against US Companies: New Enterprise Risk",
-          "url": "https://thehackernews.com/2026/08/kali365-weaponizes-microsoft.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Microsoft 365 AitM Phishing Hijacks Accounts to Collect Payroll and Finance Emails",
-          "url": "https://thehackernews.com/2026/08/microsoft-365-aitm-phishing-hijacks.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Spring Ring: An Inside Look at Voice Phishing Campaigns in Microsoft Teams",
-          "url": "https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/",
-          "source": "Unit 42 (Palo Alto)"
-        },
-        {
-          "title": "AI-powered phishkit arms criminals with account-hijacking tools in 10 minutes",
-          "url": "https://www.malwarebytes.com/blog/threat-intel/2026/10/ai-powered-phishkit-arms-criminals-with-account-hijacking-tools-in-10-minutes",
-          "source": "Malwarebytes Labs"
-        },
-        {
-          "title": "UAT-11985: AI-assisted event lures delivering real-time Google AitM phishing",
-          "url": "https://blog.talosintelligence.com/uat-11985/",
-          "source": "Cisco Talos"
-        },
-        {
-          "title": "The hidden network: Inside the phishing infrastructure ecosystem powering global cybercrime",
-          "url": "https://www.microsoft.com/en-us/security/blog/2026/10/14/the-hidden-network-inside-the-phishing-infrastructure-ecosystem-powering-global-cybercrime/",
-          "source": "Microsoft Security Blog"
-        },
-        {
-          "title": "UAT-11985 Uses Fake Event Invites to Target Taiwan Research Affiliates With Google AitM Phishing",
-          "url": "https://thehackernews.com/2026/10/uat-11985-uses-fake-event-invites-to.html",
-          "source": "The Hacker News"
-        }
-      ]
-    },
-    {
       "slug": "ai-powered-espionage-campaign",
       "name": "CL-UNK-1211",
       "category": "apt",
@@ -1562,69 +1952,6 @@
           "title": "The GhostX Ecosystem: Forged in Transit, Licensed to Deceive",
           "url": "https://cyble.com/blog/ghostx-forged-in-transit-licensed-to-deceive/",
           "source": "Cyble Blog"
-        }
-      ]
-    },
-    {
-      "slug": "n0n-maritime-extortion-wave",
-      "name": "n0n Group",
-      "category": "other",
-      "severity": "high",
-      "confidence": 0.9,
-      "faithfulness": 0.85,
-      "source_count": 1,
-      "ioc_count": 0,
-      "cves": [],
-      "malware_families": [],
-      "threat_actors": [
-        "n0n"
-      ],
-      "ttps": [
-        {
-          "id": "T1190",
-          "name": "Exploit Public-Facing Application",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1555.003",
-          "name": "Credentials from Web Browsers",
-          "tactic": "credential access"
-        },
-        {
-          "id": "T1041",
-          "name": "Exfiltration Over C2 Channel",
-          "tactic": "exfiltration"
-        },
-        {
-          "id": "T1486",
-          "name": "Data Encrypted for Impact",
-          "tactic": "impact"
-        }
-      ],
-      "iocs": {},
-      "affected_products": [
-        "Port management applications",
-        "Shipping logistics platforms",
-        "Container terminal operating systems",
-        "Port IT service portals"
-      ],
-      "recommendations": [
-        "Conduct a rapid inventory of all third‑party applications used for port and shipping operations; prioritize patching or isolating any publicly exposed services.",
-        "Implement credential‑access monitoring and block known infostealer behaviors (e.g., keylogging, browser credential dumping).",
-        "Enable strict outbound data‑exfiltration controls and monitor for anomalous large transfers to external destinations.",
-        "Deploy network segmentation to separate critical maritime control systems from corporate IT networks.",
-        "Prepare an incident‑response playbook for data‑leak extortion, including legal, public‑relations, and negotiation guidelines.",
-        "Engage with industry information‑sharing groups (e.g., maritime CERTs) to share indicators and mitigation strategies."
-      ],
-      "first_seen": "2026-10-14T14:19:49.577642+00:00",
-      "last_updated": "2026-10-14T14:19:49.577656+00:00",
-      "summary": "The n0n Group, a financially motivated data‑theft extortion operation first observed in September 2026, has expanded its focus to the global maritime sector. On 12 Oct 2026 the group posted data from 38 port, shipping and logistics organizations across 18 countries, threatening public leaks unless ransom demands of $2.4‑$14 million are met. The campaign appears to rely on a shared vulnerable application rather than discrete compromises, indicating a potentially broad attack surface within maritime IT systems.",
-      "analysis": "### Overview The n0n Group emerged in September 2026 and quickly adopted a model of stealing credentials with infostealer‑type malware, exfiltrating sensitive data (e.g., Active Directory mappings, legal documents), and leveraging public Dark Web leak sites for extortion. Unlike classic ransomware gangs, n0n does not typically deploy encryptors, though its ATT&CK mapping notes the possibility of encryption and recovery‑inhibition techniques. ### Maritime Wave On 12 Oct 2026 the group uploaded data from **38 organizations**—including container terminals in Brazil, Spain, Morocco, India, Vietnam; shipping lines in Singapore, China, Taiwan; port IT providers in Kuwait, Indonesia, Germany; and a cluster of South Korean operators. The batch more than doubled the group’s publicly listed victims, suggesting a strategic shift toward the maritime supply chain. The concentration of 12 South Korean entries hints at a common foothold, possibly a shared SaaS platform or exposed web application used by multiple operators. ### Tactics, Techniques, and Procedures (TTPs) | Phase | Observed Behavior | MITRE ATT&CK Technique | |-------|-------------------|------------------------| | Initial Access | Exploitation of a shared, likely vulnerable application or service used across multiple ports | **T1190 – Exploit Public‑Facing Application** | | Credential Access | Harvesting of credentials via infostealer malware (generic credential capture) | **T1555.003 – Credentials from Web Browsers** | | Discovery | Collection of Active Directory mappings and internal network topology | **T1087 – Account Discovery** (implied) | | Exfiltration | Transfer of AD data, legal documents, and other sensitive files to external C2 infrastructure | **T1041 – Exfiltration Over Command and Control Channel** | | Impact | Threat of public data release; potential use of encryption/recovery‑inhibition tools | **T1486 – Data Encrypted for Impact** | ### Threat Actor Profile - **Motivation:** Financial extortion via data leakage. - **Origin:** Likely Russia, based on language and infrastructure clues. - **Operational Model:** Low‑noise intrusion, credential harvesting, data collection, and public pressure through a dedicated leak site. No ransomware payloads have been publicly linked to the group to date. - **Status:** Active, with a published leak deadline of 19 Oct 2026 (13:27 UTC). ### Potential Impact If the leaked data includes internal network maps, authentication credentials, and contractual/legal documents, affected organizations could face operational disruption, regulatory penalties, and reputational damage. The shared‑application vector also raises the risk of secondary compromise of other entities using the same software. ### Open Questions - The exact vulnerable component (e.g., a port‑management SaaS, ERP module, or custom web portal) has not been identified. - No victim has publicly confirmed the breach, limiting verification of the data’s authenticity. - It remains unclear whether the group will deploy actual encryption or destructive actions beyond the threat of public exposure.",
-      "sources": [
-        {
-          "title": "n0n Group Puts Dozens of Global Ports and Shipping on Its Leak Site",
-          "url": "https://socradar.io/blog/n0n-group-global-ports-shipping-leak/",
-          "source": "SOCRadar"
         }
       ]
     },

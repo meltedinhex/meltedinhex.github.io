@@ -1,7 +1,55 @@
 {
-  "generated_at": "2026-10-28T16:08:50.980753+00:00",
-  "count": 331,
+  "generated_at": "2026-10-29T16:15:15.834711+00:00",
+  "count": 332,
   "reports": [
+    {
+      "slug": "ai-driven-breach-ops-2026",
+      "name": "Outer Contact Point Collapse (October 2026)",
+      "category": "breach",
+      "severity": "high",
+      "confidence": 0.95,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 0,
+      "cves": [],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "tactic": "initial access"
+        }
+      ],
+      "iocs": {},
+      "affected_products": [
+        "PHP",
+        "Node.js",
+        "GitLab",
+        "Externally exposed web services",
+        "App backend APIs",
+        "Outsourced SaaS platforms (email delivery, backup services)"
+      ],
+      "recommendations": [
+        "Implement a continuous external asset inventory and monitor all publicly exposed services for vulnerability disclosures.",
+        "Prioritize rapid patching of web runtimes (PHP, Node.js) and development platforms (GitLab) as soon as CVEs are released.",
+        "Adopt a zero‑trust model for API endpoints, enforcing strong authentication and network segmentation for backend services.",
+        "Deploy AI‑aware detection rules that flag anomalous automated scanning or exploit attempts originating from known AI agent signatures.",
+        "Conduct regular third‑party risk assessments for SaaS providers, ensuring they meet patch‑management and incident‑response standards.",
+        "Enable comprehensive logging and alerting on outbound data flows from external services to detect potential exfiltration."
+      ],
+      "first_seen": "2026-10-29T15:51:23.884801+00:00",
+      "last_updated": "2026-10-29T15:51:23.884817+00:00",
+      "summary": "In October 2026 a wave of large‑scale data breaches swept South Korea, Japan and other regions, exploiting unauthenticated remote‑code‑execution flaws in publicly exposed web services, APIs and outsourced SaaS platforms. AI agents such as ARTEX were reported to automate discovery and exploitation of these peripheral entry points, leading to the compromise of financial institutions, accounting software providers, universities and other organizations, with personal data of roughly 100,000 individuals disclosed.",
+      "analysis": "### Overview The incidents share a common attack surface: **externally facing components** – web front‑ends, backend APIs, and third‑party SaaS services – rather than traditional internal network pivots. Vulnerabilities disclosed in rapid succession for widely deployed web runtimes (e.g., **PHP**, **Node.js**) and the **GitLab** platform provided unauthenticated remote code execution (RCE) vectors that attackers leveraged at scale. ### Attack Flow 1. **Reconnaissance & Target Selection** – Threat actors used publicly available information (app listings, open‑source repositories) to identify vulnerable external services. 2. **Exploitation** – Unauthenticated RCE bugs in PHP, Node.js, and GitLab were directly weaponized, matching the ATT&CK technique **T1190 – Exploit Public‑Facing Application**. 3. **Automation via AI** – The report cites the use of AI agents (e.g., **ARTEX**) to automate vulnerability scanning, exploit delivery, and credential harvesting, accelerating the breach timeline. 4. **Data Exfiltration** – Compromised services were used to pull sensitive personal information from financial institutions, accounting software providers, universities, churches, and franchise chains. The scale of disclosed records ranged from several million to tens of millions across Japan, with about 100,000 records confirmed in South Korea. ### Geographic & Sector Impact - **South Korea:** 16 financial entities (commercial banks, savings banks, finance companies, mutual institutions, virtual asset service providers, insurance firms) were confirmed compromised. - **Japan:** Government‑reported breaches affecting millions of citizens across multiple sectors. - **Global:** Similar patterns observed in the United States, Europe and South America, indicating a coordinated or at‑least similarly motivated threat landscape. ### Root Causes - **Unpatched Public‑Facing Applications** – Rapid disclosure of RCE flaws without timely patching created a window for mass exploitation. - **Third‑Party SaaS Dependency** – Outsourced services (email delivery, backup) expanded the attack surface beyond the organization’s direct control. - **AI‑Driven Automation** – Use of AI agents lowered the skill barrier and increased the speed of exploitation. ### Defensive Gaps Organizations focused on internal network hardening missed the **peripheral weak link**. Lack of continuous monitoring of external assets and delayed patch management for web runtimes were primary contributors to the breach cascade.",
+      "sources": [
+        {
+          "title": "The Weak Link Identified by AI: October 2026, When the Outer Contact Point Collapsed",
+          "url": "https://asec.ahnlab.com/en/96188/",
+          "source": "AhnLab ASEC"
+        }
+      ]
+    },
     {
       "slug": "camera-management-software-compromise-malware",
       "name": "Camera Management Software (CMS) Compromise",

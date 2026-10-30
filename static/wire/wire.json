@@ -1,7 +1,202 @@
 {
-  "generated_at": "2026-10-29T16:15:15.834711+00:00",
-  "count": 332,
+  "generated_at": "2026-10-30T15:58:42.929211+00:00",
+  "count": 333,
   "reports": [
+    {
+      "slug": "claude-code-extension-trojan",
+      "name": "Claude Code VS Code Extension SSH Backdoor",
+      "category": "malware",
+      "severity": "medium",
+      "confidence": 1.0,
+      "faithfulness": 0.92,
+      "source_count": 2,
+      "ioc_count": 1,
+      "cves": [],
+      "malware_families": [
+        "Claude Code Trojan"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "tactic": "discovery"
+        },
+        {
+          "id": "T1098.004",
+          "name": "SSH Authorized Keys",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1053.005",
+          "name": "Scheduled Task",
+          "tactic": "execution, persistence, privilege escalation"
+        },
+        {
+          "id": "T1053.003",
+          "name": "Cron",
+          "tactic": "execution, persistence, privilege escalation"
+        },
+        {
+          "id": "T1543.001",
+          "name": "Launch Agent",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1090.001",
+          "name": "Internal Proxy",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "134.209.82.225"
+        ]
+      },
+      "affected_products": [
+        "Cursor IDE (extension marketplace)",
+        "Visual Studio Code",
+        "Anthropic Claude Code extension (VS Code)",
+        "Windows (OpenSSH)",
+        "macOS (LaunchAgent, Remote Login)",
+        "Linux (cron, OpenSSH)"
+      ],
+      "recommendations": [
+        "Immediately uninstall the Claude Code extension version 2.1.313 from all developer machines.",
+        "Install the clean version (2.1.314) from the official Open VSX or Microsoft VS Code Marketplace.",
+        "Search for and remove any unauthorized SSH public keys labeled \"svc-telemetry\" from `~/.ssh/authorized_keys` on all accounts.",
+        "Audit and delete the malicious scheduled tasks, cron jobs, and LaunchAgents created by the extension.",
+        "Disable the SSH daemon on systems where it is not required, or enforce strict access controls if SSH is needed.",
+        "Block outbound traffic to 134.209.82.225 (port 8099) at the network perimeter and monitor for similar HTTP beaconing.",
+        "Enable logging for VS Code extension installations and enforce code‑signing verification for third‑party extensions.",
+        "Conduct a broader supply‑chain review of extension marketplaces to ensure publisher identity integrity."
+      ],
+      "first_seen": "2026-10-30T15:35:33.938508+00:00",
+      "last_updated": "2026-10-30T15:35:38.899139+00:00",
+      "summary": "A trojanized version of Anthropic's Claude Code VS Code extension (v2.1.313) was briefly distributed through the Cursor Marketplace, installing a persistent SSH backdoor on up to 5,000 developer machines. The malicious loader adds an attacker‑controlled SSH key, attempts to enable SSH, creates scheduled tasks or LaunchAgents for persistence, and exfiltrates host details to a remote server (134.209.82.225). Although coding errors limited remote access on many Windows and macOS hosts, the threat remains serious due to the privileged persistence mechanisms and broad platform coverage.",
+      "analysis": "### Incident Overview - **Timeline**: The malicious package was available from 02:27 AM to 01:35 PM PT on 29 Oct 2026 (≈11 hours). It was removed on 30 Oct 2026 after discovery. - **Distribution Vector**: The extension was published under the legitimate Anthropic identifier `anthropic.claude-code` in the Cursor IDE extension marketplace. No evidence of propagation to the Open VSX or Microsoft VS Code Marketplace. - **Impact Scope**: Cursor estimates a maximum of **5,000** affected developers across Windows, macOS, and Linux. ### Malicious Functionality 1. **Loader Injection** – A 66‑line JavaScript loader was prepended to the legitimate `extension.js` file, executing automatically when VS Code starts or the extension’s webview opens. 2. **System & User Reconnaissance** – Collects OS details, public IP, Git configuration (email), and other host metadata. 3. **SSH Backdoor Implant** – Inserts an attacker‑controlled SSH public key labeled `svc-telemetry` into `~/.ssh/authorized_keys`. 4. **SSH Service Enablement** – Attempts to enable the SSH daemon: - macOS: runs `systemsetup -getremotelogin` without admin rights, causing the check to fail. - Windows: tries to start OpenSSH via `/bin/sh`, which does not exist on standard Windows installations. Consequently, the reverse tunnel often fails, but the key remains. 5. **Persistence Mechanisms** – - **Windows**: Creates a scheduled task / startup script that retries the tunnel every minute. - **macOS**: Installs a LaunchAgent. - **Linux**: Adds a cron job. 6. **Command & Control** – Sends host details and backdoor status to `http://134.209.82.225:8099/beacon` over unencrypted HTTP. ### Technical Gaps in the Malware - Faulty privilege escalation attempts prevent SSH activation on most macOS and Windows hosts, limiting the attacker’s ability to obtain a live session. - Nevertheless, the persistent SSH key and scheduled tasks provide a foothold that could be leveraged later if the victim later enables SSH. ### MITRE ATT&CK Mapping - **T1082** – System Information Discovery - **T1098.004** – Account Manipulation: SSH Authorized Keys - **T1053.005** – Scheduled Task/Job: Scheduled Task (Windows) - **T1053.003** – Scheduled Task/Job: Cron (Linux) - **T1543.001** – Create or Modify System Process: Launch Agent (macOS) - **T1090.001** – Proxy: SSH Tunneling - **T1041** – Exfiltration Over Command and Control Channel ### Remediation Status - Cursor shut down its marketplace, removed the malicious package, and Anthropic released a clean version (2.1.314) to Open VSX and Microsoft Marketplace. - No public reports of successful remote logins have been confirmed. ### Open Questions - The exact supply‑chain compromise method (how the attacker obtained signing rights or publisher ID) remains undisclosed. - Whether additional, undisclosed variants were distributed outside the Cursor marketplace is unknown.",
+      "sources": [
+        {
+          "title": "Official Claude Code Extension on Cursor Marketplace Trojanized with Persistent SSH Backdoor",
+          "url": "https://thehackernews.com/2026/10/official-claude-code-vs-code-extension.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Malicious Claude Code extension on Cursor planted SSH backdoors",
+          "url": "https://www.bleepingcomputer.com/news/security/malicious-claude-code-extension-on-cursor-planted-ssh-backdoors/",
+          "source": "BleepingComputer"
+        }
+      ]
+    },
+    {
+      "slug": "nik-c2-ai-enabled-c2",
+      "name": "NIK C2",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 2,
+      "ioc_count": 14,
+      "cves": [],
+      "malware_families": [
+        "NIK C2"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1056.001",
+          "name": "Keylogging",
+          "tactic": "collection, credential access"
+        },
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "tactic": "stealth, privilege escalation"
+        },
+        {
+          "id": "T1021.001",
+          "name": "Remote Desktop Protocol",
+          "tactic": "lateral movement"
+        },
+        {
+          "id": "T1486",
+          "name": "Data Encrypted for Impact",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1071.001",
+          "name": "Web Protocols",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "87.120.196.120"
+        ],
+        "md5": [
+          "0cf0271c3564881fce95f44c649bd745",
+          "2915b3f8b703eb744fc54c81f4a9c67f",
+          "cca616647db9370c88998ae25da6997f",
+          "f1fe671bcefd4630e5ed8b87c9283534",
+          "207d9d891ac756b2bfad88aba5682c65"
+        ],
+        "sha1": [
+          "7d16381a9de823943b5a0987dbd0f26edf22052b"
+        ],
+        "sha256": [
+          "d791dd0ff3228ed29a8d7333d4567be829159c5632ea347780992006f91c5295",
+          "4887afc0a574e9419a9695ef083460f58e4ef9a1c40793523ce112251273bdf9",
+          "73a25ff8893260418c2271b863c567e40e842adbab3c57023cb72de590ea377d",
+          "9f1f11a708d393e0a4109ae189bc64f1f3e312653dcf317a2bd406f18ffcc507",
+          "7fc50b69b56bfdfa9fc0a3e088ff13904587d6336a51e9edcc7919cba83d4e3f",
+          "58d6fec4ba24c32d38c9a0c7c39df3cb0e91f500b323e841121d703c7b718681",
+          "fed979f93bcaf4e73ebd25748093a92095d5109cbd01d55f97bdc50ce509ad2f"
+        ]
+      },
+      "affected_products": [
+        "Microsoft Windows (64‑bit)"
+      ],
+      "recommendations": [
+        "Monitor outbound TLS/WebSocket connections on port 443 for unknown or rarely‑seen domains and high‑frequency polling patterns.",
+        "Implement network egress filtering to block unauthorized calls to the OpenAI Chat Completions API or require strict allow‑lists for API usage.",
+        "Deploy endpoint detection and response (EDR) rules for credential dumping, keylogging, process hollowing, and abnormal screen‑lock events.",
+        "Enforce least‑privilege for RDP access, enable network‑level authentication, and monitor for unexpected RDP session hijacking indicators.",
+        "Enable file integrity monitoring for newly created or modified Go binaries and for the presence of the embedded build path string.",
+        "Apply behavioral analytics to detect rapid, continuous data collection and AI‑prompt generation activity from a single host.",
+        "Ensure regular patching of Windows systems and disable unnecessary remote services to reduce lateral‑movement opportunities."
+      ],
+      "first_seen": "2026-10-29T15:49:30.655784+00:00",
+      "last_updated": "2026-10-30T15:32:47.461776+00:00",
+      "summary": "NIK C2 is a newly observed AI‑enabled remote access tool targeting 64‑bit Windows systems. It combines credential dumping, keylogging, process hollowing, RDP hijacking and a screen‑locking ransomware payload, while leveraging the OpenAI Chat Completions API to analyze stolen data in‑flight. The implant uses a resilient dual‑channel TLS‑WebSocket C2 architecture with AES‑256‑GCM encryption, making detection challenging.",
+      "analysis": "### Overview Cisco Talos identified **NIK C2**, a Go‑based, 64‑bit Windows implant that integrates an OpenAI API client directly into its command‑and‑control (C2) workflow. The framework collapses the traditional collection‑and‑exploitation phases by streaming harvested data to the OpenAI Chat Completions API for real‑time analysis, eliminating the offline processing window defenders typically rely on. ### Architecture & Communication - **Dual‑channel C2**: Persistent TLS‑secured WebSockets on port 443 with an HTTP fallback polling loop every 250 ms. - **Encryption**: All traffic is protected with AES‑256‑GCM, keys derived from a hard‑coded seed. - **Tiered C2 routing**: Runtime‑updated URLs → embedded encrypted server list → hard‑coded fallback address, providing resilience against takedown. - **Embedded build metadata**: The binary contains the path `/opt/nik_panel/data/build_52b79724a1fc4b8f/main.go` and an eight‑byte hex token used for version tracking. ### Capabilities | Capability | Description | |------------|-------------| | Credential Dumping | Extracts stored credentials from the compromised host (T1003). | | Keylogging | Streams keystrokes to the C2 for immediate analysis (T1056.001). | | Process Hollowing | Executes malicious code by hollowing legitimate processes (T1055). | | RDP Session Hijacking | Takes over active Remote Desktop sessions for lateral movement (T1021.001). | | Screen‑Lock Ransomware | Deploys a module that locks the desktop and demands Bitcoin or USDT (T1486). | | AI Integration | Uses the OpenAI Chat Completions API via an `ai_generate` command to analyze harvested data on‑the‑fly. | | Lateral Movement | Supports additional movement techniques, leveraging the above capabilities. | ### Impact The combination of real‑time AI analysis and traditional RAT functions enables rapid data exfiltration and immediate impact (ransomware lockout) without the typical detection lag. The use of legitimate cloud APIs (OpenAI) further obscures malicious traffic. ### Detection Challenges - Encrypted WebSocket traffic blends with normal HTTPS traffic. - Frequent short‑interval polling can appear as benign health‑check traffic. - Legitimate use of the OpenAI API makes network‑based blocking non‑trivial. ### Attribution & Development The implant appears to be cross‑compiled from a Linux environment, indicating a sophisticated development pipeline. Version identifiers embedded in the binary suggest an organized threat‑actor infrastructure that tracks implant revisions.",
+      "sources": [
+        {
+          "title": "NIK C2: The new AI-enabled command-and-control framework",
+          "url": "https://blog.talosintelligence.com/nik-c2-new-ai-enabled-framework/",
+          "source": "Cisco Talos"
+        },
+        {
+          "title": "A quiet week in infosec <.<",
+          "url": "https://blog.talosintelligence.com/a-quiet-week-in-infosec/",
+          "source": "Cisco Talos"
+        }
+      ]
+    },
     {
       "slug": "ai-driven-breach-ops-2026",
       "name": "Outer Contact Point Collapse (October 2026)",
@@ -604,303 +799,6 @@
           "title": "n0n Ransomware: Inside an AI-Assisted Extortion Operation",
           "url": "https://socradar.io/blog/n0n-ransomware-ai-assisted-extortion/",
           "source": "SOCRadar"
-        }
-      ]
-    },
-    {
-      "slug": "ai-themed-phishing-campaigns",
-      "name": "AI‑themed Fake Application Campaigns",
-      "category": "malware",
-      "severity": "high",
-      "confidence": 1.0,
-      "faithfulness": 1.0,
-      "source_count": 9,
-      "ioc_count": 140,
-      "cves": [],
-      "malware_families": [
-        "Vidar Stealer",
-        "XMRig",
-        "MIG LogCleaner",
-        "ShellBot",
-        "XHide",
-        "TELEPUZ",
-        "Yoba",
-        "YobaDropper",
-        "YobaLoader"
-      ],
-      "threat_actors": [
-        "Fox Tempest",
-        "Storm-3075"
-      ],
-      "ttps": [
-        {
-          "id": "T1574.001",
-          "name": "DLL",
-          "tactic": "stealth, execution"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1105",
-          "name": "Ingress Tool Transfer",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1071.001",
-          "name": "Web Protocols",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1071.004",
-          "name": "DNS",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1566.001",
-          "name": "Spearphishing Attachment",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1566.002",
-          "name": "Spearphishing Link",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1056.001",
-          "name": "Keylogging",
-          "tactic": "collection, credential access"
-        },
-        {
-          "id": "T1496",
-          "name": "Resource Hijacking",
-          "tactic": "impact"
-        }
-      ],
-      "iocs": {
-        "domain": [
-          "download.Xrpl.City",
-          "catbox.moe"
-        ],
-        "url": [
-          "http://dash.awaydouble.org/0v2authURLURL",
-          "http://youpost.In",
-          "http://download.Xrpl.City/mysql",
-          "https://dns.google/resolve?name=$DGA&type=TXT",
-          "https://files.catbox.moe/z5zpy9.dat",
-          "http://dash.awaydouble.org"
-        ],
-        "ipv4": [
-          "136.243.203.109",
-          "138.199.246.13",
-          "116.203.243.208",
-          "136.243.203.111",
-          "192.3.9.34",
-          "172.245.81.188",
-          "146.19.213.82",
-          "23.94.137.96",
-          "45.88.91.151",
-          "51.89.231.85",
-          "51.89.228.250"
-        ],
-        "email": [
-          "daxschneiderdjuu@outlook.com",
-          "edwardcarlsonmkym@outlook.com",
-          "rioprestonlfyx@outlook.com"
-        ],
-        "md5": [
-          "d42595b695fc008ef2c56aabd8efd68e",
-          "d8b31f8c03e0c76ff245ed05a15ffe6c",
-          "1aae8bf580c846f39c71c05898e57e88",
-          "c10333c92889b65c3590ef2b3819b420",
-          "1d0d1368b4d53f3a6322cf40e84e63db",
-          "dcde1f56048fa18657dc4820397592f7"
-        ],
-        "sha1": [
-          "4f5c5b3ef45cfff7721754487a86aeff9a2e6e32",
-          "ab92f731ab20774dfdb95664ee41a2fbafe2a284",
-          "aebceccb0f3303806c35a73da865b684594487c1",
-          "249dae41d64583a6a9ebcb60e3ad36d6216dd6e4",
-          "46ae1f147cf70d4df1471f0e9df46b654d11fe9c",
-          "028bfd4c1041dc1f030c9480a463366e6089e661",
-          "a44162645ceaa39c7106c49a3f36fd99ff8d8a00",
-          "ba8bd67d8898cf378d4f73821deb5657f4bb98df",
-          "ea16728f6928dc77deaddee74a6e736dd5f24fc5"
-        ],
-        "sha256": [
-          "5455341ed1bbe75a664fca2dd0794c508e1874f75360253a7ff5bc119bc92d80",
-          "791efb555eefb7215e96659a1353a97416743b66bdd72705493129c64057d40e",
-          "69946018ddda1058ce5c2a556c78a747838865c47074dcb165effb0840cb1cf5",
-          "097a87cfa4a5186aba3bba096866692951bde59c6f0c2e8c1c4a599246d14da8",
-          "201594c9d173bba6cb509407ecba378c19b93da0a81a2182a913c480e6dbb54e",
-          "20bf39e1e67152039e70a01ad9e7b23c08d23d2a724ef9c44903f3d4353a2275",
-          "35dde1b2482b12582820a861e7c46f10721af6b75052fc872c05d2230a4e8ca1",
-          "43920ef7d2742d140a1ab2a1ef172c716903474c73561377dc4f1534d2c5f581",
-          "47d6d1a38534ba897a5a1e293e3d5df303bbd8e0526e756ad08887ffc1417bef",
-          "68ced9d7c1b1ff8ffb5f56c7d3f849d4fd16a1b95324426811424b40043d6d25",
-          "6b7ff061eebeb9ead8812c410247768a7ba90786aeeb1bafa6412cc5b08237b5",
-          "739cdedb20de39aeb1f15dc8c2dbbf15fa993250fd879bf87443ff9aeaf4997b",
-          "74df77b6a83d89fa137fd285a2efde36b1d62c00b3be81cc93df7d1e6e94837b",
-          "8b40cc7d173efd27fb60f3d260acef28f58d67d1f39597e1d611db311a305f62",
-          "9656d3301f63ef6114289739a1c44082206298f787238fc6c190ad87eab24751",
-          "9b3df1b6c1b98c201de09a7719066f7bcae6b66a3173b703a617f53fddf67d51",
-          "a17a972a05afe387ed32aa2986d5be8bca2f22619d0aedfa834c6963abfab3bf",
-          "a4f979b4a5d7bc8bc455dd4c09b44e51a389576fccce35a2c8da3ce680237565",
-          "a64843ebfbc39e96ec7613003b1b5c3a9b878874ea15a05e1d34ce91781ebfb6",
-          "aaa2bc1128d8b8b2da76262bf87ede19bac053cca6576efba6aaa71c9438c304",
-          "b830f043076a12748b6a2dc0810ece85439ee77434d991ae7d84201b09ead756",
-          "bb30cc2b302d9a6963109b201b78d4163bb6c2d7bc8bf5a66e9a744b62fc2717",
-          "c328b78c21060e2203ac517833fce41572b91878e187f85fa434cd6914659834",
-          "c7a4a547eb7f6b0b4b75bb6dd8955244bb2618ba234ae740cdedd7c2d30e3465",
-          "d384c403c084967d8c967501ee6332b050af04ef424f13a3f5a88d155389d98c",
-          "d6446f2803444bd2200d48a01a9ad7d487e67e8e831c9cd13f89cbfec17fd4e2",
-          "d7c9c9469c513c05aa431fae34f414f91fcf3f794d3e76b6e4d0b92c4cd3ff2e",
-          "d8c1f96107a3349e62b3ab9afc60f62af9c89b6961b637a26b71e1230f2b3b8a",
-          "f0dcb7e407de85d8de8e2221df8dddecac8aec88af8975c9f07e14100f6edb88",
-          "0a6a67a2fc4d79ec1cd8afc5b8b7a5e69a406e53d57a7334e097c5d0644de5f6",
-          "488d941b7b4428b0f4a0e5495e3857b9b96215fb3e7f164b06640d59096425e6",
-          "5d7324d8b5a25f862ef8223c6766d0e80af3ad168e17312b265e13a3a68e0ded",
-          "7720e83c02a027d70ae201c393c1956aa2fa8199879a3a4c4fd1d20b03022cfd",
-          "7e49da0ae2f81e14841f356b4d69f0480c2d9ce3fab5a3fa91b0036d9a36fa0f",
-          "b8b5f6991a3a61083461d5269245bebf28b90934c328848ba8c1e084a5a6216c",
-          "b927d265fa29e471c1ae0d31516e480c09c0fb17f480ad08ea8d5b73e84b7a1b",
-          "b9b6893fa6b04ee8daa29e515c08239ac5204af1a1fa2bc10006eede1b41329b",
-          "c7c37a973b14edd5b6b2da4a1497c593e43640735ff54aecc9a3288fa5e548e3",
-          "d2148a458da46e81702136aa915312d360805f083d1f37ff5531db9fbdb8ad6d",
-          "d7b56818c829960b692de9ad5a14e52669d953e9f074f7218c3fe34ede4a11a0",
-          "db2a872f712fbdb1e347d06e29a9ed8278d86710ffc14ff04422be76e47124f4",
-          "e9e5e748ec5c0b811c8e60b0e55059edb4d2df86ff3ca45969e57d5fecb11a38",
-          "03e6f4f49cec3af38bbec9ed64c195c7a85a630ec989efb3669f04a2993c1dd7",
-          "914c18a04a2727bba9cecab78a1d516ec3c7a3f667e0e5a6081aa0e9206a69fe",
-          "d78082dc33c6dca98316e865efa9829c6eb5a97c2ca3cd4ea6c2123a5f6ae45b",
-          "7ed4a256e1d281cb4f194d13ff554fd4fb280dafde0a67a18115ea038ea6c87d",
-          "15489bcd6e4602b41c9a787ec8d7ab027d5e45d400938048bb1c702ad5937980",
-          "169a330353e53a409e0109c914404354741ff1e1c64e501738dc05e58ea92abc",
-          "2a02ec4af5ed591afdf1236a443e3b68642ee133f38a2857d1eada51246ab498",
-          "2b7297a5f502a2e9a59066f0a370bc5a8b28addd0e27975db3d770f801c15397",
-          "2c0b344af415b787b396c8e23bbeb112bd471a1ca1d12cf357c48e2ee1ae068c",
-          "2c6e8f86c05781af12b323311e83e011f1a603928e2086c48e2ca59e33d90dbe",
-          "2e11a16f94484e0f43eb4572f800f26f0b4a1314cbdae3c44c1ae35f376906d8",
-          "2f1400a91c853d61622f4d21ed97d96ea1093c0fa1586669bea6f6baa331251f",
-          "314ce675c040c63b825f213965f5c76a3bd09bf70e138708367e2a84e9e84b30",
-          "32172e4d8d2ab9fb29b36c9b279117be6ff611b5b91ff7b1c42501a5ec969f2b",
-          "330efeebba3782994612fdfe20ff96c930af33a83b88a342b6622461511921b2",
-          "35b51bbe42edd15918b015eaa1b4f0e6b5c94f186d71d887e39f1da69a4dec3f",
-          "3c3f12531045b7eedfe25e0f291d4792b0d8c8366f8de043e2fa8ecf34ccb913",
-          "3db33b0423bb9278db267a7adb036ecbd6aeebd7909d06d824919708b1e12e1b",
-          "3e906ae47e9836a591f44d4b743e961d634a404fa8fd8bfae64f1d54c853be2b",
-          "4bf770a59d367b532dec32668f86003b17d93918dba5ef5fd2b19c5394252436",
-          "4f456142caf590d98fb11ca247800bb417766714527e5a4707ac2f5d01542626",
-          "53d263b292be387843fadb7131c2d538b4262c81f5b95cfacafacf2d5446c06e",
-          "5494909e0f5221db75e933b28981b2d0e118f227b7d8a5980d88b500b76dfc2e",
-          "54dc05ab56244444f86d69b8274a6075906f7ba2307b08e08d3884abde255495",
-          "559f46ceb801a3540eace594476718e1486b5b4423cfb4ff64530ff8fb4a3815",
-          "5838ae6c748dcbdfa13c6529c654cb821897d29835d3e7e05ca23fb2f3794f02",
-          "59b9153c4c9e155c976db1a2fd4d1b28fa10bb9c4dcafdc4758b352c037e3d86",
-          "5b6a466b65d479b77a03b15a95ac097b45e23ff7ae5ef6282985b2a503deb691",
-          "613e5314a7ded3155cdec49fd34e852e181f4651d78bd8bf3adad2f4dbf22b0d",
-          "62877a5096828c4bc2fca7cbee7d38b11a0c90fd0d3fc8c37981581e9988c919",
-          "634e89d8592d7c9e2bc1c098217a813947b44a4f80bc569e9a15c1e8b0864b91",
-          "67569adec99fd38b114ae07e2e549e6c16f75368f3c5373022c84934ed1c8e84",
-          "6d49233b1fca22f3823e856e4c16749e9c45f384ea57055fead16df35b217226",
-          "71c79e8bf71ed257435ea9b8b91e118ba03ec681860651190f7d7457804313ee",
-          "77469615c5f548063922b469a8c0a4116511395d013e5a798e123e9c119acc4b",
-          "7828e17e674507ab13dfd84b31b361fa19b9cb27ee130620ba9211feef746d31",
-          "8dbcde2a28a0b3de201214d7e3bd43acc97561924daa247c05c4b0536d42be85",
-          "901a43b42f997710147295a0625e20c935207f8c531daf5311449ec119a37dcc",
-          "94db6fa14b4e487dffba709b87e8a7e25483300ed409de243b19fff7cf2f0978",
-          "95cd48130247525d8a7e966bd3fa07e9d6c39ebbe3058ecccb336f66bb8e3d1e",
-          "96bb418128deeb2b9d2e4b66b98cae07b238b326b6456cc9b86802e67c504a03",
-          "98cce1e69873de25e5139aa848f469bef2af345a8a49d15000b5b5e72b582896",
-          "a1039de7ec690d64db9d7d91f3d777d308e49e958de4154aa0b62ded7820f1fe",
-          "a785fc61fc4ff7cff0ddb540bf7ff12111ed0d6031f78f48387a6c16cb3c5451",
-          "aa0083f662f055e8d911c5de3a8f3a31b3c84cacc7dccc30c98f2be14dba4102",
-          "b58814fb3ce5a085014ee6e8d89f7cc1380b234b97170fd5f3398031281c6a77",
-          "b6912c23cccc4b0964d55608916297f6978f0b38c80a4beac472004a786fcef7",
-          "bd3230e4ceaf32ad2248ab069b164bd2144401967ac69de0a4cd1734fe429d9c",
-          "c25799facb3e788830bcf614f33411d3bcfc0edd4a2200e160b5eb4ce700039f",
-          "c39fedb662259bd76b11616966c41ff1fbda58d9b129b9c1bd818700eea92b29",
-          "ca8a00c9d36c64e5dcf562c7ae2b8df4bd6455fe0b41b32ee3a2a528ddc2d155",
-          "ce379de03e35e0ea2c88744c29b9e2678165214065f9b957177002c6bbe69084",
-          "d18369be4487d7cd0e4bd3dd0da720672e56e13ca43627305e26767e26925551",
-          "d7745513034af14617436ad6b3fc125fd0343218411d0c79bda56b0dadc86b2b",
-          "d8ac0c08e4c698017558e532974cf749135d3d49757f05001e6127dc6e07cf17",
-          "dccf9f008b42a04f7e69d3bbf7b5ce81e71308545d6176cc4763920a424e5ac1",
-          "e5341edb7c039c456d46c39f194be86ce4b41725d7ad12d297d18aa99cddd675",
-          "e88c41a6f769cd760e323b4f7c01835433cd4059cd59630cb1a9eb1181b350ed",
-          "f13f9cef5cc020bf673c7f4e19c93c312a043867f46796a8f01927a9a14c2533",
-          "f760bc16a585325ba9d74917f9e0994d3a4164c1141158c799b619d2c823e818",
-          "b5c2d20623d4e6647d06a42864edd8629f82c5c384b243fdaeeeca24b3873d64"
-        ]
-      },
-      "affected_products": [
-        "OpenAI ChatGPT desktop client (signed executable)",
-        "Anthropic Claude desktop client (signed executable)",
-        "Microsoft Copilot",
-        "GitHub Copilot",
-        "Various legitimate AI‑related download pages"
-      ],
-      "recommendations": [
-        "Implement strict application whitelisting and verify the provenance of AI‑related binaries before execution.",
-        "Monitor for DLL sideloading behavior, especially when legitimate AI executables are loaded alongside unknown DLLs.",
-        "Block or closely inspect traffic to known malicious domains (e.g., download.Xrpl.City) and to public C2 services used for abuse (Telegram, Tor, DoH).",
-        "Deploy endpoint detection that flags PowerShell scripts downloading executables from non‑trusted URLs.",
-        "Enforce multi‑factor authentication and educate users about phishing emails that request AI service credential updates or payment information.",
-        "Leverage threat‑intel feeds to flag malvertising URLs and sponsored search results that reference AI product names.",
-        "Apply network‑level DNS filtering to detect and block DNS‑over‑HTTPS queries to suspicious resolvers used for C2.",
-        "Regularly audit SSH‑exposed Linux servers for unauthorized Go‑based downloaders and remove weak credentials to prevent XMRig propagation."
-      ],
-      "first_seen": "2026-06-11T15:23:16.662302+00:00",
-      "last_updated": "2026-10-27T15:07:39.128941+00:00",
-      "summary": "Threat actors are abusing the popularity of generative‑AI products by publishing counterfeit desktop applications and malvertising links that appear to be legitimate AI tools (e.g., ChatGPT, Claude, Copilot). The campaigns deliver a range of payloads—including the Yoba loader, TELEPUZ modular malware, Vidar stealer, and XMRig cryptocurrency miner—through techniques such as DLL sideloading, PowerShell‑based downloaders, and Go‑based loaders. Communication is hidden behind legitimate services (Telegram, Tor, DNS‑over‑HTTPS, Catbox) and the attacks have been observed across U.S. and European enterprises, causing data theft, credential harvesting, and crypto‑mining revenue.",
-      "analysis": "### Campaign Overview Multiple security vendors (Check Point, The Hacker News, Microsoft, Elastic, AhnLab, Palo Alto Networks, Rapid7) have reported a coordinated wave of AI‑themed malicious campaigns that began in early 2026. Attackers create convincing GitHub repositories and download pages that masquerade as AI desktop applications (e.g., *GPT‑5.6 Sol*, *Claude Opus*). The binaries are signed with legitimate OpenAI or Anthropic certificates, allowing them to be placed alongside trusted executables and loaded via **DLL sideloading**. ### Malware Families Delivered | Loader | Primary Payload | Function | |--------|----------------|----------| | **Yoba** | Custom back‑door chain | Provides persistence and remote command execution; uses Telegram, Tor, Catbox, and DoH for C2. | **TELEPUZ** | Go‑variant of Vidar stealer | Harvests browser credentials, cookies, crypto‑wallet data; delivered via ClickFix clipboard‑hijacking and PowerShell download. | **Vidar** | Information stealer | Collects credentials, cookies, and crypto‑wallet files. | **XMRig** | Monero miner | Consumes victim CPU cycles for cryptocurrency mining. All payloads share common operational traits: - **Infrastructure‑light C2** – reliance on public platforms (Telegram, Tor hidden services, DNS‑over‑HTTPS) instead of dedicated servers. - **Malvertising & Sponsored Search** – malicious ads and search‑engine results direct users to counterfeit download pages. - **Code‑Signing Abuse** – legitimate signatures are used to bypass application whitelisting. - **Go‑based Loaders** – compact, cross‑platform binaries that inflate the final payload (as observed with Vidar/XMRig). - **PowerShell Execution** – initial download stage executed via PowerShell scripts (TELEPUZ chain). ### Geographic & Temporal Indicators - The Yoba operators appear to operate primarily in the UTC‑4 time zone and exhibit Russian‑origin indicators. - Campaign activity spikes align with major AI product releases and seasonal advertising cycles (e.g., a 100,000‑email phishing burst in September 2026). ### Impact Victims include small‑ and medium‑size businesses and large enterprises across the United States and the European Union. Consequences range from credential theft and financial fraud (phishing for payment data) to resource exhaustion from crypto‑mining. ### MITRE ATT&CK Mapping - **T1574.001 – DLL Search Order Hijacking (DLL sideloading)** - **T1059.001 – PowerShell** (download and execution of second‑stage payloads) - **T1105 – Ingress Tool Transfer** (remote download of Go loaders, Vidar, XMRig) - **T1071.001 – Web Protocols (Telegram, Catbox)** (C2 over legitimate services) - **T1071.004 – DNS over HTTPS** (C2 stealth) - **T1566.001 – Phishing: Spearphishing Attachment/Link** (malicious AI‑themed emails) - **T1566.002 – Spearphishing via Service** (malvertising and sponsored search) - **T1056.001 – Input Capture (Clipboard hijacking / pastejacking)** (ClickFix technique) - **T1496 – Resource Hijacking** (XMRig crypto‑mining) ### Indicators of Compromise (IOCs) | Type | Value | |--------|-------| | domain | download.Xrpl.City | | domain | catbox.moe | | url | (any URL delivering the fake AI binaries referenced in the campaigns) | | email | (phishing emails claiming to update ChatGPT Plus payment information) | *Only the above IOCs were explicitly mentioned in the source material.*",
-      "sources": [
-        {
-          "title": "AI brands as bait: How threat actors are using the AI hype in social engineering",
-          "url": "https://www.microsoft.com/en-us/security/blog/2026/06/08/ai-brands-as-bait-how-threat-actors-are-using-the-ai-hype-in-social-engineering/",
-          "source": "Microsoft Security Blog"
-        },
-        {
-          "title": "Criminal AI-as-a-Service in 2026: How the Underground Market Is Operationalizing Cybercrime",
-          "url": "https://www.rapid7.com/blog/post/tr-criminal-ai-underground-market-operationalizing-cybercrime-2026",
-          "source": "Rapid7 Blog"
-        },
-        {
-          "title": "Statistical Report on Malware Targeting Linux SSH Servers in the Second Quarter of 2026",
-          "url": "https://asec.ahnlab.com/en/94396/",
-          "source": "AhnLab ASEC"
-        },
-        {
-          "title": "Vidar Stealer Unmasked: Code Signing Abuse, Go Loaders and File Inflation",
-          "url": "https://unit42.paloaltonetworks.com/vidar-stealer-xmrig-miner-campaign-analysis/",
-          "source": "Unit 42 (Palo Alto)"
-        },
-        {
-          "title": "Case Study: Distribution of a CoinMiner Targeting Linux SSH Servers via Malware Distribution via Network Transmission",
-          "url": "https://asec.ahnlab.com/en/94484/",
-          "source": "AhnLab ASEC"
-        },
-        {
-          "title": "New TELEPUZ Malware Spreads via ClickFix to Steal Data and Run Commands",
-          "url": "https://thehackernews.com/2026/07/new-telepuz-malware-spreads-via.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Detect and disrupt AI-themed attacks with Microsoft Defender",
-          "url": "https://www.microsoft.com/en-us/security/blog/2026/09/10/detect-and-disrupt-ai-themed-attacks-with-microsoft-defender/",
-          "source": "Microsoft Security Blog"
-        },
-        {
-          "title": "Fake AI Attacks Spread Across US Companies: How MSSPs Can Stop Incidents Early",
-          "url": "https://thehackernews.com/2026/10/fake-ai-attacks-spread-across-us.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Tricks from the Past deployed via signed ChatGPT and Claude binaries",
-          "url": "https://research.checkpoint.com/2026/tricks-from-the-past-deployed-via-signed-chatgpt-and-claude-binaries/",
-          "source": "Check Point Research"
         }
       ]
     },

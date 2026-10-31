@@ -1,95 +1,332 @@
 {
-  "generated_at": "2026-10-30T15:58:42.929211+00:00",
-  "count": 333,
+  "generated_at": "2026-10-31T15:20:42.725373+00:00",
+  "count": 334,
   "reports": [
     {
-      "slug": "claude-code-extension-trojan",
-      "name": "Claude Code VS Code Extension SSH Backdoor",
+      "slug": "steam-wallpaper-malware",
+      "name": "Wallpaper Engine Malware Campaign",
       "category": "malware",
-      "severity": "medium",
+      "severity": "high",
       "confidence": 1.0,
       "faithfulness": 0.92,
-      "source_count": 2,
-      "ioc_count": 1,
+      "source_count": 5,
+      "ioc_count": 42,
       "cves": [],
       "malware_families": [
-        "Claude Code Trojan"
+        "DarkKomet",
+        "Lumma",
+        "RanEngine",
+        "Vidar",
+        "ACRStealer",
+        "AgentTesla",
+        "DarkCloud",
+        "LummaC2",
+        "Remus",
+        "Lzveil"
       ],
       "threat_actors": [],
       "ttps": [
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1574.001",
+          "name": "DLL",
+          "tactic": "stealth, execution"
+        },
+        {
+          "id": "T1566.001",
+          "name": "Spearphishing Attachment",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "mediafire.com",
+          "mega.nz",
+          "cloudflarestorage.com"
+        ],
+        "url": [
+          "http://120.48.156.17/ey.php",
+          "http://202.144.192.29",
+          "http://202.144.192.29/audit.php",
+          "http://202.144.192.29/download2/Themes2.zip",
+          "http://120.48.156.17",
+          "http://120.48.156.17/ey.php?ka=user1&id",
+          "http://brightly.to",
+          "http://brightly.to/download2/Themes2.zip",
+          "https://www.dropbox.com/s/zhp1b06imehwylq/Synaptics.rar?dl=1",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3603213159",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3591930233",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3584318845",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3436875036",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3633494498",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3556591375",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3635875825",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3601924072",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3605588743",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3553253793",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3462675635",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3605621824",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3610240788",
+          "https://steamcommunity.com/sharedfiles/filedetails/?id=3610366547"
+        ],
+        "ipv4": [
+          "120.48.156.17",
+          "202.144.192.29"
+        ],
+        "email": [
+          "bbl@anmarinee.it.com"
+        ],
+        "md5": [
+          "95856f2ce428c728d9781d3296558068",
+          "af080780cca2acd1d082ce01e7cc346a",
+          "c133c3dd9f7d6934598025047df41abf",
+          "d1693bbff456ae8fa3360446706df6da",
+          "8c2cc585ad8a13a72a704c0fda0c9854",
+          "b9fa763a53da3eea742d0f3c845a8c09",
+          "ded08ae5df7f1b12e5fdb767dbbed0b1",
+          "20965254e29104986e11939decd39549",
+          "18dedc0009f0927cba6425c84cce9883",
+          "0f4f01c6d495abb37403072dd017ce8d",
+          "5620f01284329f561b1839a36be55355",
+          "fe1f6485013cd5e6d5cf718049b0b8d6",
+          "74414ed4b63aadec039b603c32762b80"
+        ]
+      },
+      "affected_products": [
+        "Wallpaper Engine (Windows)",
+        "Steam Workshop",
+        "Microsoft Windows",
+        "Steam client"
+      ],
+      "recommendations": [
+        "Disable or restrict the \"application wallpaper\" feature in Wallpaper Engine for enterprise endpoints.",
+        "Educate users to install wallpapers only from trusted creators and to verify digital signatures where available.",
+        "Implement network filtering to block outbound connections to known file‑hosting domains used for malware distribution.",
+        "Deploy email security controls that sandbox attachments and detect disguised executables (e.g., ZIPs containing .EXE files).",
+        "Monitor for processes and files associated with DarkKomet, AgentTesla, DarkCloud, and other identified infostealers.",
+        "Enforce DLL side‑loading detection rules and monitor loading of suspicious DLL names such as `libvlccore.dll` or `python37.dll`.",
+        "Apply endpoint detection and response (EDR) rules to flag automatic execution of newly installed Wallpaper Engine packages."
+      ],
+      "first_seen": "2026-06-16T21:16:55.986031+00:00",
+      "last_updated": "2026-10-31T15:06:14.893589+00:00",
+      "summary": "Since late 2025 threat actors have been abusing the Steam Workshop and the Wallpaper Engine application to deliver malicious payloads disguised as desktop wallpapers. The compromised wallpapers install backdoors (e.g., DarkKomet), crypto‑miners, or hijack Steam accounts, and have been downloaded thousands of times. The campaign is complemented by broader infostealer distribution via file‑hosting services and phishing emails, indicating a multi‑vector approach to credential and data theft.",
+      "analysis": "### Abuse of Wallpaper Engine - **Vector**: Attackers publish malicious *application wallpapers* to the Steam Workshop. These wallpapers are executable Windows applications that run automatically when a user installs them via Wallpaper Engine. - **Payloads**: Analyses revealed backdoor components from the DarkKomet family, cryptomining modules, and code that steals Steam authentication tokens to hijack accounts. - **Impact**: Each malicious wallpaper has been downloaded tens of thousands of times, exposing a large user base primarily in China and Russia. ### Distribution Ecosystem - **File‑hosting services**: The same threat actors also distribute infostealers (AgentTesla, DarkCloud, Remus, LummaC2, Lzveil) through public storage sites such as MediaFire, Amazon S3 buckets (e.g., `springsidefile.s3.us-east-1.amazonaws.com`, `good26.s3.us-east-1.amazonaws.com`), Mega.nz, and Cloudflare Storage. - **Phishing**: Email campaigns masquerading as business proposals or legitimate software updates deliver ZIP attachments that contain disguised .NET executables (e.g., a faux café‑management program) which load malicious DLLs via reflection. - **DLL Side‑Loading**: Samples frequently employ side‑loading of malicious DLLs (e.g., `libvlccore.dll`, `VulcanMessage5.dll`, `python37.dll`) to bypass security controls. ### Technical Behaviors - **Execution**: Malicious wallpapers execute automatically upon installation, launching backdoor binaries. - **Persistence**: Loaders use reflection and in‑memory execution to avoid writing files to disk. - **Credential Theft**: Steam credentials are harvested; infostealers collect system information, installed programs, and user documents. - **Resource Hijacking**: Cryptomining components consume CPU/GPU cycles. ### Overlap with Infostealer Trends The campaign’s use of public file‑hosting services and phishing attachments mirrors trends reported in May and September 2026 infostealer reports, suggesting a shared infrastructure and operator ecosystem.",
+      "sources": [
+        {
+          "title": "Dozens of malicious wallpapers found on Steam Workshop: gamers’ accounts at risk",
+          "url": "https://securelist.com/dozens-of-malicious-wallpapers-found-on-steam-workshop/120186/",
+          "source": "Securelist (Kaspersky)"
+        },
+        {
+          "title": "May 2026 Infostealer Trend Report",
+          "url": "https://asec.ahnlab.com/en/94172/",
+          "source": "AhnLab ASEC"
+        },
+        {
+          "title": "Steam Workshop abused to spread malware via Wallpaper Engine app",
+          "url": "https://www.bleepingcomputer.com/news/security/steam-workshop-abused-to-spread-malware-via-wallpaper-engine-app/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Case of AgentTesla Malware Distribution Disguised as a Business Proposal Email",
+          "url": "https://asec.ahnlab.com/en/95840/",
+          "source": "AhnLab ASEC"
+        },
+        {
+          "title": "September 2026 Infostealer Trend Report",
+          "url": "https://asec.ahnlab.com/en/96183/",
+          "source": "AhnLab ASEC"
+        }
+      ]
+    },
+    {
+      "slug": "teams-it-impersonation-malware-campaign",
+      "name": "Microsoft Teams Help Desk Impersonation Campaign",
+      "category": "apt",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 3,
+      "ioc_count": 40,
+      "cves": [],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1059.007",
+          "name": "JavaScript",
+          "tactic": "execution"
+        },
         {
           "id": "T1082",
           "name": "System Information Discovery",
           "tactic": "discovery"
         },
         {
-          "id": "T1098.004",
-          "name": "SSH Authorized Keys",
-          "tactic": "persistence, privilege escalation"
+          "id": "T1018",
+          "name": "Remote System Discovery",
+          "tactic": "discovery"
         },
         {
-          "id": "T1053.005",
-          "name": "Scheduled Task",
-          "tactic": "execution, persistence, privilege escalation"
+          "id": "T1087",
+          "name": "Account Discovery",
+          "tactic": "discovery"
         },
         {
-          "id": "T1053.003",
-          "name": "Cron",
-          "tactic": "execution, persistence, privilege escalation"
+          "id": "T1069",
+          "name": "Permission Groups Discovery",
+          "tactic": "discovery"
         },
         {
-          "id": "T1543.001",
-          "name": "Launch Agent",
-          "tactic": "persistence, privilege escalation"
+          "id": "T1113",
+          "name": "Screen Capture",
+          "tactic": "collection"
         },
         {
-          "id": "T1090.001",
-          "name": "Internal Proxy",
-          "tactic": "command and control"
+          "id": "T1021.006",
+          "name": "Windows Remote Management",
+          "tactic": "lateral movement"
         },
         {
-          "id": "T1041",
-          "name": "Exfiltration Over C2 Channel",
-          "tactic": "exfiltration"
+          "id": "T1021.001",
+          "name": "Remote Desktop Protocol",
+          "tactic": "lateral movement"
+        },
+        {
+          "id": "T1187",
+          "name": "Forced Authentication",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "tactic": "privilege escalation"
+        },
+        {
+          "id": "T1003.006",
+          "name": "DCSync",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1558.003",
+          "name": "Kerberoasting",
+          "tactic": "credential access"
         }
       ],
       "iocs": {
         "ipv4": [
-          "134.209.82.225"
+          "2.5.0.67"
+        ],
+        "sha1": [
+          "f34330d4c6e0aa978dc3af40360c14b31ad51127"
+        ],
+        "sha256": [
+          "4cfdcae6dd1d6d98b870c8f0654d504f2bf10479a117dc297de789c249dc389d",
+          "a4d145a6347e47d40b3ca48af5c6dba01bf019d0110e31a44bb70fc77d1d1676",
+          "cc6d0f3f47afeba018173604e34f527e8413d3a54ffb35caed529bff49055ec5",
+          "0d2fc28af246f62f27e49207d1f64e236ad9ea029412b27877d1ae6c098e86e3",
+          "69e10e0cb7bb2137ebea12971adb02c662cf5543a4f8c9530812bcbf7b183a23",
+          "a135fe4df18c711097e69b4f27ea32a74a955160bf2fb12da841f21866d95d87",
+          "108ef7e628d7a20bd6241a5b57149e27a6061f467123eb64061975559f8f73dc",
+          "f094b8263471c7b76dbed03d420736449920368fa0eca2ed6b1aea2645138d97",
+          "857c2f283de799faa74b56e862c0a9f96e67aa1b4fa4a9e46395098365b99de3",
+          "6a89de024ca62536de6f5fc10e49896bb1ac330ca39dce30203afdcc45ae237e",
+          "4188c6588f3dcda881c3f2d12df580051179a999f040b799af506edeb3211a26",
+          "ceb3f7fe9a618ff29a21b126383c23900fad58d6ae2b5552d7e306e4b6acf4b0",
+          "02f2ce03a2650f17bfe6e8744eebbf58522016cbdb92af8f2217b5dd4a1ad550",
+          "499d07894f730fb685ee3cbfc1a933e0da93750c1ed25a49b2eb9c32adef156a",
+          "d49cc01641c3045bf3119f9d71e7ffd29bfce32ca4b27cc96340716ed4d41cdc",
+          "67c979dc13961b09f24f85a801e4c918420adca6117c92efbeeeaa68a6344f55",
+          "6cc665057c4a4fe42a309afd3a7fa96cf1af126e9c6e08e56df5105e05378bcc",
+          "dd434f3ffcafeda538d43226665115ba136ad0fdb43dad8536e1368ca9a17b64",
+          "40f8e774e1e7a484b78c7ae4336bc47aa9cab20dc8e1e67d89838e807975f9b1",
+          "3ff5e49fd2f2bd0758467763c44d69e781b7460af84a6e3966e2621bc5bf7096",
+          "374c4934b14a1151ea68847c8627c3f1c0b878f4e673bda3f15e4388dfde0187",
+          "bc8b1b0c80512ba0e8ffccfee5b507df16a3355db1143c3ba81ef42dac1baa6c",
+          "c2c004a56de2a99f5b06ceb58d8a4b371fb60fd66ff5936786fe8d8037ead208",
+          "5bf8cf29ac6803e7269b045dea48003af7cfe48bedfc081b57ff9e86cb08971b",
+          "19035c8e2520fb70b3e2ec5338c14311b88a26cc1fb8304a01494260b6b55af1",
+          "d232d82e410de12702a67c58acf927304ee42f3e6d81a9d71eca99f9052126db",
+          "d3cb7ded277b49be06e6a1860f7c7e913e252802e9d32453a185e24797bf53ef",
+          "e31e5da7c58a7e8f89f9629f095edd7d741a1fb0b85fcb39f3818dbd9497b1e3",
+          "1a534d04bf30894d20764e91f7e94e0a73f060f0abacc9feeedba427995c83a8",
+          "77fb0e75f4396cb57bbbd28f6dc5310369a87abec9e2acc457aa99a0063ed27a",
+          "fc96a04c615847f0fb1391f04d9d1aac7f78ddfb7d459168df0a4172b98354e2",
+          "06ad69b9bebad3cc75b594cc5bb1ca0035ea22bb8a683002ca051d948566426b",
+          "a93c946c237b981189d2668d938a9d4d1d9681757e48dae8d9d65ed25b5da657",
+          "529543b4fe6a4c21d28be56dbf92fcac91d8df808d8518b4275c973fa547ad63",
+          "ccea4e1acc51ac43ba9da76ada00e7e308cc33d9c5c264dff82d1be83e957b88",
+          "a03c84ae9e569c04fdd271277f508bba5a299d53c3c0efe0819338d178fe1c5b",
+          "f326201269f1ee2f803ae435317507263bb6e0dbfdeb70bd1bb5446e2e46f001",
+          "06c5c14f043aee3bcc5843b5f50909623d5c9a6239a7c1fba9cddad4111469e7"
         ]
       },
       "affected_products": [
-        "Cursor IDE (extension marketplace)",
-        "Visual Studio Code",
-        "Anthropic Claude Code extension (VS Code)",
-        "Windows (OpenSSH)",
-        "macOS (LaunchAgent, Remote Login)",
-        "Linux (cron, OpenSSH)"
+        "Microsoft Teams",
+        "Microsoft Quick Assist",
+        "MSP360 Remote Monitoring and Management (v2.5.0.67)",
+        "ConnectWise ScreenConnect",
+        "Windows Remote Management (WinRM)",
+        "Active Directory Certificate Services (AD CS)",
+        "Node.js runtime",
+        "Windows Installer (MSI)",
+        "PowerShell"
       ],
       "recommendations": [
-        "Immediately uninstall the Claude Code extension version 2.1.313 from all developer machines.",
-        "Install the clean version (2.1.314) from the official Open VSX or Microsoft VS Code Marketplace.",
-        "Search for and remove any unauthorized SSH public keys labeled \"svc-telemetry\" from `~/.ssh/authorized_keys` on all accounts.",
-        "Audit and delete the malicious scheduled tasks, cron jobs, and LaunchAgents created by the extension.",
-        "Disable the SSH daemon on systems where it is not required, or enforce strict access controls if SSH is needed.",
-        "Block outbound traffic to 134.209.82.225 (port 8099) at the network perimeter and monitor for similar HTTP beaconing.",
-        "Enable logging for VS Code extension installations and enforce code‑signing verification for third‑party extensions.",
-        "Conduct a broader supply‑chain review of extension marketplaces to ensure publisher identity integrity."
+        "Educate users to verify any remote‑support request received via Teams and require a secondary verification channel (e.g., phone call to a known IT number).",
+        "Enforce MFA for all accounts that can approve remote‑support sessions, especially privileged accounts.",
+        "Restrict external collaboration in Teams to approved domains and enable the “External tenant labeling” and “Accept/Block” prompts.",
+        "Disable or tightly control the use of Quick Assist, MSP360, and other remote‑support tools through application whitelisting or Group Policy.",
+        "Monitor for silent MSI installations and PowerShell commands that download executables from external URLs; alert on anomalous use of Node.js or other portable runtimes.",
+        "Log and alert on WinRM usage from non‑administrative workstations and on lateral movement attempts toward domain controllers.",
+        "Audit AD CS certificate templates; remove or lock down ESC1‑type templates and enforce enrollment permissions.",
+        "Deploy detection for PetitPotam (forced authentication) and for abnormal NTLM relay activity.",
+        "Leverage Microsoft Defender for Endpoint’s remote‑management detection rules and enable attack‑disruption policies for privileged identities.",
+        "Implement regular red‑team or purple‑team exercises that simulate Teams‑based impersonation to validate detection and response processes."
       ],
-      "first_seen": "2026-10-30T15:35:33.938508+00:00",
-      "last_updated": "2026-10-30T15:35:38.899139+00:00",
-      "summary": "A trojanized version of Anthropic's Claude Code VS Code extension (v2.1.313) was briefly distributed through the Cursor Marketplace, installing a persistent SSH backdoor on up to 5,000 developer machines. The malicious loader adds an attacker‑controlled SSH key, attempts to enable SSH, creates scheduled tasks or LaunchAgents for persistence, and exfiltrates host details to a remote server (134.209.82.225). Although coding errors limited remote access on many Windows and macOS hosts, the threat remains serious due to the privileged persistence mechanisms and broad platform coverage.",
-      "analysis": "### Incident Overview - **Timeline**: The malicious package was available from 02:27 AM to 01:35 PM PT on 29 Oct 2026 (≈11 hours). It was removed on 30 Oct 2026 after discovery. - **Distribution Vector**: The extension was published under the legitimate Anthropic identifier `anthropic.claude-code` in the Cursor IDE extension marketplace. No evidence of propagation to the Open VSX or Microsoft VS Code Marketplace. - **Impact Scope**: Cursor estimates a maximum of **5,000** affected developers across Windows, macOS, and Linux. ### Malicious Functionality 1. **Loader Injection** – A 66‑line JavaScript loader was prepended to the legitimate `extension.js` file, executing automatically when VS Code starts or the extension’s webview opens. 2. **System & User Reconnaissance** – Collects OS details, public IP, Git configuration (email), and other host metadata. 3. **SSH Backdoor Implant** – Inserts an attacker‑controlled SSH public key labeled `svc-telemetry` into `~/.ssh/authorized_keys`. 4. **SSH Service Enablement** – Attempts to enable the SSH daemon: - macOS: runs `systemsetup -getremotelogin` without admin rights, causing the check to fail. - Windows: tries to start OpenSSH via `/bin/sh`, which does not exist on standard Windows installations. Consequently, the reverse tunnel often fails, but the key remains. 5. **Persistence Mechanisms** – - **Windows**: Creates a scheduled task / startup script that retries the tunnel every minute. - **macOS**: Installs a LaunchAgent. - **Linux**: Adds a cron job. 6. **Command & Control** – Sends host details and backdoor status to `http://134.209.82.225:8099/beacon` over unencrypted HTTP. ### Technical Gaps in the Malware - Faulty privilege escalation attempts prevent SSH activation on most macOS and Windows hosts, limiting the attacker’s ability to obtain a live session. - Nevertheless, the persistent SSH key and scheduled tasks provide a foothold that could be leveraged later if the victim later enables SSH. ### MITRE ATT&CK Mapping - **T1082** – System Information Discovery - **T1098.004** – Account Manipulation: SSH Authorized Keys - **T1053.005** – Scheduled Task/Job: Scheduled Task (Windows) - **T1053.003** – Scheduled Task/Job: Cron (Linux) - **T1543.001** – Create or Modify System Process: Launch Agent (macOS) - **T1090.001** – Proxy: SSH Tunneling - **T1041** – Exfiltration Over Command and Control Channel ### Remediation Status - Cursor shut down its marketplace, removed the malicious package, and Anthropic released a clean version (2.1.314) to Open VSX and Microsoft Marketplace. - No public reports of successful remote logins have been confirmed. ### Open Questions - The exact supply‑chain compromise method (how the attacker obtained signing rights or publisher ID) remains undisclosed. - Whether additional, undisclosed variants were distributed outside the Cursor marketplace is unknown.",
+      "first_seen": "2026-09-03T15:30:32.245944+00:00",
+      "last_updated": "2026-10-31T14:59:51.451088+00:00",
+      "summary": "Threat actors are leveraging Microsoft Teams messages to impersonate IT/help‑desk staff and socially engineer users into granting remote assistance via Quick Assist or other legitimate remote‑support tools. Once a session is established they deploy PowerShell‑driven MSI payloads that stage Node.js/JavaScript runtimes, conduct extensive AD and host discovery, and abuse Active Directory Certificate Services (ESC1/ESC8) to obtain privileged authentication certificates, enabling credential‑theft, lateral movement via WinRM, and potential ransomware deployment.",
+      "analysis": "### Attack Overview 1. **Initial Social Engineering** – Actors contact users through Microsoft Teams, masquerading as IT support. They convince victims to launch a remote‑support session (Quick Assist, MSP360 RMM, or similar). This bypasses traditional email phishing controls and exploits the trust placed in collaboration tools. 2. **Payload Delivery** – Using the remote session, the adversary runs PowerShell to download a malicious MSI. The MSI silently installs a portable Node.js (or Python/Bun) runtime and an obfuscated JavaScript implant that provides persistent command execution and C2. 3. **Post‑Compromise Activity** – The implant performs: - System, network, and Active Directory discovery (T1082, T1018, T1087, T1069). - Screen capture (T1113) and credential‑access operations. - Lateral movement via Windows Remote Management (WinRM) (T1021.006) and other trusted Windows binaries. 4. **Certificate Abuse Paths** – Two distinct AD CS abuse techniques were observed: - **ESC1** – Exploitation of a vulnerable certificate template to request authentication certificates for privileged accounts, followed by DCSync (T1003.006). - **ESC8** – Use of the PetitPotam forced‑authentication technique (T1187) to coerce a domain controller to authenticate to the attacker, relay NTLM to AD CS Web Enrollment, and obtain a Kerberos PKINIT certificate (T1558.003). 5. **Persistence & Redundancy** – In some cases the MSP360 RMM agent installs ConnectWise ScreenConnect, creating a second remote‑access channel (T1021.001) that remains even if the initial session is terminated. ### Impact The chain provides an attacker with **credential‑backed, interactive access** to the entire AD forest, enabling data exfiltration, credential theft, and ransomware deployment. Because the tools are legitimate and signed, detection is difficult without behavioral monitoring. ### Detection Gaps - Teams external‑collaboration alerts focus on the initial message, not on subsequent remote‑support acceptance. - Standard endpoint AV may miss the MSI‑based Node.js runtime because it is executed via PowerShell. - AD CS abuse is rarely logged unless explicit monitoring for certificate template misuse is enabled. ### Mitigations Implemented by Microsoft - Defender for Endpoint rules for anomalous remote‑management activity. - Attack‑disruption policies that block privileged identities when abnormal certificate requests are seen. - Guidance to restrict external Teams collaboration and enforce MFA for remote‑support sessions.",
       "sources": [
         {
-          "title": "Official Claude Code Extension on Cursor Marketplace Trojanized with Persistent SSH Backdoor",
-          "url": "https://thehackernews.com/2026/10/official-claude-code-vs-code-extension.html",
-          "source": "The Hacker News"
+          "title": "Impersonating IT support: how threat actors turn a remote session into enterprise-wide access",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/09/02/impersonating-it-support-threat-actors-turn-remote-session-into-enterprise-wide-access/",
+          "source": "Microsoft Security Blog"
         },
         {
-          "title": "Malicious Claude Code extension on Cursor planted SSH backdoors",
-          "url": "https://www.bleepingcomputer.com/news/security/malicious-claude-code-extension-on-cursor-planted-ssh-backdoors/",
-          "source": "BleepingComputer"
+          "title": "Phishing Abuses RMM Tools for Persistent Access",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/09/29/phishing-abuses-rmm-tools-persistent-access/",
+          "source": "Microsoft Security Blog"
+        },
+        {
+          "title": "From help desk impersonation to AD CS abuse: Investigating ESC1 and ESC8 intrusion paths",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/help-desk-impersonation-ad-cs-abuse-investigating-esc1-esc8-intrusion-paths/",
+          "source": "Microsoft Security Blog"
         }
       ]
     },

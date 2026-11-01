@@ -1,7 +1,96 @@
 {
-  "generated_at": "2026-10-31T15:20:42.725373+00:00",
-  "count": 334,
+  "generated_at": "2026-11-01T16:07:29.909056+00:00",
+  "count": 335,
   "reports": [
+    {
+      "slug": "netamloader-supply-chain-attack",
+      "name": "NetamLoader",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 1.0,
+      "source_count": 2,
+      "ioc_count": 19,
+      "cves": [],
+      "malware_families": [
+        "NetamLoader",
+        "Trojan.MSIL.NetamLoader.gen",
+        "Trojan.MSIL.Zapchast.*",
+        "Trojan.Script.Agent.*"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1055.012",
+          "name": "Process Hollowing",
+          "tactic": "stealth, privilege escalation"
+        },
+        {
+          "id": "T1129",
+          "name": "Shared Modules",
+          "tactic": "execution"
+        }
+      ],
+      "iocs": {
+        "url": [
+          "https://openaigpt4v.com/model_v4",
+          "https://openaigpt4vcom/model_v4",
+          "https://openaigpt4v.com/model_v4/94aafd58-c00c-402a-aae6-858b4486a1a4",
+          "https://openaigpt4v.com/model_v4/94aafd58-c00c-402a-aae6-858b4486a1a4?b=lM4V3VwrWtXBy4oBGUkXOHfxyLUlrT2hIZGn4C37W1Z3%2FeW1WURJqzaNLQhGFHsWxA2lpJHZSpd8VDLMOQRD%2FfsDswnomIrBpoaNzug3dOtrh1J2KIqZRmKx1TtQsxq1RAGu1y45rSKaPHm9s2HF8A%3D%3D&c=41bd7f37-c3f6-4a9e-b2f3-5363e9a2c095"
+        ],
+        "ipv4": [
+          "1.0.0.0",
+          "4.0.0.0",
+          "104.18.14.219"
+        ],
+        "md5": [
+          "f2458ed133f8d0ca19e22c10f577e98e",
+          "e1dc6f1ed193594f2284be22ae08dfa4",
+          "ab81564bcb8ca7e710c66832de747556",
+          "cfb8b281bdf5d9390e64b10c312fb2c1",
+          "67e3617f8709d34f806f8e02badba8a5",
+          "514ac0d73b8a1b73488ef5e2e55a75c3",
+          "514117d536e347560d049cfe0c609632",
+          "9000820d8153c24cd60d53001d3a97b6",
+          "b3c4a635179680edafb5d006cf0cffc6",
+          "4f28622c5e60c01319bf48cf742fe1a5",
+          "c86d53392a87dd3f3e62d62c9b92a9bd"
+        ],
+        "sha1": [
+          "e4537a1762fcafd2fd96bfc825bad34f9db9a24d"
+        ]
+      },
+      "affected_products": [
+        "Custom Windows 10 build for Asian government entities",
+        "Patch My PC (PatchMyPC‑ScriptRunner.exe and related DLLs)",
+        ".NET Framework"
+      ],
+      "recommendations": [
+        "Monitor the `C:\\Windows\\SoftwareDistribution\\Download` directory for unexpected CAB files and unknown .config files.",
+        "Validate the integrity and provenance of all Patch My PC components before execution.",
+        "Deploy endpoint detection rules that flag AppDomainManager injection and .NET process injection behaviors.",
+        "Enforce code‑signing verification and restrict execution of unsigned or unexpectedly signed binaries in privileged directories.",
+        "Implement supply‑chain security controls, such as signed package verification for third‑party update tools.",
+        "Apply application whitelisting (e.g., AppLocker) to limit which executables may run from the SoftwareDistribution folder.",
+        "Regularly update detection signatures and enable heuristic detection for anomalous .NET assembly loading."
+      ],
+      "first_seen": "2026-10-29T15:50:35.041135+00:00",
+      "last_updated": "2026-11-01T15:42:14.650349+00:00",
+      "summary": "NetamLoader is a previously undocumented .NET assembly‑loading framework discovered in early 2026. It is delivered via a CAB archive placed in the Windows SoftwareDistribution folder of a custom Windows 10 build used by Asian government entities. The framework leverages AppDomainManager injection to execute malicious .NET payloads inside legitimate Patch My PC processes, enabling a stealthy two‑stage loading chain.",
+      "analysis": "### Overview Researchers at Kaspersky identified a sophisticated supply‑chain attack that targets a custom Windows 10 image deployed by government organizations in Asia. The malicious payload, named **NetamLoader**, is embedded in a Windows cabinet (CAB) file whose name hashes to `e4537a1762fcafd2fd96bfc825bad34f9db9a24`. The archive is dropped into `C:\\Windows\\SoftwareDistribution\\Download` and its contents are extracted to `C:\\Windows\\SoftwareDistribution\\Download\\Install`. ### Initial Infection Vector The exact delivery mechanism for the CAB file is unknown, but the archive contains seven files, four of which are legitimate components of the third‑party patch‑management tool **Patch My PC** (`PatchMyPC‑ScriptRunner.exe`, `PatchMyPC‑Enum.dll`, `PatchMyPC‑Models.dll`, `Microsoft.HostIntegration.Connectors.dll`). The remaining files (`fabric.config`, `PatchMyPC‑ScriptRunner.exe.config`, `Resources.resx`) are used by the malicious framework. All binaries are Microsoft‑signed, which helps the payload evade basic signature checks. ### Two‑Stage Loading Chain 1. **Stage 1 – AppDomainManager Injection** - `PatchMyPC‑ScriptRunner.exe` is launched with the argument `-updatepackage -applicationid=…`. - The accompanying `PatchMyPC‑ScriptRunner.exe.config` is parsed by the .NET runtime’s **AppDomainManager** mechanism, causing the runtime to load the arbitrary assembly `Microsoft.HostIntegration.Connectors.dll`. - This technique mirrors DLL sideloading but operates at the .NET AppDomain level, allowing malicious code to run inside a trusted process. 2. **Stage 2 – Resource‑Based Payload Delivery** - `Microsoft.HostIntegration.Connectors.dll` reads `fabric.config` and subsequently loads `Resources.resx`. - `Resources.resx` contains multiple layers of encoded, compressed, or encrypted payloads, including XAML files, additional .NET assemblies, and JSON data. These are decoded at runtime and executed, forming the core NetamLoader framework built on XAML markup. ### Detection and Attribution Kaspersky’s products flag the threat with signatures `HEUR:Trojan.MSIL.NetamLoader.gen`, `Trojan.MSIL.Zapchast.*`, and `Trojan.Script.Agent.*`. No known APT group has been linked to the activity, and it is unclear whether any data exfiltration occurred. ### Impact The use of signed Microsoft binaries and a legitimate third‑party update tool makes the infection difficult to detect with traditional signature‑based solutions. Compromise of a government‑specific Windows build could provide attackers with persistent, high‑privilege access to sensitive systems.",
+      "sources": [
+        {
+          "title": "Unknown APT uses NetamLoader to attack a Win10 OS customized for governments in Asia",
+          "url": "https://securelist.com/netamloader/121676/",
+          "source": "Securelist (Kaspersky)"
+        },
+        {
+          "title": "NetamLoader Malware Targets Government Windows 10 Systems in Asia via .NET Injection",
+          "url": "https://thehackernews.com/2026/11/netamloader-malware-targets-government.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
     {
       "slug": "steam-wallpaper-malware",
       "name": "Wallpaper Engine Malware Campaign",

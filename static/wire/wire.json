@@ -1,7 +1,87 @@
 {
-  "generated_at": "2026-11-08T16:11:23.235463+00:00",
+  "generated_at": "2026-11-09T19:50:47.098792+00:00",
   "count": 343,
   "reports": [
+    {
+      "slug": "danfoss-fridge-hijack",
+      "name": "Danfoss Refrigeration Controller Exploitation",
+      "category": "exploit",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.85,
+      "source_count": 3,
+      "ioc_count": 4,
+      "cves": [
+        "CVE-2025-41450",
+        "CVE-2025-41451"
+      ],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "tactic": "initial access"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1565.001",
+          "name": "Stored Data Manipulation",
+          "tactic": "impact"
+        }
+      ],
+      "iocs": {
+        "cve": [
+          "CVE-2025-41450",
+          "CVE-2025-41451"
+        ],
+        "url": [
+          "https://ti-mindmap-hub.com/analytics/european-refrigeration-controllers-cold-chain-cross-source-analysis"
+        ],
+        "ipv4": [
+          "178.83.226.215"
+        ]
+      },
+      "affected_products": [
+        "Danfoss AK‑SM 800 refrigeration controller",
+        "Danfoss AK‑SC 355 refrigeration controller",
+        "Danfoss XWEB/EVO web interface"
+      ],
+      "recommendations": [
+        "Immediately disconnect exposed Danfoss controllers from the public Internet or place them behind strict firewalls with allow‑list IPs.",
+        "Change all default credentials on XWEB/EVO interfaces and enforce strong, unique passwords with multi‑factor authentication where possible.",
+        "Apply any available firmware updates; for EoL devices, replace hardware or implement air‑gap segmentation.",
+        "Implement network segmentation separating IT and OT environments; restrict remote maintenance access to vetted vendor VPNs.",
+        "Deploy continuous monitoring for anomalous controller activity: off‑hours logins, temperature set‑point changes, defrost commands, and alarm configuration modifications.",
+        "Conduct regular asset inventory and exposure scans (e.g., Censys, Shodan) to identify publicly reachable industrial control systems.",
+        "Establish an incident‑response playbook for refrigeration‑system compromise, including rapid rollback of temperature settings and verification against independent sensors."
+      ],
+      "first_seen": "2026-10-13T16:44:42.186534+00:00",
+      "last_updated": "2026-11-09T19:27:58.215347+00:00",
+      "summary": "In early October 2026 attackers gained unauthenticated access to Danfoss AK‑SM 800 and AK‑SC 355 refrigeration controllers deployed in hundreds of French supermarkets and later across Europe. By manipulating temperature set‑points and defrost cycles, they forced freezers to heat up to 50 °C (and in some cases 80 °C), causing massive food spoilage and financial losses estimated in the tens of millions of euros. The attacks leveraged publicly disclosed firmware vulnerabilities (CVE‑2025‑41450, CVE‑2025‑41451) and default/weak credentials on exposed internet‑facing devices, highlighting the risk of unpatched industrial control systems.",
+      "analysis": "### Timeline & Scope - **Oct 11‑13, 2026** – First wave targeted French supermarkets (Intermarché, Carrefour, Coopérative U, Monoprix, E.Leclerc). Over 300 stores were affected, with some losing all perishable inventory. - **Oct 20‑26, 2026** – Credential‑spraying campaign against Danfoss sensors reported by Lupovis. - **Nov 1‑3, 2026** – Second wave spread to at least nine European countries (Belgium, Netherlands, Germany, Sweden, etc.) and to French blood‑establishment cold rooms, where temperatures were driven to 110 °C. ### Attack Vector - **Public‑Facing Controllers** – Many Danfoss units (AK‑SM 800, AK‑SC 355) were directly reachable from the Internet with outdated firmware (< 4.2) and no patch path (EoL products). - **Exploited Vulnerabilities** – CVE‑2025‑41450 and CVE‑2025‑41451 provide unauthenticated root access to the controller’s web interface (XWEB/EVO). - **Credential Abuse** – Some operators left default credentials (`admin:admin`) on the XWEB interface, enabling a valid‑accounts technique. - **No Malware Observed** – Attackers performed in‑place configuration changes; no payload, C2, or file‑system modifications were reported. ### Impact - **Operational Disruption** – Temperature set‑points were raised, defrost cycles forced, and alarm thresholds altered, causing refrigeration units to heat up to 50 °C (and in isolated cases up to 80 °C), leading to food spoilage and public backlash. - **Financial Loss** – Retailers estimate losses in the tens of millions of euros. - **Broader Exposure** – Censys identified >2,700 exposed Danfoss controllers worldwide (≈1,700 in France). After CERT‑FR alerts, ~71 % of French hosts were taken offline, but most were not patched. ### Detection Observations - Off‑hours logins (00:00‑06:00) to the controller UI. - Sudden temperature set‑point changes or defrost commands. - Discrepancies between HMI readings and independent temperature probes. - Alarm routing modifications and admin lock‑outs. ### Attribution - No group has claimed responsibility. Open‑source analysis mentions possible actors: CARR, Z‑Pentest, NoName057(16). Iranian‑linked activity was suggested for earlier U.S. military commissary incidents, but attribution remains inconclusive. ### MITRE ATT&CK Mapping - **T1190 – Exploit Public‑Facing Application** – Use of CVE‑2025‑41450/41451 to gain root. - **T1078 – Valid Accounts** – Exploitation of default `admin:admin` credentials. - **T1565.001 – Stored Data Manipulation** – Direct modification of controller parameters (temperature set‑points, defrost cycles, alarm thresholds).",
+      "sources": [
+        {
+          "title": "Attackers Heat French Supermarket Fridges Up to 50°C by Hijacking Danfoss Controllers",
+          "url": "https://thehackernews.com/2026/10/attackers-heat-french-supermarket.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "European supermarket freezer attacks: cross-source analysis of 11 reports (Danfoss / Copeland XWEB, two waves, attribution still open)",
+          "url": "https://www.reddit.com/r/threatintel/comments/1xnr72v/european_supermarket_freezer_attacks_crosssource/",
+          "source": "r/threatintel"
+        },
+        {
+          "title": "The Cold Chain on Fire : Unpatched Danfoss controllers exploited",
+          "url": "https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited",
+          "source": "Sekoia.io Blog"
+        }
+      ]
+    },
     {
       "slug": "verifiedida-llm-reverse-engineering-tool",
       "name": "VerifiedIDA",
@@ -159,79 +239,6 @@
           "title": "A hidden backdoor put 1.3 million TV boxes to work for criminals",
           "url": "https://www.malwarebytes.com/blog/mobile/2026/11/a-hidden-backdoor-put-1-3-million-tv-boxes-to-work-for-criminals",
           "source": "Malwarebytes Labs"
-        }
-      ]
-    },
-    {
-      "slug": "danfoss-fridge-hijack",
-      "name": "Danfoss Refrigeration Controller Compromise",
-      "category": "other",
-      "severity": "high",
-      "confidence": 1.0,
-      "faithfulness": 0.95,
-      "source_count": 2,
-      "ioc_count": 3,
-      "cves": [
-        "CVE-2025-41450",
-        "CVE-2025-41451"
-      ],
-      "malware_families": [],
-      "threat_actors": [],
-      "ttps": [
-        {
-          "id": "T1078.001",
-          "name": "Default Accounts",
-          "tactic": "stealth, persistence, privilege escalation, initial access"
-        },
-        {
-          "id": "T1110.001",
-          "name": "Password Guessing",
-          "tactic": "credential access"
-        },
-        {
-          "id": "T1190",
-          "name": "Exploit Public-Facing Application",
-          "tactic": "initial access"
-        }
-      ],
-      "iocs": {
-        "cve": [
-          "CVE-2025-41450",
-          "CVE-2025-41451"
-        ],
-        "url": [
-          "https://ti-mindmap-hub.com/analytics/european-refrigeration-controllers-cold-chain-cross-source-analysis"
-        ]
-      },
-      "affected_products": [
-        "Danfoss AK‑SM 800 controller",
-        "Danfoss AK‑SC 355 controller",
-        "XWEB EVO HMI interface"
-      ],
-      "recommendations": [
-        "Immediately disconnect exposed Danfoss controllers from the public Internet; place them behind a segmented, firewalled VLAN.",
-        "Disable or change default credentials on all XWEB/HMI interfaces; enforce strong, unique passwords and MFA where possible.",
-        "Apply any available firmware patches; for EoL devices, replace with supported models or retrofit with hardware security modules.",
-        "Implement strict network‑level access controls (IP allow‑lists, VPN with MFA) for third‑party maintenance contractors.",
-        "Deploy continuous monitoring for off‑hours logins, abnormal set‑point changes, and HMI‑probe data mismatches; generate alerts for any deviation.",
-        "Conduct a full inventory of all Danfoss AK‑SM/AK‑SC units, verify firmware versions, and retire units running firmware < 4.2 that cannot be patched.",
-        "Educate maintenance personnel on secure remote‑access practices and enforce least‑privilege principles.",
-        "Share incident indicators with national CSIRTs (e.g., CERT‑FR, CSIRT‑ITA) to improve collective detection and response."
-      ],
-      "first_seen": "2026-10-13T16:44:42.186534+00:00",
-      "last_updated": "2026-11-07T15:26:46.376077+00:00",
-      "summary": "In October 2026 attackers gained remote control of Danfoss refrigeration controllers (AK‑SM 800 and AK‑SC 355) deployed in hundreds of European supermarkets, raising freezer set‑points to as high as 50 °C and forcing large food losses. The intrusion leveraged unauthenticated firmware vulnerabilities (CVE‑2025‑41450/41451) and default admin credentials, with no malware payload disclosed. Rapid mitigation actions—removing the devices from the Internet, enforcing strong authentication, and replacing or upgrading legacy units—are essential to protect the cold‑chain infrastructure.",
-      "analysis": "### Timeline & Scope - **Late August 2026** – Similar freezer disruptions reported at U.S. military commissaries, suspected Iran‑linked activity. - **Oct 10‑13 2026** – 350‑700 French supermarkets (Intermarché, Carrefour, Coopérative U, Monoprix, E.Leclerc) experienced forced defrost; temperatures rose to ~50 °C. - **Oct 20‑30 2026** – Lupovis observed credential‑spraying attacks against Danfoss sensors, peaking on Oct 26. - **Nov 1‑3 2026** – Over 100 stores in nine European countries (BE, SE, NL, LU, IE, EE, IT, PT, DE, anomalies in FI) reported similar set‑point manipulation. ### Attack Vector - **Vulnerabilities**: CVE‑2025‑41450 and CVE‑2025‑41451 provide an unauthenticated root‑level code execution path on Danfoss AK‑SM 800A firmware. - **Credential Weakness**: Many installations expose the XWEB/HMI interface with default `admin/admin` credentials, enabling direct login. - **Exposure**: Public‑facing IPs of the controllers were reachable on the Internet; Censys data showed 63.5 % of French hosts were running firmware < 4.2 at the time of the attack. - **Third‑Party Access**: Maintenance contractors often have VPN or remote‑desktop access to the HVAC/R network, creating a pivot point for attackers. ### Impact - **Operational**: Defrost cycles triggered, food spoilage, estimated tens of millions of euros in losses for French retailers. - **Device Lifecycle**: The compromised models (AK‑SM 800, AK‑SC 355, XWEB EVO) are end‑of‑life; Danfoss no longer provides firmware updates. - **No Malware Artifacts**: No C2 traffic, binaries, or hash indicators were published; detection relies on behavioral anomalies (off‑hours logins, unexpected set‑point changes, alarm routing modifications). ### Detection & Attribution - **Behavioral Indicators**: - Logins between 00:00‑06:00 UTC. - Sudden set‑point or defrost command spikes. - Discrepancies between HMI readings and independent temperature probes. - **Attribution**: No group has claimed responsibility. Open‑source analysis lists possible actors (CARR, Z‑Pentest, NoName057(16)) and notes Iran‑linked suspicion for the earlier U.S. incidents, but attribution remains inconclusive. ### MITRE ATT&CK Mapping (ICS & Enterprise) - **T1078.001 – Valid Accounts: Default Accounts** (use of `admin/admin`). - **T1110.001 – Brute Force: Password Spraying** (observed credential‑spraying campaign). - **T1190 – Exploit Public‑Facing Application** (exploitation of CVE‑2025‑41450/41451). - **T0808 – Manipulation of Control (ICS)** (unauthorized temperature set‑point changes).",
-      "sources": [
-        {
-          "title": "Attackers Heat French Supermarket Fridges Up to 50°C by Hijacking Danfoss Controllers",
-          "url": "https://thehackernews.com/2026/10/attackers-heat-french-supermarket.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "European supermarket freezer attacks: cross-source analysis of 11 reports (Danfoss / Copeland XWEB, two waves, attribution still open)",
-          "url": "https://www.reddit.com/r/threatintel/comments/1xnr72v/european_supermarket_freezer_attacks_crosssource/",
-          "source": "r/threatintel"
         }
       ]
     },

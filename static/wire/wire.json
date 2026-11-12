@@ -1,7 +1,340 @@
 {
-  "generated_at": "2026-11-11T17:15:21.021553+00:00",
+  "generated_at": "2026-11-12T17:53:52.262069+00:00",
   "count": 345,
   "reports": [
+    {
+      "slug": "windows-shell-motw-bypass-zero-day",
+      "name": "Microsoft Outlook CVE-2026-124194 Spoofing Zero‑Day",
+      "category": "vulnerability",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.92,
+      "source_count": 6,
+      "ioc_count": 1,
+      "cves": [
+        "CVE-2026-100219",
+        "CVE-2026-105016",
+        "CVE-2026-108131",
+        "CVE-2026-108398",
+        "CVE-2026-70229",
+        "CVE-2026-70242",
+        "CVE-2026-70291",
+        "CVE-2026-96222",
+        "CVE-2026-96951",
+        "CVE-2026-109459",
+        "CVE-2026-110043",
+        "CVE-2026-110068",
+        "CVE-2026-112967",
+        "CVE-2026-113753",
+        "CVE-2026-113856",
+        "CVE-2026-113860",
+        "CVE-2026-116710",
+        "CVE-2026-116928",
+        "CVE-2026-118146",
+        "CVE-2026-118148",
+        "CVE-2026-119958",
+        "CVE-2026-124194",
+        "CVE-2026-111309",
+        "CVE-2026-113862",
+        "CVE-2026-114160",
+        "CVE-2026-118207",
+        "CVE-2026-119952",
+        "CVE-2026-119963",
+        "CVE-2026-119964",
+        "CVE-2026-119967",
+        "CVE-2026-119990",
+        "CVE-2026-95962"
+      ],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1187",
+          "name": "Forced Authentication",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1212",
+          "name": "Exploitation for Credential Access",
+          "tactic": "credential access"
+        }
+      ],
+      "iocs": {
+        "cve": [
+          "CVE-2026-124194"
+        ]
+      },
+      "affected_products": [
+        "Microsoft Outlook (Office 365, Office 2019, Office 2021)",
+        "Microsoft Office suite (updates required via Office channel)"
+      ],
+      "recommendations": [
+        "Deploy the Office update that patches CVE‑2026‑124194 immediately; prioritize Office channels over Windows cumulative updates.",
+        "Enable MFA and enforce conditional access policies to mitigate the impact of stolen NTLM hashes.",
+        "Configure Outlook to block automatic loading of external content and to display explicit warnings for remote resources.",
+        "Monitor network traffic for unexpected NTLM authentication attempts to unknown external IPs or domains.",
+        "Implement credential‑guard or other credential‑hardening technologies to prevent NTLM hash reuse.",
+        "Conduct threat‑hunt queries for Outlook message files with suspicious MIME types or unusual attachment metadata.",
+        "Review and restrict LDAP/AD authentication flows where possible; consider disabling NTLM where not required.",
+        "Update detection rules in SIEM/EDR to flag the specific CVE identifier and the associated behavior (preview‑pane exploitation, forced authentication)."
+      ],
+      "first_seen": "2026-10-14T14:17:13.981009+00:00",
+      "last_updated": "2026-11-12T17:26:10.727113+00:00",
+      "summary": "A zero‑day vulnerability (CVE‑2026‑124194) in Microsoft Outlook allows an unauthenticated attacker to spoof content and force Outlook to connect to a malicious network location without displaying the usual external‑content warning. The connection can automatically leak the victim’s NTLMv2 hash, enabling credential theft and lateral movement. The flaw is actively exploited in the wild and has been added to the CISA Known Exploited Vulnerabilities (KEV) catalog, prompting an urgent remediation deadline for federal agencies.",
+      "analysis": "### Vulnerability Overview - **Identifier**: CVE‑2026‑124194 (CVSS 6.5, Moderate) - **Product Impacted**: Microsoft Outlook (part of Microsoft Office 365/Office 2019/2021) - **Discovery & Disclosure**: Reported by researcher *Nono* and Anthropic’s Benoît Sevens (Claude). Microsoft publicly disclosed the flaw on its November 2026 Patch Tuesday. ### Attack Flow 1. **Delivery** – The attacker sends a specially crafted Outlook message file (e.g., a `.msg` or `.eml`) to the target. No user click or macro enablement is required; merely selecting the message in the Reading Pane or previewing the attachment triggers the exploit. 2. **Spoofing & Forced Authentication** – Outlook’s UI fails to warn the user, automatically loading external content from an attacker‑controlled URL. This forces Outlook to perform an NTLM authentication handshake with the attacker’s server. 3. **Credential Harvesting** – The NTLMv2 hash of the logged‑in user is transmitted in clear over the network, allowing the attacker to perform pass‑the‑hash attacks or relay the credentials to other services. 4. **Post‑Exploitation** – Stolen hashes can be used to impersonate the user across the domain, facilitating lateral movement, data exfiltration, or further privilege escalation. ### Real‑World Exploitation - Microsoft confirms the vulnerability is **actively exploited** in the wild and has been added to the **CISA KEV catalog** with a remediation deadline of 24 Nov 2026 for federal agencies. - The exploit is attractive to phishing operators and initial‑access brokers because it eliminates the traditional “user‑click” barrier, converting a simple email preview into reliable code execution and credential theft. ### Related Findings from Patch Tuesday Analyses - The November 2026 Patch Tuesday included **one zero‑day** (this Outlook flaw) and over **60 critical‑rated** vulnerabilities across the Microsoft stack. - While many other CVEs (e.g., preview‑pane RCEs in Word/Outlook) were disclosed, only CVE‑2026‑124194 is known to be weaponized in the wild. - The vulnerability is fixed via **Office updates**, not the Windows cumulative update, emphasizing the need to prioritize Office patching. ### MITRE ATT&CK Mapping - **T1187 – Forced Authentication** – Outlook forces an NTLM handshake with a malicious server, leaking credentials. - **T1212 – Exploitation for Credential Access** – The vulnerability is leveraged to obtain NTLMv2 hashes without user interaction. ### Impact Assessment - **Credential Exposure**: Theft of NTLMv2 hashes can compromise any service that accepts NTLM authentication, including file shares, VPNs, and legacy applications. - **Lateral Movement**: Stolen hashes enable pass‑the‑hash or relay attacks, potentially leading to domain‑wide compromise. - **Detection Difficulty**: Because the exploit does not require macro execution or explicit user clicks, traditional user‑training defenses are ineffective. ### Mitigation Status - Microsoft released patches on **10 Nov 2026** (Office update) and added the CVE to the KEV catalog. The patch addresses the UI warning deficiency and blocks the forced authentication path.",
+      "sources": [
+        {
+          "title": "October 2026 Patch Tuesday: 1,413 CVEs Include Three Zero-Days and 75 Critical Vulnerabilities",
+          "url": "https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-october-2026/",
+          "source": "CrowdStrike Blog"
+        },
+        {
+          "title": "November 2026 Patch Tuesday: 1,252 CVEs Include One Zero-Day and 68 Critical Vulnerabilities",
+          "url": "https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-november-2026/",
+          "source": "CrowdStrike Blog"
+        },
+        {
+          "title": "Microsoft November 2026 Patch Tuesday fixes 1,235 flaws, Outlook zero-day",
+          "url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-november-2026-patch-tuesday-fixes-1-235-flaws-outlook-zero-day/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Patch Tuesday - November 2026",
+          "url": "https://www.rapid7.com/blog/post/em-patch-tuesday-november-2026",
+          "source": "Rapid7 Blog"
+        },
+        {
+          "title": "Microsoft Patches 1,259 Flaws, Including Exploited Outlook Bug That May Expose NTLMv2 Hashes",
+          "url": "https://thehackernews.com/2026/11/microsoft-patches-1259-flaws-including.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "November 2026 Patch Tuesday: 1,094 Flaws, One Exploited",
+          "url": "https://socradar.io/blog/november-2026-patch-tuesday-zero-day/",
+          "source": "SOCRadar"
+        }
+      ]
+    },
+    {
+      "slug": "t-sql-abuse-malware-campaign",
+      "name": "T-SQL Malware Delivery Campaign on Compromised MS SQL Servers",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 41,
+      "cves": [],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1046",
+          "name": "Network Service Discovery",
+          "tactic": "discovery"
+        },
+        {
+          "id": "T1110.001",
+          "name": "Password Guessing",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1505.003",
+          "name": "Web Shell",
+          "tactic": "persistence"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1053.005",
+          "name": "Scheduled Task",
+          "tactic": "execution, persistence, privilege escalation"
+        },
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "tactic": "stealth"
+        },
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "tactic": "lateral movement"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "site.vietnam852.com"
+        ],
+        "url": [
+          "http://site.vietnam852.com:88/ip.php",
+          "http://site.vietnam852.com:88/down.exe",
+          "http://site.vietnam852.com:88/2026/2018.sql",
+          "http://site.vietnam852.com:88/2026/dwm.exe",
+          "http://site.vietnam852.com:88/2026/go.bat",
+          "http://site.vietnam852.com:88/2026/go.vbs",
+          "http://site.vietnam852.com:88/2026/out.bat",
+          "http://site.vietnam852.com:88/2026/pass.txt",
+          "http://site.vietnam852.com:88/2026/sqlcmd.exe",
+          "http://site.vietnam852.com:88/2026/user.txt",
+          "http://ftp.vietnam852.com:88/post.php",
+          "http://site.jiancai008.com:88/test/dllhost.exe",
+          "http://site.jiancai008.com:88/test/winlogon.exe",
+          "http://site.jiancai008.com:88/test/WinRing0x64.sys",
+          "http://site.jiancai008.com:88/test/MicrosoftEdgeUpdate.exe",
+          "http://ftp.vietnam852.com:88/test/WinRing0x64.sys",
+          "http://ftp.vietnam852.com:88/test/MicrosoftEdgeUpdate.exe",
+          "http://ftp.vietnam852.com:88/test/winlogon.exe",
+          "http://ftp.vietnam852.com:88/test/dllhost.exe",
+          "http://ftp.vietnam852.com:88/test/sihost.exe",
+          "http://site.vietnam852.com/tj/xmr.php?data=",
+          "http://site.hfgjjkrewjk.com/tj/xmr.php?data=",
+          "http://ftp.vietnam852.com",
+          "http://site.vietnam852.com:88",
+          "http://ftp.vietnam852.com:88",
+          "http://site.hfgjjkrewjk.com",
+          "http://site.jiancai008.com"
+        ],
+        "sha256": [
+          "8ce2cd98ef6ceeece8239936e4aea042c41807f632cd691d5091705bf6c0076d",
+          "f5444e8e9e9e019693aacb363b7441ac0b8ecfe96a77fd94b9c312a017588eb4",
+          "2a0d2889241885d5ea6fe7dd1b1adc83653a0c07b8aaa1b0832e5f9c0225b379",
+          "79596cf6e267ef5cb658bd97d04e42a41001d36595e370441adb3c2b5dd5666c",
+          "e9d3fd9093c476b8b5de19aa00c50758568649def6491f54fa3e0aba4ea31ac9",
+          "d6e3fd28f479138b336e2c2088ad2e86b7646a163aa453b1703905a4b359070f",
+          "124774698fd3ede0800015d19c2bd6c1869d03bbc2e6e8dbe2f69d2978f7f4d0",
+          "125d3a0efe7699bb20397c13f0f4993ad893952727487b4d190e386a5b14c427",
+          "20983573b840447e1aacd6d3f6dd240732b15037d268d6456f0d3c4ec5051cb0",
+          "58db0ca2054abe2989412d7a1c8ed16718577f893c196825c848fcd56c7e8f05",
+          "2a23e10bfc097e98295cbff8124bd403c4cb677e709b48ccc53d6aca216c3061",
+          "da4128aa5d006e05c58f0d240c2d8e5fb02774b6acf314f1230059c7a3498724",
+          "3f64b0146b323c5716043360e84384a5a197a897f46088df93a910470a29e1a0"
+        ]
+      },
+      "affected_products": [
+        "Microsoft Windows",
+        "Microsoft SQL Server"
+      ],
+      "recommendations": [],
+      "first_seen": "2026-11-12T17:21:01.834101+00:00",
+      "last_updated": "2026-11-12T17:21:01.834113+00:00",
+      "summary": "In early October 2026, an active threat campaign leveraged exposed, internet‑facing Microsoft SQL Server instances to deliver a UPX‑packed Go binary named dllhost.exe. The malware scans IP ranges, brute‑forces weak SQL credentials, executes malicious T‑SQL commands to download additional payloads, and establishes persistence via a forged scheduled task, ultimately installing cryptomining and remote‑access tools on compromised Windows servers.",
+      "analysis": "### Attack Overview The campaign begins with a downloader that retrieves a list of target IP ranges from `http://site.vietnam852.com:88/ip.php`. Using the embedded Naabu scanner, the malware performs rapid TCP SYN scans on port 1433 to locate exposed SQL Server instances. When a server is found, it attempts credential stuffing/brute‑force attacks (`dwm.exe`) against the SQL service. ### Malicious T‑SQL Execution Upon successful authentication, the attacker issues a malicious T‑SQL script (`2018.sql`) that instructs the server to download a set of auxiliary files (e.g., `go.bat`, `go.vbs`, `out.bat`, `user.txt`, `pass.txt`, `sqlcmd.exe`) into the `%Temp%` directory. These files are fetched from the attacker‑controlled file server via HTTP. ### Payload Deployment and Persistence The primary payload, `dllhost.exe`, is a Go‑compiled binary packed with UPX (versions 3.9–5.21). After execution, it creates a scheduled task named `MicrosoftEdgeUpdateTaskMachineUA{CEC15D9B-F4BB-446A-B6E1-C61E74B016A2}` that runs every 30 minutes, mimicking a legitimate Microsoft Edge update task to evade detection. The task launches the UPX‑packed binary, which then proceeds to download and execute additional malware components, including cryptominers (XMR) and remote‑access tools. ### Impact Victim systems are Windows servers running Microsoft SQL Server. The adversary gains persistent code execution, can hijack CPU resources for Monero mining, and establishes remote control capabilities, posing a significant operational and financial risk. ### Indicators of Compromise The campaign uses a hard‑coded domain (`site.vietnam852.com`) and a specific IP address returned by the `ip.php` endpoint. All downloaded files are placed in the temporary directory and executed without user interaction. ### Defensive Gaps - Internet‑exposed SQL Server instances with weak or default credentials. - Lack of monitoring for anomalous T‑SQL commands that download external files. - Absence of scheduled‑task auditing for masqueraded system tasks. - No detection of UPX‑packed binaries or embedded port‑scanning tools. ### Recommendations (See the `recommendations` field for concrete actions.)",
+      "sources": [
+        {
+          "title": "T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+          "url": "https://feeds.fortinet.com/~/972883538/0/fortinet/blog/threat-research~TSQL-Being-Abused-to-Deliver-Malware-on-Compromised-MS-SQL-Servers",
+          "source": "Fortinet FortiGuard Labs"
+        }
+      ]
+    },
+    {
+      "slug": "n0n-maritime-extortion-wave",
+      "name": "n0n",
+      "category": "ransomware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 3,
+      "ioc_count": 8,
+      "cves": [],
+      "malware_families": [
+        "n0n"
+      ],
+      "threat_actors": [
+        "n0n"
+      ],
+      "ttps": [
+        {
+          "id": "T1110.001",
+          "name": "Password Guessing",
+          "tactic": "credential access"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        },
+        {
+          "id": "T1486",
+          "name": "Data Encrypted for Impact",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration"
+        },
+        {
+          "id": "T1566.002",
+          "name": "Spearphishing Link",
+          "tactic": "initial access"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "185.157.161.148",
+          "185.157.161.93",
+          "81.161.239.10",
+          "188.214.135.130",
+          "198.13.158.143",
+          "45.132.114.241",
+          "217.18.55.185"
+        ],
+        "domain": [
+          "n0n.to"
+        ]
+      },
+      "affected_products": [
+        "FortiGate SSL‑VPN appliances",
+        "Cisco Firepower Management Center",
+        "AWS S3 storage",
+        "Microsoft Windows (RDP/WinRM)",
+        "Various port‑terminal management software (e.g., CyberLogitec suite)"
+      ],
+      "recommendations": [
+        "Enforce multi‑factor authentication and strong password policies on all VPN, RDP, and cloud‑admin accounts; monitor for credential‑stuffing attempts.",
+        "Implement network segmentation and least‑privilege access for firewall management consoles; alert on bulk policy changes or BLOCK rule insertions.",
+        "Deploy immutable backups and enable versioning for critical data stores (including S3); test restoration procedures regularly.",
+        "Monitor cloud environments for anomalous mass‑deletion activity and for the creation of unauthorized IAM keys.",
+        "Deploy endpoint detection that can flag AI‑generated scripts or unknown C++ binaries; consider file‑hash whitelisting for known legitimate tools.",
+        "Establish a leak‑site monitoring capability (both clearnet and .onion) to detect early publication of stolen data and to trigger incident response.",
+        "Conduct regular penetration testing of exposed applications used by maritime and logistics providers to identify shared vulnerabilities before attackers exploit them."
+      ],
+      "first_seen": "2026-10-14T14:19:49.577642+00:00",
+      "last_updated": "2026-11-12T17:18:52.510395+00:00",
+      "summary": "The n0n extortion group emerged in September 2026 and quickly scaled to over 90 victims across 27 countries by leveraging credential‑only compromises, AI‑generated tooling, and a public leak‑site pressure model. The group targets high‑impact sectors—including a recent maritime wave that added 38 port and shipping operators—and alternates between data encryption, destructive deletion, and public exposure to force large ransom payments. Their infrastructure includes an exposed staging server (185.157.161.148) that revealed the full attack workflow, highlighting the use of compromised VPN appliances, cloud credentials, and hijacked firewall management consoles.",
+      "analysis": "### Overview n0n is a financially motivated data‑theft and destructive‑extortion operation first observed in September 2026. Unlike traditional ransomware gangs, n0n does not always deploy encryptors; instead it exfiltrates data, destroys backups, and leverages public leak sites to coerce payment. The group brands its leak portal with the slogan “n0n | no js | no mercy” and appends a **.n0n** extension to encrypted files. ### Infrastructure & Tooling - An open Python HTTP file server was discovered at **185.157.161.148:8877** (AS42675, Sweden) exposing ~1,700 files, including C++ encryptor source code, credential‑stuffing scripts, and an AI coding agent that consumed >$7,000 in LLM API usage. - The AI‑assisted agent generated hundreds of attack scripts, automating the creation of credential‑stuffing payloads, firewall policy modifications, and S3 bucket deletions. - Hijacked **Cisco Firepower Management Center** instances were used to flip all access policies to *BLOCK*, causing service outages for victims. ### Attack Flow 1. **Initial Access** – Primarily via credential stuffing against FortiGate SSL‑VPN appliances (≈305 devices), weak RDP/WinRM credentials, compromised AWS keys, and compromised hosting‑management portals. No exploit of software vulnerabilities was observed. 2. **Execution & Impact** – Once inside, the actors exfiltrate Active Directory maps, legal documents, and other high‑value data. They may encrypt files with a custom C++ locker (adding the *.n0n* extension) or destroy data and backups (mass S3 object deletion, wiping of on‑premise storage). 3. **Extortion** – Victims are forced to pay an upfront 10 % of the demanded ransom to access a keyed negotiation room on the leak site (available on both clearnet and .onion). If payment is not made, the stolen archives are released via ZIP downloads and web‑seeded torrents. 4. **Public Pressure** – The group publishes a deadline (e.g., October 19 2026, 13:27 UTC for the maritime wave) and lists demands ranging from **USD 2.4 M to USD 14 M** per victim. As of mid‑October, 93 victims were listed with total demands of **$283.7 M**. ### Sector Focus - The **maritime wave** on 12 Oct 2026 added 38 port, shipping, and logistics organizations across 18 countries, many linked to a common software provider (CyberLogitec). This suggests a shared vulnerable application or mis‑configured service rather than independent compromises. - Overall victim distribution is heavily weighted toward the United States and South Korea, with notable targets including a U.S. sports retailer, a cloud provider, a teachers’ union, a Venezuelan ISP, an Argentine ministry, and a pharmaceutical subsidiary. ### MITRE ATT&CK Mapping - **T1110.001 – Credential Stuffing** (password‑spraying against FortiGate SSL‑VPN devices) - **T1078 – Valid Accounts** (use of stolen/weak credentials for RDP, WinRM, AWS keys) - **T1486 – Data Encrypted for Impact** (custom C++ locker, *.n0n* extension) - **T1485 – Data Destruction** (mass S3 deletion, backup wiping) - **T1562.004 – Disable or Modify Cloud Firewall** (hijacked Cisco Firepower policy changes) - **T1041 – Exfiltration Over Command and Control Channel** (exfiltration of AD maps, legal documents) - **T1566.002 – Phishing – Spearphishing Link** (implied via credential‑stuffing campaigns targeting VPN portals) ### Open Questions - The precise shared application or vulnerability enabling the maritime wave remains unconfirmed; further supply‑chain investigation is warranted. - No ransomware encryptor has been publicly linked to the group, but the presence of C++ locker code suggests the capability exists.",
+      "sources": [
+        {
+          "title": "n0n Group Puts Dozens of Global Ports and Shipping on Its Leak Site",
+          "url": "https://socradar.io/blog/n0n-group-global-ports-shipping-leak/",
+          "source": "SOCRadar"
+        },
+        {
+          "title": "n0n Ransomware: Inside an AI-Assisted Extortion Operation",
+          "url": "https://socradar.io/blog/n0n-ransomware-ai-assisted-extortion/",
+          "source": "SOCRadar"
+        },
+        {
+          "title": "Dark Web Profile: n0n Ransomware",
+          "url": "https://socradar.io/blog/dark-web-profile-n0n-ransomware/",
+          "source": "SOCRadar"
+        }
+      ]
+    },
     {
       "slug": "xen-orchestra-auth-bypass-exploit",
       "name": "Xen Orchestra Authentication Bypass (VSA-2026-062)",
@@ -1679,110 +2012,6 @@
       ]
     },
     {
-      "slug": "n0n-maritime-extortion-wave",
-      "name": "n0n",
-      "category": "ransomware",
-      "severity": "high",
-      "confidence": 1.0,
-      "faithfulness": 1.0,
-      "source_count": 2,
-      "ioc_count": 7,
-      "cves": [],
-      "malware_families": [
-        "n0n"
-      ],
-      "threat_actors": [
-        "n0n"
-      ],
-      "ttps": [
-        {
-          "id": "T1078",
-          "name": "Valid Accounts",
-          "tactic": "stealth, persistence, privilege escalation, initial access"
-        },
-        {
-          "id": "T1110.001",
-          "name": "Password Guessing",
-          "tactic": "credential access"
-        },
-        {
-          "id": "T1133",
-          "name": "External Remote Services",
-          "tactic": "persistence, initial access"
-        },
-        {
-          "id": "T1021.001",
-          "name": "Remote Desktop Protocol",
-          "tactic": "lateral movement"
-        },
-        {
-          "id": "T1486",
-          "name": "Data Encrypted for Impact",
-          "tactic": "impact"
-        },
-        {
-          "id": "T1565.001",
-          "name": "Stored Data Manipulation",
-          "tactic": "impact"
-        },
-        {
-          "id": "T1041",
-          "name": "Exfiltration Over C2 Channel",
-          "tactic": "exfiltration"
-        },
-        {
-          "id": "T1087",
-          "name": "Account Discovery",
-          "tactic": "discovery"
-        }
-      ],
-      "iocs": {
-        "ipv4": [
-          "185.157.161.148",
-          "185.157.161.93",
-          "81.161.239.10",
-          "188.214.135.130",
-          "198.13.158.143",
-          "45.132.114.241",
-          "217.18.55.185"
-        ]
-      },
-      "affected_products": [
-        "FortiGate SSL‑VPN",
-        "Cisco Firepower Management Center",
-        "AWS (cloud accounts)",
-        "Remote Desktop Protocol (RDP)",
-        "Windows Remote Management (WinRM)",
-        "Various hosting‑management portals"
-      ],
-      "recommendations": [
-        "Enforce multi‑factor authentication and strong password policies on all VPN, RDP, and cloud accounts; monitor for credential‑stuffing activity.",
-        "Segment and restrict access to critical infrastructure such as Cisco Firepower Management Center; enable logging of policy changes and alert on mass BLOCK actions.",
-        "Deploy credential‑access monitoring (e.g., Azure AD Identity Protection, FortiGuard) to detect use of stolen or weak credentials.",
-        "Implement immutable, offline backups and verify restoration procedures; consider ransomware‑specific backup hardening (air‑gap, write‑once media).",
-        "Monitor network traffic for anomalous exfiltration patterns and for the presence of the “.n0n” file extension on endpoints.",
-        "Block or closely inspect outbound connections to known AI‑service endpoints that could be used for automated script generation.",
-        "Regularly scan for exposed directories and misconfigured services (e.g., open HTTP file servers) in the organization’s attack surface.",
-        "Subscribe to threat‑intel feeds covering n0n’s dark‑web leak site to receive early warnings of newly listed victims."
-      ],
-      "first_seen": "2026-10-14T14:19:49.577642+00:00",
-      "last_updated": "2026-10-28T15:42:23.215858+00:00",
-      "summary": "The n0n group, first observed in September 2026, is a financially motivated data‑theft and destructive‑extortion operation that leverages stolen or weak credentials to infiltrate organizations worldwide. In October 2026 the group posted a large batch of maritime and logistics victims, demanding up to USD 14 million per target and threatening to publish the data on a dark‑web leak site. Their infrastructure includes an openly exposed staging server and AI‑assisted tooling that automates script creation and encryptor development. The campaign has impacted at least 93 organizations across 14‑18 countries, with total ransom demands exceeding USD 283 million.",
-      "analysis": "### Overview - **Actor**: n0n is a data‑exfiltration and destructive‑extortion group tracked since September 2026. The group brands itself with the exact spelling “n0n” and the slogan “n0n | no js | no mercy”. - **Motivation**: Purely financial – the group monetizes stolen data via public leak postings and ransom demands. - **Geography**: Likely Russian‑based, targeting victims in North America, Europe, Asia, and Latin America. ### Campaign Timeline & Scope - **September 2026**: Initial compromises discovered via an exposed staging server (185.157.161.148:8877) containing 1,719 files, including C++ encryptor source code and 829 attack scripts. - **October 12 2026**: A “maritime wave” added 38 port, shipping, and logistics organizations from 18 countries to the group’s dark‑web leak site, doubling the public victim count. - **October 19 2026**: Publication deadline for the maritime data set (13:27 UTC). No settlements were reported. - **As of October 19 2026**: 93 victims listed, total ransom demands of **USD 283.7 million**. ### Attack Infrastructure & Tools - **Credential‑only access**: No exploit of software vulnerabilities was observed. Initial access relied on: - Credential‑stuffing campaigns against **FortiGate SSL‑VPN** devices (≈305 devices). - Stolen or weak **RDP/WinRM** credentials. - Compromised **AWS** access keys (cloud accounts). - Hijacked hosting‑management portals. - **AI‑assisted tooling**: An AI coding agent (≈150 LLM models) generated hundreds of scripts and contributed to the development of the encryptor, incurring >$7,200 in LLM API usage. - **Operational tools**: - **Cisco Firepower Management Center** instances were commandeered to set all firewall policies to **BLOCK**, causing service disruption. - Custom **C++ encryptor** (source code found) that appends a “.n0n” extension to encrypted files. - **Infostealer** components that harvest Active Directory mappings, legal documents, and other high‑value data. - **Infrastructure exposure**: A Python HTTP file server on **185.157.161.148:8877** publicly exposed the operator’s workspace. ### Victim Profile - **Sector focus**: Maritime and logistics (ports, container terminals, shipping lines) – 12 of the 38 maritime victims are South Korean operators. - **Other sectors**: Retail (U.S. sports retailer), cloud services, education (teachers’ union), telecommunications (Venezuelan ISP), government (Argentine ministry), pharmaceuticals. - **Geographic spread**: Victims in Brazil, Spain, Morocco, India, Vietnam, Singapore, China, Taiwan, Kuwait, Indonesia, Germany, South Korea, United States, Argentina, Venezuela, and others. ### Impact - **Data exposure**: Sensitive corporate documents, AD topology, and operational data. - **Service disruption**: Blocking of firewall policies via compromised Cisco devices. - **Destruction**: The group deletes data and backups after exfiltration; encryption is used in some cases, though no encryptor has been publicly linked to a specific victim. ### MITRE ATT&CK Mapping - **T1078** – Valid Accounts (use of stolen/weak credentials, including cloud accounts – T1078.004). - **T1110.001** – Password Guessing / Credential Stuffing. - **T1133** – External Remote Services (FortiGate SSL‑VPN, RDP/WinRM). - **T1021.001** – Remote Services: RDP. - **T1562.004** – Impair Defenses: Modify Cloud Firewall (Cisco Firepower policy block). - **T1486** – Data Encrypted for Impact (use of .n0n encryptor). - **T1565.001** – Data Destruction (deletion of data and backups). - **T1041** – Exfiltration Over Command and Control Channel. - **T1087** – Account Discovery (harvesting AD mappings).",
-      "sources": [
-        {
-          "title": "n0n Group Puts Dozens of Global Ports and Shipping on Its Leak Site",
-          "url": "https://socradar.io/blog/n0n-group-global-ports-shipping-leak/",
-          "source": "SOCRadar"
-        },
-        {
-          "title": "n0n Ransomware: Inside an AI-Assisted Extortion Operation",
-          "url": "https://socradar.io/blog/n0n-ransomware-ai-assisted-extortion/",
-          "source": "SOCRadar"
-        }
-      ]
-    },
-    {
       "slug": "gheist-github-token-theft",
       "name": "Gheist",
       "category": "malware",
@@ -2369,106 +2598,6 @@
           "title": "Graph reconnaissance and ServiceNow user enumeration in a modern identity intrusion",
           "url": "https://www.sophos.com/en-us/blog/graph-reconnaissance-and-servicenow-user-enumeration-in-a-modern-identity-intrusion",
           "source": "Sophos News (X-Ops)"
-        }
-      ]
-    },
-    {
-      "slug": "ghostaction-github-actions-credential-theft",
-      "name": "GhostAction",
-      "category": "malware",
-      "severity": "high",
-      "confidence": 1.0,
-      "faithfulness": 0.95,
-      "source_count": 2,
-      "ioc_count": 4,
-      "cves": [],
-      "malware_families": [
-        "GhostAction"
-      ],
-      "threat_actors": [
-        "GhostAction"
-      ],
-      "ttps": [
-        {
-          "id": "T1195.001",
-          "name": "Compromise Software Dependencies and Development Tools",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1078",
-          "name": "Valid Accounts",
-          "tactic": "stealth, persistence, privilege escalation, initial access"
-        },
-        {
-          "id": "T1566.002",
-          "name": "Spearphishing Link",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1036",
-          "name": "Masquerading",
-          "tactic": "stealth"
-        },
-        {
-          "id": "T1041",
-          "name": "Exfiltration Over C2 Channel",
-          "tactic": "exfiltration"
-        },
-        {
-          "id": "T1567.001",
-          "name": "Exfiltration to Code Repository",
-          "tactic": "exfiltration"
-        },
-        {
-          "id": "T1110",
-          "name": "Brute Force",
-          "tactic": "credential access"
-        },
-        {
-          "id": "T1105",
-          "name": "Ingress Tool Transfer",
-          "tactic": "command and control"
-        }
-      ],
-      "iocs": {
-        "ipv4": [
-          "193.32.204.199"
-        ],
-        "domain": [
-          "my-github.com",
-          "my-gitlab.com"
-        ],
-        "email": [
-          "noreply@my-github.com"
-        ]
-      },
-      "affected_products": [
-        "GitHub",
-        "GitHub Actions",
-        "GitLab",
-        "PyPI",
-        "npm",
-        "DockerHub",
-        "Amazon Web Services",
-        "Anthropic",
-        "OpenAI",
-        "OpenRouter"
-      ],
-      "recommendations": [],
-      "first_seen": "2026-10-10T15:02:45.103424+00:00",
-      "last_updated": "2026-10-19T16:06:43.808562+00:00",
-      "summary": "GhostAction is an active credential‑stealing campaign that compromises high‑profile open‑source maintainer accounts to inject malicious GitHub Actions workflows into thousands of repositories. The workflows exfiltrate a wide range of cloud, AI, and SaaS tokens to a hard‑coded IP address, while a parallel phishing operation delivers a stealer disguised as a font and harvests OAuth tokens via a fake GitHub security alert. The campaign has impacted hundreds of repositories and exfiltrated thousands of secrets, representing a significant supply‑chain risk for developers and organizations that rely on GitHub Actions.",
-      "analysis": "### Overview GhostAction first surfaced in September 2025 and has evolved into a multi‑vector supply‑chain operation. The core tactic remains the injection of malicious GitHub Actions workflow files (e.g., `security-audit.yml` and `github_actions_security.yml`) into compromised repositories. The attacker obtains a maintainer’s personal access token (PAT) – typically from prior credential dumps – and uses the legitimate account to push the workflow to the default branch. The workflow is triggered on `workflow_dispatch` and any push, runs with full repository history (`fetch-depth: 0`), and performs four actions: 1. **Secret enumeration** – reads the repository’s named GitHub Actions secrets. 2. **Credential pattern scanning** – searches the working tree and full git history for 13 known patterns (AWS keys, Anthropic, OpenAI, OpenRouter, npm, PyPI, DockerHub, GitHub/GitLab tokens, etc.). 3. **Key pairing** – matches AWS access‑key IDs with their corresponding secret keys. 4. **Exfiltration** – sends the harvested data via a plain‑HTTP `curl` request to `http://193.32.204.199`. ### Expansion to Phishing In October 2026 the threat actor added a phishing component. A domain `my-github.com` (pointing to the same IP) was registered and used in a spoofed GitHub security‑alert email (`noreply@my-github.com`). The email directs the victim to a reverse‑proxy login page that captures the password and 2FA code, then runs JavaScript to automatically complete a GitHub OAuth device‑flow authorization. The resulting repository‑scoped OAuth token grants `repo`, `workflow`, and `read:org` scopes, enabling the attacker to modify workflows programmatically – essentially automating the GhostAction supply‑chain attack without the victim’s explicit consent. ### Impact - **Scope**: >500 GitHub accounts, >10 000 repositories, >800 public repos across 327 users/organizations. - **Exfiltrated secrets**: 3 325 tokens, including AWS access keys, AI service API keys (Anthropic, OpenAI, OpenRouter), and package‑registry credentials (PyPI, npm, DockerHub). - **Infrastructure reuse**: The same IP address (`193.32.204.199`) is used for both workflow exfiltration and phishing data collection. ### MITRE ATT&CK Mapping - **T1195.001 – Supply Chain Compromise: Compromise Software Supply Chain** – injection of malicious workflows into third‑party projects. - **T1078 – Valid Accounts** – use of stolen PATs and OAuth tokens to act as legitimate maintainers. - **T1566.002 – Phishing: Spearphishing Link** – spoofed GitHub security‑alert email with malicious link. - **T1036 – Masquerading** – workflow files named “Security Audit” to appear benign. - **T1041 – Exfiltration Over Command and Control Channel** – plain‑HTTP exfiltration to a hard‑coded IP. - **T1567.001 – Exfiltration Over Web Services** – use of HTTP(S) to send harvested credentials. - **T1110 – Brute Force (Credential Dumping)** – leveraging previously leaked PATs. - **T1105 – Ingress Tool Transfer** – `curl` download of attacker‑controlled payloads within the workflow. ### Indicators of Compromise (IOCs) - **IPv4**: `193.32.204.199` - **Domain**: `my-github.com` (registered 2026‑10‑09) - **Domain**: `my-gitlab.com` (registered 2026‑09‑22, associated pattern) - **Email**: `noreply@my-github.com` - **Workflow filenames**: `security-audit.yml`, `github_actions_security.yml` - **GitHub accounts**: `TakashiKitao` (author of Pyxel), `henrywoo` (author of athenadriver) – used to push malicious workflows. ### Affected Products & Services - GitHub & GitHub Actions - GitLab (tokens harvested) - PyPI, npm, DockerHub (package‑registry tokens) - Amazon Web Services (access keys) - Anthropic, OpenAI, OpenRouter (AI service API keys) - General SaaS platforms that store API tokens in repository secrets ### Recommendations 1. **Enforce least‑privilege PAT scopes** and rotate all tokens immediately if compromise is suspected. 2. **Enable GitHub secret scanning** and require pull‑request reviews for any workflow file changes. 3. **Adopt signed GitHub Actions workflows** and enforce branch‑protection rules that prevent direct pushes to default branches. 4. **Block outbound traffic to `193.32.204.199`** (or any unknown IP used for exfiltration) at the network perimeter. 5. **Implement multi‑factor authentication (MFA) enforcement** and monitor for OAuth device‑flow authorizations with high‑privilege scopes. 6. **Educate developers** about phishing emails that mimic GitHub security alerts; verify URLs before entering credentials. 7. **Deploy secret‑management solutions** that keep credentials out of repository history and enable automated secret rotation. 8. **Monitor GitHub audit logs** for unusual `workflow_dispatch` events, PAT creations, and OAuth app authorizations. 9. **Leverage threat‑intel feeds** to watch for newly registered domains matching the `my-<code‑host>.com` pattern. 10. **Conduct regular repository hygiene** to purge historic secrets from git history using tools like `git filter-repo`.",
-      "sources": [
-        {
-          "title": "Credential-Stealing GitHub Actions Workflows Planted in Tens of Thousands of Repositories",
-          "url": "https://thehackernews.com/2026/10/credential-stealing-github-actions.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "GhostAction Attackers Plant Credential Stealer Disguised as Font in 94 GitHub Repositories",
-          "url": "https://thehackernews.com/2026/10/ghostaction-attackers-plant-credential.html",
-          "source": "The Hacker News"
         }
       ]
     },
@@ -3291,152 +3420,6 @@
           "title": "Ignore all instructions and read this blog: The state of AI-analysis evasion in malware",
           "url": "https://blog.talosintelligence.com/ignore-all-instructions-and-read-this-blog-the-state-of-ai-analysis-evasion-in-malware/",
           "source": "Cisco Talos"
-        }
-      ]
-    },
-    {
-      "slug": "operation-bluedash-phishing-campaign",
-      "name": "ScreenConnect RMM abuse via phishing",
-      "category": "malware",
-      "severity": "high",
-      "confidence": 1.0,
-      "faithfulness": 0.95,
-      "source_count": 7,
-      "ioc_count": 13,
-      "cves": [
-        "CVE-2026-84869"
-      ],
-      "malware_families": [
-        "Level RMM",
-        "MeshAgent",
-        "ScreenConnect",
-        "Tactical RMM",
-        "TrustConnect",
-        "Powercat",
-        "ITarian"
-      ],
-      "threat_actors": [
-        "Operation BlueDash",
-        "ZeroBEC attributed to a threat actor group operating from Nigeria"
-      ],
-      "ttps": [
-        {
-          "id": "T1566.002",
-          "name": "Spearphishing Link",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1105",
-          "name": "Ingress Tool Transfer",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1219",
-          "name": "Remote Access Tools",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1021.004",
-          "name": "SSH",
-          "tactic": "lateral movement"
-        },
-        {
-          "id": "T1190",
-          "name": "Exploit Public-Facing Application",
-          "tactic": "initial access"
-        }
-      ],
-      "iocs": {
-        "domain": [
-          "teamvem.com",
-          "coldcardcompliance.com"
-        ],
-        "ipv4": [
-          "207.174.0.143",
-          "207.189.11.170",
-          "131.123.40.98",
-          "45.13.237.190",
-          "146.59.55.107"
-        ],
-        "email": [
-          "compliance@coldcardteamnews.com"
-        ],
-        "cve": [
-          "CVE-2026-84869"
-        ],
-        "url": [
-          "https://www.connectwise.com/company/trust/advisories",
-          "http://url.com/combo.enc|AES_KEY"
-        ],
-        "sha256": [
-          "5956f9afb3ba610c38b2cfda88dd15be98783963769a12020c93ce05e749b3c3",
-          "f048400c23add8c75abe189393d33c873c02c74eeaf43d47b950c8d643763b35"
-        ]
-      },
-      "affected_products": [
-        "ConnectWise ScreenConnect (all versions prior to 26.6.5)",
-        "Level RMM",
-        "ITarian client",
-        "Microsoft Teams (as a lure)",
-        "Adobe Acrobat (as a lure)",
-        "Zoom (as a lure)",
-        "ColdCard hardware wallet (as a lure)",
-        "Microsoft Power BI (as a lure)"
-      ],
-      "recommendations": [
-        "Immediately upgrade all ScreenConnect installations to version 26.6.5 or later to remediate CVE‑2026‑84869.",
-        "Block outbound traffic to the staging IP 207.174.0.143 and any unknown ScreenConnect relay domains.",
-        "Implement application allow‑listing to prevent execution of unsigned installers such as `supportdev.exe` and unknown ScreenConnect binaries.",
-        "Deploy endpoint detection rules that alert on hidden PowerShell processes that download executables from external IPs or use the `LEVEL_API_KEY` environment variable.",
-        "Enforce strict email security controls: enable anti‑phishing DMARC/DKIM, sandbox URLs, and block known malicious sender domains.",
-        "Educate users to verify software update notifications against official vendor channels and to avoid clicking “Download Reference” links in unsolicited emails.",
-        "Monitor for multiple ScreenConnect client registrations from the same host and for the presence of both Level RMM and ScreenConnect agents on a single endpoint.",
-        "Segment networks to restrict remote‑access tools to dedicated management subnets and require MFA for any remote session initiation."
-      ],
-      "first_seen": "2026-07-27T15:01:46.433024+00:00",
-      "last_updated": "2026-10-07T16:05:27.889378+00:00",
-      "summary": "Multiple active phishing campaigns are abusing legitimate remote monitoring and management (RMM) tools, primarily ConnectWise ScreenConnect, to gain persistent remote access to enterprise endpoints. The campaigns use a variety of lures—including fake Microsoft Teams, Adobe, Zoom, ColdCard audit, and Power BI updates—and deliver the payload through VBScript, batch, .NET executables, and an Inno Setup loader that runs PowerShell to fetch and install ScreenConnect and other RMM agents. Evidence of worm‑like propagation across unrelated hosts and a critical ScreenConnect client‑side vulnerability (CVE‑2026‑84869) further elevate the risk.",
-      "analysis": "### Campaign Overview - **Phishing Lures**: The threat actors craft highly credible lures that mimic software updates or security audits (Microsoft Teams, Adobe, Zoom, ColdCard hardware audit, Microsoft Power BI). The emails contain links that redirect victims to attacker‑controlled landing pages. - **Delivery Mechanisms**: - **Inno Setup loader** (`supportdev.exe`) launches a hidden PowerShell session that pulls the official Level RMM installer and registers the endpoint with an attacker‑controlled enrollment secret (`LEVEL_API_KEY=GxSCHE8EZwfyYN3iPQHPai8D`). - **VBScript, batch, and compiled .NET executables** are used to download a ScreenConnect installer from a staging server. - **Browser‑in‑the‑Browser (BiTB)** pages mimic legitimate Adobe URLs, tricking users into clicking a “View Files” button that triggers the ScreenConnect download. - **Staging Infrastructure**: All payloads are hosted on a WsgiDAV server at **207.174.0.143:8080**. The server also functions as a command‑and‑control relay for installed ScreenConnect agents. - **RMM Tools Deployed**: Primary payload is ConnectWise **ScreenConnect**; secondary tools include **Level RMM**, **ITarian**, and references to other legitimate RMM products (Tactical RMM, MeshAgent). Multiple agents are often installed on the same host to create redundant persistence. - **Persistence & Lateral Movement**: Once installed, ScreenConnect agents beacon to attacker‑controlled relay servers, providing continuous remote access. Huntress observations of “worm‑like” activity indicate that compromised hosts are used to push additional ScreenConnect instances onto unrelated machines. - **Vulnerability Exploitation**: A newly disclosed client‑side flaw in ScreenConnect (CVE‑2026‑84869, CVSS 9.9) allows unauthorized file transfers during an active session, potentially enabling execution of additional malicious binaries. ### Technical Indicators - **PowerShell command** that sets `LEVEL_API_KEY` and invokes the Level RMM installer. - **WsgiDAV staging server** (`207.174.0.143:8080`). - **Domain used for fake Teams update**: `teamvem.com`. - **ColdCard phishing site**: `coldcardcompliance.com`. - **Phishing email address**: `compliance@coldcardteamnews.com`. - **Power BI malicious link**: `app.powerbi.com/view?...` (malicious parameters embedded in the URL). ### MITRE ATT&CK Mapping - **T1566.002 – Phishing: Link** – Use of malicious URLs in lure emails. - **T1059.001 – PowerShell** – Hidden PowerShell script that downloads and installs RMM tools. - **T1105 – Ingress Tool Transfer** – Transfer of Level RMM and ScreenConnect installers from the staging server. - **T1219 – Remote Access Tools** – Deployment of legitimate remote support software (ScreenConnect) for persistent access. - **T1021.004 – Remote Services: SSH / Remote Desktop Protocol** – ScreenConnect provides remote desktop capabilities. - **T1190 – Exploit Public-Facing Application** – Abuse of the CVE‑2026‑84869 client‑side flaw to execute arbitrary files. ### Impact The abuse of trusted RMM tools bypasses many traditional security controls, allowing attackers to maintain long‑term footholds, move laterally, and exfiltrate data with minimal detection. The worm‑like spread observed across unrelated hosts suggests a high potential for rapid enterprise‑wide compromise.",
-      "sources": [
-        {
-          "title": "Operation BlueDash Deploys Level RMM and ScreenConnect via Fake Teams Update",
-          "url": "https://thehackernews.com/2026/07/operation-bluedash-deploys-level-rmm.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Fake Adobe and Zoom Updates Install ScreenConnect for Persistent Remote Access",
-          "url": "https://thehackernews.com/2026/08/fake-adobe-and-zoom-updates-install.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "COLDCARD security audit phishing attack installs remote access tool",
-          "url": "https://www.bleepingcomputer.com/news/security/coldcard-security-audit-phishing-attack-installs-remote-access-tool/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "Rogue ScreenConnect Installations Across Unrelated Hosts Suggest Worm-Like Activity",
-          "url": "https://www.huntress.com/blog/rogue-screenconnect-installations",
-          "source": "Huntress"
-        },
-        {
-          "title": "Phishing Attacks Serve Browser-in-the-Browser Pages, Rogue RMM Persistence",
-          "url": "https://www.huntress.com/blog/phishing-bitb-rmm-attacks",
-          "source": "Huntress"
-        },
-        {
-          "title": "Rogue RMM Abuse: How Attackers Exploit Remote Access Tools",
-          "url": "https://www.huntress.com/blog/rogue-rmm-abuse-phishing-persistent-access",
-          "source": "Huntress"
-        },
-        {
-          "title": "Phishing Campaign Abuses Microsoft Power BI to Deploy Rogue RMMs",
-          "url": "https://www.huntress.com/blog/screenconnect-power-bi",
-          "source": "Huntress"
         }
       ]
     },

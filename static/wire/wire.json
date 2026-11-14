@@ -1,7 +1,185 @@
 {
-  "generated_at": "2026-11-13T17:24:42.880334+00:00",
+  "generated_at": "2026-11-14T15:37:54.983784+00:00",
   "count": 345,
   "reports": [
+    {
+      "slug": "macos-infostealer-via-deceptive-installers",
+      "name": "DownTheDRAIN (Atomic macOS Stealer)",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.95,
+      "source_count": 11,
+      "ioc_count": 24,
+      "cves": [],
+      "malware_families": [
+        "AMOS",
+        "MacSync",
+        "Odyssey",
+        "Poseidon",
+        "infostealer",
+        "rootkit",
+        "eBPF Rootkit",
+        "ClickFix",
+        "Atomic Stealer (AMOS)",
+        "CloudSyncD",
+        "DownTheDRAIN"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1059.004",
+          "name": "Unix Shell",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "tactic": "stealth"
+        },
+        {
+          "id": "T1204.002",
+          "name": "Malicious File",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1497.001",
+          "name": "System Checks",
+          "tactic": "stealth, discovery"
+        },
+        {
+          "id": "T1565.001",
+          "name": "Stored Data Manipulation",
+          "tactic": "impact"
+        },
+        {
+          "id": "T1071.001",
+          "name": "Web Protocols",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "tactic": "impact"
+        }
+      ],
+      "iocs": {
+        "domain": [
+          "getmacouscloud.com"
+        ],
+        "url": [
+          "https://macostruecloud.xyz/?h=2f9548d041648a8030c040ae0e1e530b&z=304",
+          "https://getmacouscloud.com/?FSSbmnNdviEDE5S?io=16vwsb0rgIiPNIgM",
+          "https://render65.com/curl/f5509695dd98a9732378e5256d6235415d64d92194459bb08525c7ce5991a0c9",
+          "https://grove-89.com/api/metrics/run?event=pasted",
+          "https://render65.com/2kqYRM0DCrnyJgoS4gVLl_FHJRRdTUhGCbjyuYwpZ6c/m1/update",
+          "http://45.150.32.130/37339606cba4522a?force=1",
+          "http://45.150.32.130/4be1066a49e75?force=1",
+          "http://171.22.131.24:8133/api/t"
+        ],
+        "ipv4": [
+          "188.166.78.138",
+          "45.150.32.130",
+          "171.22.131.24"
+        ],
+        "md5": [
+          "2f9548d041648a8030c040ae0e1e530b",
+          "49359f77ebb4ffd9a95568d27a8ff3e7"
+        ],
+        "sha256": [
+          "6144d433f8a0316869877b5f834c801251bbb936e5f1577c5680878c7443c98b",
+          "f5509695dd98a9732378e5256d6235415d64d92194459bb08525c7ce5991a0c9",
+          "b9ec3261d633c289e51c5fa8842af4350efe68446df39cb995de82e0941d0f3c",
+          "13b868b3ea8b492e7fbab1ca04535c53d0930650185b5a082cd59c1974689cd5",
+          "9f25ec533cb23d020e568fb771500d7776b1300f07119ad9d0876f4329ce22ab",
+          "0a03cf18de28017c0ea591dffc380a6b41fedd2acc3a39e901e58d9188c01836",
+          "01a0d5332b09bb299f7784bf0d0c43c4199269ed6a0712377279eeb999847d20",
+          "58e503cc2e6aacc6bdba54f40a7edebf7a5362bef0a9039769baaba8c472c4db",
+          "8b5026d841aa93758ec3cb55c276f84d3ec1cf459810e0d9aa5624e2776f2fcd",
+          "c34cc30cb1cff5c47d77e62a3ba63e9a183989ec1ccdf7929beb1bcae0d41f23"
+        ]
+      },
+      "affected_products": [
+        "macOS (all recent versions)",
+        "Windows (via malicious npm packages)"
+      ],
+      "recommendations": [
+        "Block known malicious domains (e.g., getmacouscloud.com) and any newly identified ClickFix‑style domains at the DNS firewall level.",
+        "Enforce strict execution policies on macOS: disable execution of unsigned scripts from Terminal unless explicitly approved by an administrator.",
+        "Educate users to never copy‑and‑paste commands from web pages or npm package READMEs into a shell without verification.",
+        "Monitor for the presence of the obfuscated shell command pattern and for files written to /tmp that persist across reboots.",
+        "Deploy endpoint detection that can flag the launch of unknown launch agents or scripts originating from /tmp.",
+        "Audit installed npm packages for the names `@apexacc/cli` and `@apexacc/audit`; remove them and rotate any credentials that may have been exposed.",
+        "Implement network traffic analysis to detect outbound HTTPS connections to unknown staging servers and to identify the characteristic C2 traffic of the stealer.",
+        "Leverage sandboxing solutions that can emulate macOS fingerprinting checks to expose the cloaked gate behavior."
+      ],
+      "first_seen": "2026-06-11T16:53:53.948833+00:00",
+      "last_updated": "2026-11-14T15:36:17.485608+00:00",
+      "summary": "The DownTheDRAIN infostealer, distributed through the macOS ClickFix campaign and malicious npm packages, targets macOS (and Windows) users with a copy‑and‑paste Terminal command that installs a stealthy stealer. It harvests credentials, browser data, authentication tokens, and cryptocurrency wallet addresses, then redirects funds to attacker‑controlled wallets. The campaign uses browser‑fingerprinting gates to evade sandboxes and has been observed in the wild since mid‑2026.",
+      "analysis": "### Overview Multiple security researchers (SANS ISC, Microsoft Threat Intelligence, Huntress, Elastic Security Labs) have documented a coordinated campaign that delivers a macOS infostealer dubbed **DownTheDRAIN**. The same infrastructure also distributes related payloads known as **Atomic macOS (AMOS) stealer**, **MacSync**, and backdoors for Windows via malicious npm packages under the fake Web3 accelerator **Apex Accelerator** (tracked as **REF8801**). ### Delivery Mechanism 1. **ClickFix Web Lure** – Victims are directed to one of >250 algorithmically‑named domains. A server‑side JavaScript gate performs browser‑fingerprinting to show the malicious page only to genuine macOS browsers, hiding the lure from crawlers and sandboxes. 2. **User‑Executed Command** – The page instructs the user to copy a short, obfuscated shell command into Terminal. The command contacts a staging URL, downloads additional scripts, and writes the stealer to the `/tmp` directory, persisting it in multiple locations. 3. **Malicious npm Packages** – A parallel vector uses npm packages `@apexacc/cli` and `@apexacc/audit` that claim to provide AI‑assisted Web3 tooling. Installation of these packages drops the same macOS/Windows infostealer and a backdoor that can proxy AI model requests through attacker‑controlled servers. ### Functionality - **Credential Harvesting** – Extracts macOS keychain entries, browser passwords, saved authentication tokens, and other credential stores. - **Cryptocurrency Wallet Theft** – The “DRAIN” function scans for wallet addresses (e.g., Bitcoin, Ethereum) and redirects any future transactions to wallets under the attacker’s control. - **Data Exfiltration** – Collected data is bundled and sent to a C2 server via HTTPS, then optionally uploaded to attacker‑controlled cloud storage. - **Persistence** – Files are left in `/tmp` and may be re‑executed on reboot via launch agents or user‑level scripts. - **Evasion** – Fingerprinting gates (MITRE ATT&CK T1497.001) and obfuscated shell code (T1027) reduce detection by automated analysis tools. ### Observed Infrastructure - Primary lure domain: **getmacouscloud.com** (used in the AMOS infection sample). - A rotating pool of >250 look‑alike domains (pattern not disclosed) that host the fingerprinting gate. - Staging servers delivering the payload are referenced only in the obfuscated command and are not publicly listed. ### Impact The campaign actively targets cryptocurrency‑focused individuals and developers, stealing wallet credentials and potentially siphoning funds. While Microsoft has not disclosed victim counts, the presence of a dedicated “DRAIN” routine and successful block on a macOS 26.7.3 host indicate real‑world exploitation. ### Relation to Other Reports The same stealer family appears in the npm‑package vector described by Elastic Security Labs, confirming that the threat actor is leveraging both web‑based lures and supply‑chain compromise of developer tools to reach macOS and Windows environments.",
+      "sources": [
+        {
+          "title": "Deceptive Installers: How Fake Apps Target macOS",
+          "url": "https://www.huntress.com/blog/deceptive-installers-macos-infostealers",
+          "source": "Huntress"
+        },
+        {
+          "title": "Over 400 Arch Linux packages compromised to push rootkit, infostealer",
+          "url": "https://www.bleepingcomputer.com/news/security/over-400-arch-linux-packages-compromised-to-push-rootkit-infostealer/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Over 400 Arch Linux AUR Packages Hijacked to Deploy Infostealer and eBPF Rootkit",
+          "url": "https://thehackernews.com/2026/06/over-400-arch-linux-aur-packages.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "24 billion stolen records exposed online. Here&#8217;s what to do",
+          "url": "https://www.malwarebytes.com/blog/news/2026/06/24-billion-stolen-records-found-in-giant-data-dump-check-if-youre-affected",
+          "source": "Malwarebytes Labs"
+        },
+        {
+          "title": "Roblox developers are losing entire games to malware attacks",
+          "url": "https://www.malwarebytes.com/blog/scams/2026/06/roblox-developers-are-losing-entire-games-to-malware-attacks",
+          "source": "Malwarebytes Labs"
+        },
+        {
+          "title": "ThreatsDay Bulletin: Claude Chat Abuse, NastyC2 npm Packages, Device-Code Phishing + 25 More Stories",
+          "url": "https://thehackernews.com/2026/06/threatsday-bulletin-claude-chat-abuse.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Atomic MacOS (AMOS) stealer infection, (Sun, Aug 2nd)",
+          "url": "https://isc.sans.edu/diary/rss/33208",
+          "source": "SANS Internet Storm Center"
+        },
+        {
+          "title": "From open lures to cloaked gates: How a macOS ClickFix campaign learned to hide",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/08/05/macos-clickfix-campaign-learned-hide/",
+          "source": "Microsoft Security Blog"
+        },
+        {
+          "title": "Over 250 ClickFix Domains Use Browser Fingerprinting to Hide macOS Malware Lures",
+          "url": "https://thehackernews.com/2026/08/over-250-clickfix-domains-use-browser.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Fake Web3 Accelerator Uses npm Packages to Spread Malware and Hijack AI Agent Traffic",
+          "url": "https://thehackernews.com/2026/10/fake-web3-accelerator-uses-npm-packages.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Macfinger ClickFix campaign sends DownTheDRAIN infostealer for macOS, (Fri, Nov 13th)",
+          "url": "https://isc.sans.edu/diary/rss/33518",
+          "source": "SANS Internet Storm Center"
+        }
+      ]
+    },
     {
       "slug": "ghostaction-github-actions-credential-theft",
       "name": "GhostAction / wfx-loot campaign",
@@ -2559,167 +2737,6 @@
           "title": "Graph reconnaissance and ServiceNow user enumeration in a modern identity intrusion",
           "url": "https://www.sophos.com/en-us/blog/graph-reconnaissance-and-servicenow-user-enumeration-in-a-modern-identity-intrusion",
           "source": "Sophos News (X-Ops)"
-        }
-      ]
-    },
-    {
-      "slug": "macos-infostealer-via-deceptive-installers",
-      "name": "Atomic Infostealer Supply‑Chain Campaign",
-      "category": "malware",
-      "severity": "high",
-      "confidence": 1.0,
-      "faithfulness": 0.95,
-      "source_count": 10,
-      "ioc_count": 16,
-      "cves": [],
-      "malware_families": [
-        "AMOS",
-        "MacSync",
-        "Odyssey",
-        "Poseidon",
-        "infostealer",
-        "rootkit",
-        "eBPF Rootkit",
-        "ClickFix",
-        "Atomic Stealer (AMOS)",
-        "CloudSyncD"
-      ],
-      "threat_actors": [],
-      "ttps": [
-        {
-          "id": "T1204.002",
-          "name": "Malicious File",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1105",
-          "name": "Ingress Tool Transfer",
-          "tactic": "command and control"
-        },
-        {
-          "id": "T1027",
-          "name": "Obfuscated Files or Information",
-          "tactic": "stealth"
-        },
-        {
-          "id": "T1566.001",
-          "name": "Spearphishing Attachment",
-          "tactic": "initial access"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        },
-        {
-          "id": "T1547.001",
-          "name": "Registry Run Keys / Startup Folder",
-          "tactic": "persistence, privilege escalation"
-        },
-        {
-          "id": "T1564.001",
-          "name": "Hidden Files and Directories",
-          "tactic": "stealth"
-        }
-      ],
-      "iocs": {
-        "domain": [
-          "getmacouscloud.com"
-        ],
-        "url": [
-          "https://macostruecloud.xyz/?h=2f9548d041648a8030c040ae0e1e530b&z=304",
-          "https://getmacouscloud.com/?FSSbmnNdviEDE5S?io=16vwsb0rgIiPNIgM",
-          "https://render65.com/curl/f5509695dd98a9732378e5256d6235415d64d92194459bb08525c7ce5991a0c9",
-          "https://grove-89.com/api/metrics/run?event=pasted",
-          "https://render65.com/2kqYRM0DCrnyJgoS4gVLl_FHJRRdTUhGCbjyuYwpZ6c/m1/update"
-        ],
-        "ipv4": [
-          "188.166.78.138"
-        ],
-        "md5": [
-          "2f9548d041648a8030c040ae0e1e530b",
-          "49359f77ebb4ffd9a95568d27a8ff3e7"
-        ],
-        "sha256": [
-          "6144d433f8a0316869877b5f834c801251bbb936e5f1577c5680878c7443c98b",
-          "f5509695dd98a9732378e5256d6235415d64d92194459bb08525c7ce5991a0c9",
-          "b9ec3261d633c289e51c5fa8842af4350efe68446df39cb995de82e0941d0f3c",
-          "13b868b3ea8b492e7fbab1ca04535c53d0930650185b5a082cd59c1974689cd5",
-          "9f25ec533cb23d020e568fb771500d7776b1300f07119ad9d0876f4329ce22ab",
-          "0a03cf18de28017c0ea591dffc380a6b41fedd2acc3a39e901e58d9188c01836",
-          "01a0d5332b09bb299f7784bf0d0c43c4199269ed6a0712377279eeb999847d20"
-        ]
-      },
-      "affected_products": [
-        "npm (Node.js package manager)",
-        "Arch User Repository (AUR) – Arch Linux",
-        "macOS (any recent version)",
-        "Windows (via npm‑delivered backdoors)",
-        "Web browsers on macOS (Safari, Chrome, Firefox) used to access ClickFix domains"
-      ],
-      "recommendations": [
-        "Block execution of unknown or newly published npm and AUR packages until they are verified; enforce signed packages where possible.",
-        "Implement strict allow‑list controls for package manager registries and monitor for sudden spikes in new package publications.",
-        "Educate developers and end‑users not to copy‑paste commands from web pages or terminal prompts, especially those that invoke `curl|wget | sh` pipelines.",
-        "Deploy endpoint detection that flags Base64/hex‑encoded shell commands and the creation of hidden files in `/tmp` or other temporary directories.",
-        "Use browser‑fingerprinting detection or sandboxing that mimics macOS characteristics to expose cloaked ClickFix lures during analysis.",
-        "Monitor DNS queries and HTTP traffic for connections to the identified malicious domains and for large numbers of requests to package registry APIs.",
-        "Apply kernel‑level security controls (e.g., eBPF verification, seccomp) to prevent unauthorized loading of eBPF programs on Linux systems."
-      ],
-      "first_seen": "2026-06-11T16:53:53.948833+00:00",
-      "last_updated": "2026-10-19T16:05:45.566737+00:00",
-      "summary": "A coordinated campaign is abusing open‑source package ecosystems (npm and Arch User Repository) and malicious web‑lures to deliver information‑stealing malware to macOS, Windows and Linux hosts. The operation distributes backdoors, credential stealers (Atomic MacOS Stealer, Atomic Arch) and repackaged AI‑assistant tools, leveraging social engineering (fake AI credits, fake Web3 accelerator) and browser‑fingerprinting gates to evade automated analysis. The threat is active in the wild, targeting developers, cryptocurrency startups and general macOS users.",
-      "analysis": "### Overview The campaign operates across three primary delivery vectors: 1. **Compromised npm packages** – Two packages, `@apexacc/cli` and `@apexacc/audit`, were published under the guise of a \"Web3 accelerator\" offering free AI credits for Anthropic Claude and Google Gemini. Once installed, the packages drop Windows and macOS information‑stealers and backdoors, and they also repurpose a legitimate coding agent to proxy AI model requests through attacker‑controlled servers. 2. **Malicious Arch User Repository (AUR) packages** – Over 400 AUR packages were hijacked (campaign named *Atomic Arch*). The build scripts were altered to compile a Rust‑based credential stealer that, when run as root, loads an eBPF rootkit for stealth. No vulnerability in Arch’s official repositories was exploited; the attackers simply adopted abandoned packages and modified their PKGBUILDs. 3. **Web‑based ClickFix lures** – A large network of >250 look‑alike domains serves a server‑side fingerprinting gate that only shows the malicious command to browsers that appear to be genuine macOS instances. The gate delivers an obfuscated shell command that fetches and executes the *Atomic MacOS Stealer* (AMOS) payload. The stealer harvests credentials, browser data, crypto wallets and files from `/tmp` before persisting in hidden directories. ### Tradecraft * **Social engineering** – Fake AI‑credit offers, a \"Web3 accelerator\" brand, and impersonation of legitimate development studios (e.g., Cheesy Studios) are used to convince victims to run a single command or install a package. * **User‑execution** – Victims are instructed to copy‑paste a Base64‑encoded command into Terminal (T1204.002 – Malicious File Execution). * **Obfuscation & download** – The command retrieves additional scripts/binaries via `curl`/`wget` (T1105 – Ingress Tool Transfer) and uses Base64/hex encoding to hide the payload (T1027 – Obfuscated Files or Information). * **Browser fingerprinting gate** – JavaScript checks for macOS‑specific user‑agent strings, screen resolution, and other heuristics to hide the lure from crawlers and sandboxes, a form of *environment‑based evasion*. * **Persistence** – The macOS stealer writes files to `/tmp` and creates hidden directories; the Linux eBPF rootkit loads at kernel level to remain resident. * **Credential harvesting** – Collected data includes OS credentials, browser password stores, cryptocurrency wallet files, and developer secrets from IDE configuration files. ### Impact The campaign targets developers (npm/AUR users), cryptocurrency founders, and general macOS users. Because the payload runs with the privileges of the installing user (or root on Linux when the package is built with `sudo`), attackers can obtain high‑value credentials and potentially pivot to further compromise of cloud or on‑premises resources.",
-      "sources": [
-        {
-          "title": "Deceptive Installers: How Fake Apps Target macOS",
-          "url": "https://www.huntress.com/blog/deceptive-installers-macos-infostealers",
-          "source": "Huntress"
-        },
-        {
-          "title": "Over 400 Arch Linux packages compromised to push rootkit, infostealer",
-          "url": "https://www.bleepingcomputer.com/news/security/over-400-arch-linux-packages-compromised-to-push-rootkit-infostealer/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "Over 400 Arch Linux AUR Packages Hijacked to Deploy Infostealer and eBPF Rootkit",
-          "url": "https://thehackernews.com/2026/06/over-400-arch-linux-aur-packages.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "24 billion stolen records exposed online. Here&#8217;s what to do",
-          "url": "https://www.malwarebytes.com/blog/news/2026/06/24-billion-stolen-records-found-in-giant-data-dump-check-if-youre-affected",
-          "source": "Malwarebytes Labs"
-        },
-        {
-          "title": "Roblox developers are losing entire games to malware attacks",
-          "url": "https://www.malwarebytes.com/blog/scams/2026/06/roblox-developers-are-losing-entire-games-to-malware-attacks",
-          "source": "Malwarebytes Labs"
-        },
-        {
-          "title": "ThreatsDay Bulletin: Claude Chat Abuse, NastyC2 npm Packages, Device-Code Phishing + 25 More Stories",
-          "url": "https://thehackernews.com/2026/06/threatsday-bulletin-claude-chat-abuse.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Atomic MacOS (AMOS) stealer infection, (Sun, Aug 2nd)",
-          "url": "https://isc.sans.edu/diary/rss/33208",
-          "source": "SANS Internet Storm Center"
-        },
-        {
-          "title": "From open lures to cloaked gates: How a macOS ClickFix campaign learned to hide",
-          "url": "https://www.microsoft.com/en-us/security/blog/2026/08/05/macos-clickfix-campaign-learned-hide/",
-          "source": "Microsoft Security Blog"
-        },
-        {
-          "title": "Over 250 ClickFix Domains Use Browser Fingerprinting to Hide macOS Malware Lures",
-          "url": "https://thehackernews.com/2026/08/over-250-clickfix-domains-use-browser.html",
-          "source": "The Hacker News"
-        },
-        {
-          "title": "Fake Web3 Accelerator Uses npm Packages to Spread Malware and Hijack AI Agent Traffic",
-          "url": "https://thehackernews.com/2026/10/fake-web3-accelerator-uses-npm-packages.html",
-          "source": "The Hacker News"
         }
       ]
     },

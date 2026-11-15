@@ -1,7 +1,129 @@
 {
-  "generated_at": "2026-11-14T15:37:54.983784+00:00",
-  "count": 345,
+  "generated_at": "2026-11-15T16:30:41.285158+00:00",
+  "count": 346,
   "reports": [
+    {
+      "slug": "claude-code-extension-trojan",
+      "name": "Malicious Claude Code VS Code Extension (Cursor Marketplace Supply‑Chain Attack)",
+      "category": "malware",
+      "severity": "high",
+      "confidence": 1.0,
+      "faithfulness": 0.92,
+      "source_count": 4,
+      "ioc_count": 6,
+      "cves": [],
+      "malware_families": [
+        "Claude Code Trojan"
+      ],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1098.004",
+          "name": "SSH Authorized Keys",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1543.003",
+          "name": "Windows Service",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1543.004",
+          "name": "Launch Daemon",
+          "tactic": "persistence, privilege escalation"
+        },
+        {
+          "id": "T1053.005",
+          "name": "Scheduled Task",
+          "tactic": "execution, persistence, privilege escalation"
+        },
+        {
+          "id": "T1053.004",
+          "name": "Launchd",
+          "tactic": "execution, persistence, privilege escalation"
+        },
+        {
+          "id": "T1572",
+          "name": "Protocol Tunneling",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "tactic": "discovery"
+        },
+        {
+          "id": "T1071.001",
+          "name": "Web Protocols",
+          "tactic": "command and control"
+        },
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "tactic": "stealth"
+        }
+      ],
+      "iocs": {
+        "ipv4": [
+          "134.209.82.225"
+        ],
+        "url": [
+          "http://134.209.82.225:8099/beacon",
+          "http://134.209.82.225:8099/beaconURLReconnaissance",
+          "http://134.209.82.225"
+        ],
+        "sha256": [
+          "ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15",
+          "7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278"
+        ]
+      },
+      "affected_products": [
+        "Cursor AI‑powered IDE",
+        "Visual Studio Code (VS Code) extensions",
+        "Anthropic Claude Code extension (anthropic.claude-code)",
+        "Windows 10/11",
+        "macOS",
+        "Linux distributions with OpenSSH"
+      ],
+      "recommendations": [
+        "Immediately uninstall any Claude Code extension version 2.1.312 or 2.1.313 installed from the Cursor marketplace.",
+        "Update to the clean Anthropic Claude Code version (2.1.314) from Open VSX or Microsoft Marketplace.",
+        "Search for and remove unauthorized SSH public keys labeled \"svc-telemetry\" from all users' `~/.ssh/authorized_keys` files.",
+        "Audit and delete persistence artifacts: Windows scheduled tasks/startup entries, Linux crontabs, macOS LaunchAgent plist files created by the extension.",
+        "Block outbound traffic to 134.209.82.225 (both port 22 for SSH tunneling and port 8099 for HTTP beacons) at the network perimeter.",
+        "Enable multi‑factor authentication and rotate all API credentials that may have been exposed in historic AI‑coding traces.",
+        "Implement strict supply‑chain validation for VS Code extensions (code signing verification, hash checks) before allowing installation.",
+        "Deploy endpoint detection rules for Node.js/JavaScript loaders that modify files or execute system commands at extension load time.",
+        "Conduct a forensic review of any systems that installed the malicious extension to confirm no successful reverse‑SSH sessions occurred.",
+        "Review and harden internal credential storage for third‑party integrations (e.g., Fireworks AI) to prevent similar breaches."
+      ],
+      "first_seen": "2026-10-30T15:35:33.938508+00:00",
+      "last_updated": "2026-11-15T16:06:02.337035+00:00",
+      "summary": "In late October 2026 a trojanized version of Anthropic's Claude Code VS Code extension was published in the Cursor IDE marketplace. The malicious package (v2.1.313) added a persistent SSH backdoor to Windows, macOS and Linux workstations, attempted to enable SSH, and opened a reverse tunnel to an attacker‑controlled server (134.209.82.225). The supply‑chain compromise stemmed from a credential breach at third‑party provider Fireworks AI, allowing the attackers to upload the malicious extension. Up to 5,000 developers were potentially exposed.",
+      "analysis": "### Supply‑chain compromise - Attackers obtained an access key from Fireworks AI, a cloud provider used by Cursor for AI model training. The key gave read‑only access to a storage bucket that contained historic AI‑coding traces, some of which included unredacted API credentials. - Using the stolen credentials, the threat actors accessed internal Cursor services and obtained a privileged token that allowed publishing extensions to the Cursor Marketplace. - A malicious copy of the official **anthropic.claude-code** extension (version 2.1.313) was uploaded and made available for roughly 11 hours (02:27 – 13:35 PT) on 29 Oct 2026. The legitimate Anthropic‑maintained extensions on Open VSX and Microsoft’s VS Code Marketplace were not affected. ### Malicious payload - The package’s main JavaScript bundle was prepended with a 66‑line loader that executes as soon as the extension loads (no user interaction required). - **Host reconnaissance** – the loader gathers OS details, public IP, Git configuration (email), and other system metadata. - **SSH backdoor implantation** – the loader writes an attacker‑controlled SSH public key (labelled *svc‑telemetry*) to `~/.ssh/authorized_keys`. - **Service enablement** – it attempts to start the local SSH daemon on Windows, macOS and Linux. On macOS it runs `systemsetup -getremotelogin` without elevation, causing the check to fail; on Windows it tries to install OpenSSH via PowerShell but invokes the command through `/bin/sh`, a Unix‑specific shell, resulting in failure on many hosts. - **Persistence** – platform‑specific mechanisms are created: - Windows: scheduled task / startup script. - Linux: crontab entry. - macOS: LaunchAgent plist. - **Command‑and‑Control** – the loader opens a reverse SSH tunnel to `134.209.82.225` and sends periodic beacon data (host info, backdoor status) to `http://134.209.82.225:8099/beacon` over unencrypted HTTP. - **Failure handling** – the code retries the tunnel roughly every minute, even when the SSH service could not be started, leaving artifacts on the host. ### Impact - Up to **5,000 developers** may have installed the malicious extension, exposing their machines to credential theft and potential remote access. - Coding errors in the SSH enablement routine limited successful remote logins on many Windows and macOS systems, but the persistence artifacts and added SSH keys remain a security risk. - The incident also revealed broader data exposure: a small fraction of Cursor users had historic AI‑coding traces and API credentials leaked, which were later used to compromise additional SaaS tools. ### MITRE ATT&CK mapping - **T1098.004** – Add SSH authorized key. - **T1543.003 / T1543.004** – Create or modify system process (Windows Service, macOS LaunchAgent). - **T1053.005 / T1053.004** – Scheduled Task / Cron job persistence. - **T1572** – Protocol tunneling (reverse SSH forwarding). - **T1082** – System information discovery. - **T1071.001** – Web protocol C2 (HTTP beacon). - **T1027** – Obfuscated/Stored Files (loader injected into legitimate extension). ### Mitigation steps taken by vendors - Cursor temporarily shut down its marketplace, removed the malicious package, revoked the stolen Fireworks AI key, and rotated exposed credentials. - Anthropic released a clean version (2.1.314) to Open VSX and Microsoft Marketplace. - Microsoft published detection rules and hunting queries for the loader behavior and the C2 endpoint. ### Open questions - The exact initial intrusion vector that allowed the Fireworks AI key to be stolen has not been disclosed. - No evidence of successful remote sessions was observed, but the backdoor remains present on compromised hosts.",
+      "sources": [
+        {
+          "title": "Official Claude Code Extension on Cursor Marketplace Trojanized with Persistent SSH Backdoor",
+          "url": "https://thehackernews.com/2026/10/official-claude-code-vs-code-extension.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Malicious Claude Code extension on Cursor planted SSH backdoors",
+          "url": "https://www.bleepingcomputer.com/news/security/malicious-claude-code-extension-on-cursor-planted-ssh-backdoors/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "Inside a malicious Claude Code-branded extension and its persistent SSH backdoor",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+          "source": "Microsoft Security Blog"
+        },
+        {
+          "title": "Cursor confirms security breach led to malicious Claude Code extension",
+          "url": "https://www.bleepingcomputer.com/news/security/cursor-confirms-security-breach-led-to-malicious-claude-code-extension/",
+          "source": "BleepingComputer"
+        }
+      ]
+    },
     {
       "slug": "macos-infostealer-via-deceptive-installers",
       "name": "DownTheDRAIN (Atomic macOS Stealer)",

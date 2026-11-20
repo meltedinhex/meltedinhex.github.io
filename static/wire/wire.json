@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-19T18:30:15.926125+00:00",
-  "count": 357,
+  "generated_at": "2026-11-20T17:54:47.384919+00:00",
+  "count": 356,
   "reports": [
     {
       "slug": "miasma-supply-chain-attack",
-      "name": "unknown",
-      "category": "other",
-      "severity": "medium",
+      "name": "CVE-2026-123890 – VMware vCenter Server Authentication Bypass",
+      "category": "vulnerability",
+      "severity": "critical",
       "confidence": 1.0,
-      "faithfulness": 1.0,
-      "source_count": 771,
-      "ioc_count": 1771,
+      "faithfulness": 0.92,
+      "source_count": 781,
+      "ioc_count": 1772,
       "cves": [
         "CVE-2026-45321",
         "CVE-2026-48027",
@@ -761,7 +761,21 @@
         "CVE-2026-40217",
         "CVE-2026-90817",
         "CVE-2026-132165",
-        "CVE-2026-132166"
+        "CVE-2026-132166",
+        "CVE-2026-123890",
+        "CVE-2026-123891",
+        "CVE-2026-123892",
+        "CVE-2026-123893",
+        "CVE-2026-123894",
+        "CVE-2026-116953",
+        "CVE-2026-120285",
+        "CVE-2026-120292",
+        "CVE-2026-121805",
+        "CVE-2026-123637",
+        "CVE-2026-126822",
+        "CVE-2024-25420",
+        "CVE-2026-73571",
+        "CVE-2026-93637"
       ],
       "malware_families": [
         "Hades",
@@ -1582,7 +1596,19 @@
         "SoftEther VPN Bridge",
         "C3RB3R",
         "Lynx",
-        "Royal"
+        "Royal",
+        "Atomic macOS Stealer",
+        "BabaDeda Loader",
+        "CNCMachineRMS",
+        "CrashHandler RAT",
+        "CrocoRat",
+        "BEARBONES",
+        "BONESAW",
+        "CAGEMATCH",
+        "LAZYBONES",
+        "SAWSNAKE",
+        "SLIMSAVAGE",
+        "MeshAgent"
       ],
       "threat_actors": [
         "Famous Chollima",
@@ -2117,10 +2143,25 @@
         "CL-STA-1178",
         "Insolent Werewolf",
         "UAT-12643",
-        "Chinese APT group behind EggStreme"
+        "Chinese APT group behind EggStreme",
+        "8-Digits Team"
       ],
-      "ttps": [],
+      "ttps": [
+        {
+          "id": "T1210",
+          "name": "Exploitation of Remote Services",
+          "tactic": "lateral movement"
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "tactic": "stealth, persistence, privilege escalation, initial access"
+        }
+      ],
       "iocs": {
+        "cve": [
+          "CVE-2026-123890"
+        ],
         "url": [
           "https://www.elastic.co/security-labs/threat-command/disclosing-the-bloodalchemy-backdoor",
           "https://cl.distritovagas.com/hte.hta\"\\1",
@@ -3905,12 +3946,28 @@
           "617df364120adc47fb4f55dcc0c69a9b6c9e108a92c60bc2b64a266254ab02f3"
         ]
       },
-      "affected_products": [],
-      "recommendations": [],
+      "affected_products": [
+        "VMware vCenter Server 7.0, 8.0, 9.0, 9.1",
+        "VMware Cloud Foundation (all supported branches)",
+        "VMware vSphere Foundation 9.0.x.x, 9.1.x.x",
+        "VMware Telco Cloud Platform",
+        "VMware Telco Cloud Infrastructure",
+        "VMware SDDC Manager",
+        "VMware Tools for Windows (when installed on VMs managed by vulnerable vCenter)"
+      ],
+      "recommendations": [
+        "Apply the Broadcom patches released on 19 Nov 2026 to all affected VMware products without delay.",
+        "If immediate patching is not possible, isolate vCenter servers from untrusted networks and block inbound TCP 2012 traffic.",
+        "Conduct a thorough compromise assessment on any vCenter that was reachable before patching, focusing on newly created admin sessions and changes to VM configurations.",
+        "Enable multi‑factor authentication for vCenter administrative accounts and enforce least‑privilege principles for service accounts.",
+        "Implement network segmentation to restrict DCE/RPC access to vCenter to only authorized management workstations.",
+        "Deploy logging and alerting for anomalous DCE/RPC traffic and for logon events of `administrator@vsphere.local` from unexpected sources.",
+        "Review and harden VMware SSO configurations; consider disabling unused SSO features that rely on the vulnerable vmdir service."
+      ],
       "first_seen": "2026-06-11T15:22:05.280017+00:00",
-      "last_updated": "2026-11-19T18:02:15.420445+00:00",
-      "summary": "The eight provided sources each describe distinct security issues—including a China‑aligned APT using SoftEther VPN (Webworm), a critical Drupal RCE vulnerability, Gentlemen ransomware claims, multiple actively exploited CVEs, a ransomware gang arrest, the EggStreme malware family, and an AI‑driven PHP2Shell credential‑harvesting campaign. Because the sources do not converge on a single, common threat, a unified threat report cannot be produced without conflating unrelated activities.",
-      "analysis": "## Source Overview - **Source 1** – Details a custom SoftEther VPN bridge used by the China‑aligned APT *Webworm* to maintain stealthy, long‑term access to government networks. The tool is a modified SoftEther VPN Bridge (v4.44, build 9807) with evasion tricks. - **Source 2** – Announces the patching of a critical Drupal remote‑code‑execution flaw (CVE‑2026‑132165) that could allow site takeover via the installer script. - **Source 3** – Reports unverified claims by the *Gentlemen* ransomware group that it has breached NVIDIA; NVIDIA states no evidence of compromise. - **Source 4** – Lists four actively exploited vulnerabilities (Apache Axis, REDCap, LiteLLM, Synology DSM) added to CISA’s KEV catalog. - **Source 5** – Highlights SOCRadar’s business growth; no threat content. - **Source 6** – Describes the arrest of members of an international ransomware organization linked to >$40 M in ransom payments. - **Source 7** – Describes a new variant of the *EggStreme* malware used by a Chinese APT against Philippine government entities, featuring DLL sideloading, a passive C2 variant, and protocol changes. - **Source 8** – Documents an AI‑driven credential‑harvesting campaign exploiting PHP2Shell (CVE‑2026‑109618/109619) with a C2 server at 206.245.153.56. Because each article focuses on a separate threat vector, technique set, and adversary, merging them would create a misleading composite that does not reflect any single campaign.",
+      "last_updated": "2026-11-20T17:36:10.962927+00:00",
+      "summary": "A critical authentication‑bypass vulnerability (CVE‑2026‑123890) in VMware vCenter Server’s Directory Service was actively exploited as a zero‑day by the China‑linked espionage group Armory Castle from early September 2026. The flaw allows an unauthenticated network attacker to obtain a Secure Remote Password (SRP) session key via the DCE/RPC interface on TCP 2012 and gain full administrator privileges (administrator@vsphere.local). Broadcom released emergency patches on 19 Nov 2026; organizations must apply the updates immediately and conduct a compromise review.",
+      "analysis": "### Vulnerability Overview - **Identifier**: CVE‑2026‑123890 (CVSS v3.1 9.8 – Critical) - **Component**: VMware Directory Service (vmdir) used by vCenter Single Sign‑On (SSO). - **Root Cause**: The RPC interface on TCP 2012 leaks a Secure Remote Password (SRP‑6a) session key. An attacker who can reach the service can capture this key and establish a session as the built‑in `administrator@vsphere.local` account without providing any credentials. ### Exploitation Chain 1. **Initial Access – Exploitation of Remote Services (T1210)** – The attacker sends a crafted DCE/RPC request to the vulnerable vmdir service. 2. **Credential Access – Valid Accounts (T1078)** – By extracting the SRP session key, the attacker authenticates as the privileged vCenter administrator. 3. **Impact – Full Administrative Control** – With administrator rights, the adversary can manage ESXi hosts, create/modify/delete virtual machines, and move laterally across the virtual infrastructure. ### Threat Actor Attribution - The activity has been linked to **Armory Castle**, previously tracked as UNC5221, a China‑nation‑state espionage group. Google Threat Intelligence and Mandiant reported exploitation beginning in early September 2026, more than two months before the public patch. ### Patch and Mitigation - Broadcom issued patches on **19 Nov 2026** (VMSA‑2026‑0009) for all supported vCenter branches (7.0, 8.0, 9.0, 9.1) and related VMware Cloud Foundation, Telco Cloud Platform, and SDDC Manager components. No workaround exists; the advisory classifies the fix as an emergency change. - The vulnerability also affects VMware Tools for Windows when installed on VMs managed by a vulnerable vCenter. ### Detection Considerations - Look for anomalous DCE/RPC traffic on **TCP 2012** from hosts that should not communicate with vCenter. - Monitor for new sessions logged as `administrator@vsphere.local` originating from unexpected source IPs. - Review vCenter audit logs for sudden creation or modification of VMs, host configurations, or user accounts. ### Potential Business Impact - Compromise of vCenter grants attackers control over the entire virtual environment, enabling data exfiltration, ransomware deployment, or persistent footholds within the data center. - Because vCenter is often a privileged management plane, breach can cascade to downstream services and on‑prem/cloud workloads.",
       "sources": [
         {
           "title": "CrowdStrike 2026 Technology Threat Landscape Report: China&rsquo;s Ambitions Fuel Attacks",
@@ -7713,6 +7770,11 @@
           "source": "The Hacker News"
         },
         {
+          "title": "The risks of device code authentication for AI coding agents",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/11/17/the-risks-of-device-code-authentication-for-ai-coding-agents/",
+          "source": "Microsoft Security Blog"
+        },
+        {
           "title": "Trigram Campaign Impersonates About 50 AI and Blockchain Brands to Target Devs with Infostealers",
           "url": "https://thehackernews.com/2026/11/trigram-campaign-impersonates-about-50.html",
           "source": "The Hacker News"
@@ -7736,6 +7798,11 @@
           "title": "New EggStreme Malware Variant Goes Silent to Evade Security Tools in Government Attacks",
           "url": "https://thehackernews.com/2026/11/eggstreme-hackers-rebuild-malware-with.html",
           "source": "The Hacker News"
+        },
+        {
+          "title": "October 2026 Threat Trend Report on APT Attacks (South Korea)",
+          "url": "https://asec.ahnlab.com/en/96684/",
+          "source": "AhnLab ASEC"
         },
         {
           "title": "Ukraine, FBI arrest ransomware gang members tied to $40M in ransoms",
@@ -7766,6 +7833,46 @@
           "title": "Spying on Governments with Zero Lines of Malware: A Custom SoftEther Bridge in Webworm’s Toolkit",
           "url": "https://www.rapid7.com/blog/post/tr-spying-on-governments-no-malware-custom-webworms-toolkit-softether-bridge",
           "source": "Rapid7 Blog"
+        },
+        {
+          "title": "Critical VMware vCenter Zero-Day Flaw Lets Network Attackers Bypass Authentication",
+          "url": "https://thehackernews.com/2026/11/critical-vmware-vcenter-flaw-cvss-98.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "ThreatsDay: GPT-6.2 Jailbreak Flaws, BubbleLoader PNG Malware, $500M Ransom Demands + 17 More Stories",
+          "url": "https://thehackernews.com/2026/11/threatsday-gpt-62-jailbreak-flaws.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "VMware patches vCenter zero-day exploited in attacks since September",
+          "url": "https://www.bleepingcomputer.com/news/security/vmware-patches-vcenter-zero-day-exploited-in-attacks-since-september/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "ROMULUS ClickFix Attacks Deliver RAT That Can Spy on Users and Control PCs",
+          "url": "https://thehackernews.com/2026/11/romulus-clickfix-attacks-deliver-rat.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "China-Linked Hackers Exploit Critical VMware vCenter Zero-Day to Gain Admin Access and Steal Data",
+          "url": "https://thehackernews.com/2026/11/china-linked-hackers-exploit-critical.html",
+          "source": "The Hacker News"
+        },
+        {
+          "title": "Metasploit Wrap Up: Breaking Zimbra's Identity Boundaries",
+          "url": "https://www.rapid7.com/blog/post/pt-metasploit-wrap-up-breaking-zimbra-s-identity-boundaries",
+          "source": "Rapid7 Blog"
+        },
+        {
+          "title": "F5 releases emergency patches for critical BIG-IP RCE flaws",
+          "url": "https://www.bleepingcomputer.com/news/security/f5-releases-emergency-patches-for-critical-big-ip-rce-flaws/",
+          "source": "BleepingComputer"
+        },
+        {
+          "title": "CVE-2026-123890: vCenter Zero-Day Exploited by Armory Castle",
+          "url": "https://socradar.io/blog/cve-2026-123890-vcenter-0day-armory-castle/",
+          "source": "SOCRadar"
         }
       ]
     },
@@ -26530,88 +26637,6 @@
           "title": "When checking the URL isn’t enough: a Device Code Phishing attack via a Microsoft website",
           "url": "https://securelist.com/microsoft-device-code-phishing-attack/120350/",
           "source": "Securelist (Kaspersky)"
-        }
-      ]
-    },
-    {
-      "slug": "popa-botnet-linked-to-netnut",
-      "name": "Popa Botnet",
-      "category": "malware",
-      "severity": "critical",
-      "confidence": 0.95,
-      "faithfulness": 0.8,
-      "source_count": 4,
-      "ioc_count": 9,
-      "cves": [],
-      "malware_families": [
-        "Popa",
-        "Vo1d",
-        "Badbox 2.0",
-        "NetNut"
-      ],
-      "threat_actors": [],
-      "ttps": [
-        {
-          "id": "T1486",
-          "name": "Data Encrypted for Impact",
-          "tactic": "impact"
-        },
-        {
-          "id": "T1059.001",
-          "name": "PowerShell",
-          "tactic": "execution"
-        }
-      ],
-      "iocs": {
-        "domain": [
-          "gmslb.net",
-          "safernetwork.io",
-          "tera-home.com",
-          "ninjatech.io",
-          "netnut.com"
-        ],
-        "url": [
-          "http://gmslb.net",
-          "http://safernetwork.io",
-          "http://tera-home.com",
-          "http://ninjatech.io"
-        ]
-      },
-      "affected_products": [
-        "Android-based TV boxes",
-        "smart TVs",
-        "streaming boxes"
-      ],
-      "recommendations": [
-        "Disable Google accounts and services used by NetNut for malware command and control",
-        "Disable apps known to bundle NetNut's various SDKs",
-        "Use Google Play Protect to automatically warn users and disable infected applications",
-        "Share technical details on NetNut's software development kits (SDKs) and backend command-and-control (C2) infrastructure with platform providers, law enforcement agencies, and cybersecurity researchers"
-      ],
-      "first_seen": "2026-06-18T20:45:01.607230+00:00",
-      "last_updated": "2026-07-06T16:00:39.655715+00:00",
-      "summary": "The Popa botnet is a massive Android-based botnet that has compromised at least 2 million devices, including smart TVs and streaming boxes. It is linked to the publicly-traded Israeli firm Alarum Technologies Ltd and is used for advertising fraud, account takeovers, and mass data-scraping efforts. The botnet has been disrupted by a joint operation involving Google, the FBI, and other industry partners.",
-      "analysis": "The Popa botnet is a unique threat that is unlike traditional botnets. It is designed to implement a persistent communications layer capable of registering a device, maintaining long-lived encrypted connections, and opening communication tunnels on demand. The botnet is associated with the Vo1d botnet, which targets unofficial Android-based TV boxes. These devices are often sold online with malicious software pre-installed or bundled with pirated or modded video content streaming apps. The botnet uses a residential proxy network to relay Internet traffic, allowing cybercriminals and espionage groups to hide behind legitimate home internet addresses when launching attacks. The botnet has a robust reseller program that allows whitelabeling of its network, making it a popular choice among threat actors.",
-      "sources": [
-        {
-          "title": "‘Popa’ Botnet Linked to Publicly-Traded Israeli Firm",
-          "url": "https://krebsonsecurity.com/2026/06/popa-botnet-linked-to-publicly-traded-israeli-firm/",
-          "source": "Krebs on Security"
-        },
-        {
-          "title": "FBI Seizes NetNut Proxy Platform, Popa Botnet",
-          "url": "https://krebsonsecurity.com/2026/07/fbi-seizes-netnut-proxy-platform-popa-botnet/",
-          "source": "Krebs on Security"
-        },
-        {
-          "title": "NetNut proxy network disrupted, 2 million infected devices cut off",
-          "url": "https://www.bleepingcomputer.com/news/security/netnut-proxy-network-disrupted-2-million-infected-devices-cut-off/",
-          "source": "BleepingComputer"
-        },
-        {
-          "title": "NetNut botnet takes a hit. Don’t be part of the next one.",
-          "url": "https://www.malwarebytes.com/blog/news/2026/07/netnut-botnet-takes-a-hit-dont-be-part-of-the-next-one",
-          "source": "Malwarebytes Labs"
         }
       ]
     },

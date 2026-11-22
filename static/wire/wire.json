@@ -1,7 +1,91 @@
 {
-  "generated_at": "2026-11-21T17:01:58.724714+00:00",
-  "count": 354,
+  "generated_at": "2026-11-22T16:58:59.449116+00:00",
+  "count": 355,
   "reports": [
+    {
+      "slug": "sonicwall-gen6-firewall-exploitation-risk",
+      "name": "SonicWall Generation 6 Firewall Unsupported Vulnerability",
+      "category": "vulnerability",
+      "severity": "high",
+      "confidence": 0.95,
+      "faithfulness": 0.95,
+      "source_count": 1,
+      "ioc_count": 0,
+      "cves": [],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1595",
+          "name": "Active Scanning",
+          "tactic": "reconnaissance"
+        },
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "tactic": "initial access"
+        }
+      ],
+      "iocs": {},
+      "affected_products": [
+        "TZ350",
+        "TZ350W",
+        "TZ500",
+        "TZ500W",
+        "SOHO 250",
+        "SOHO 250W",
+        "NSA 4600",
+        "NSA 5600",
+        "NSA 6600",
+        "NSa 4650",
+        "NSa 5650",
+        "NSa 6650",
+        "TZ400",
+        "TZ400W",
+        "TZ600",
+        "TZ600P",
+        "NSA 3600",
+        "NSa 3650",
+        "NSa 2650",
+        "SOHO",
+        "SOHO W",
+        "TZ300P",
+        "NSa 9250",
+        "NSa 9450",
+        "NSa 9650",
+        "NSv 10‑NSv 1600 (Gen 6 virtual)",
+        "SuperMassive 9200",
+        "SuperMassive 9400",
+        "SuperMassive 9600",
+        "SuperMassive 9800",
+        "NSsp 12800",
+        "NSsp 12400",
+        "TZ300",
+        "TZ300W",
+        "NSA 2600"
+      ],
+      "recommendations": [
+        "Perform a comprehensive inventory of all SonicWall Generation 6 firewalls across the environment.",
+        "Immediately isolate any Gen 6 device that is exposed to the Internet or provides remote access.",
+        "Retire and replace all Gen 6 firewalls with a supported Generation 8 appliance running SonicOS 8.",
+        "Engage an authorized SonicWall partner to plan and execute the migration with minimal downtime.",
+        "Implement continuous external scanning to detect any remaining unsupported edge devices.",
+        "Apply network segmentation to limit the blast radius if a firewall is compromised.",
+        "Monitor for anomalous traffic patterns indicative of firewall exploitation (e.g., unexpected outbound connections from the firewall management interface).",
+        "Update incident response playbooks to include scenarios involving compromised perimeter security appliances."
+      ],
+      "first_seen": "2026-11-22T16:56:02.449284+00:00",
+      "last_updated": "2026-11-22T16:56:02.449299+00:00",
+      "summary": "SonicWall Generation 6 firewalls are no longer receiving security patches, including for critical flaws, making them a prime target for AI‑assisted, automated attacks. Threat actors are actively scanning the Internet for these unsupported edge devices and exploiting vulnerabilities before patches are ever released. Organizations should treat any internet‑exposed Gen 6 device as a high‑risk exposure and replace it immediately with a supported Generation 8 appliance.",
+      "analysis": "### Overview SonicWall has announced that all Generation 6 firewalls (SonicOS 6.x) will **not** receive further security updates, even for critical vulnerabilities. The product line includes a wide range of physical and virtual appliances (e.g., TZ350, NSA 5600, NSa 6650, SuperMassive series, etc.). Because these devices sit at the network perimeter, compromise grants attackers deep visibility and control over inbound and outbound traffic. ### Threat Landscape Recent industry reports highlight a dramatic shift in how quickly vulnerabilities are weaponized: - **Google Mandiant M‑Trends (Mar 2026)** reports a *negative* mean time to exploit (‑7 days), meaning exploitation often begins **before** a patch exists. - **Cisco Talos 2025 Year in Review** found that 23 % of disclosed CVEs directly affect network infrastructure such as firewalls and VPN appliances. - **CISA KEV catalog** confirms that threat actors preferentially target internet‑facing edge devices because they are frequently unpatched and provide direct operational leverage. ### Attack Methodology Threat actors are leveraging **automation and AI** to: 1. **Discover** internet‑exposed Gen 6 firewalls via mass scanning (ATT&CK T1595 – Active Scanning). 2. **Analyze** publicly disclosed vulnerability information and develop exploits faster than vendors can issue patches. 3. **Exploit** the vulnerable services on the firewall (ATT&CK T1190 – Exploit Public‑Facing Application) to gain initial foothold, potentially allowing lateral movement and data exfiltration. The convergence of rapid exploit development and the lack of vendor remediation creates a **high‑risk exposure** for any organization that continues to run these devices. ### Impact Compromise of a firewall can lead to: - Full control over network traffic inspection and routing. - Ability to bypass security controls, inject malicious traffic, or create persistent backdoors. - Potential pivoting into internal systems, escalating the breach. ### Mitigation Gap Because SonicWall will not issue patches, traditional vulnerability‑management approaches (patching) are ineffective. Organizations must rely on **asset retirement, replacement, and network segmentation** to mitigate the risk.",
+      "sources": [
+        {
+          "title": "SonicWall Warns Gen 6 Firewalls Won't Get Security Patches, Even for Critical Flaws",
+          "url": "https://thehackernews.com/2026/11/sonicwall-warns-gen-6-firewalls-wont.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
     {
       "slug": "agent-framework-pypi-credential-stealer",
       "name": "Microsoft Agent Framework PyPI supply‑chain compromise",

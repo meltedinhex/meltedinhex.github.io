@@ -1,7 +1,53 @@
 {
-  "generated_at": "2026-11-22T16:58:59.449116+00:00",
-  "count": 355,
+  "generated_at": "2026-11-23T21:18:16.791767+00:00",
+  "count": 356,
   "reports": [
+    {
+      "slug": "idunno-anticsrf-rce-exploit",
+      "name": "Idunno.AntiCsrf Remote Code Execution Vulnerability (CVE-2026-131914)",
+      "category": "vulnerability",
+      "severity": "high",
+      "confidence": 0.9,
+      "faithfulness": 0.85,
+      "source_count": 1,
+      "ioc_count": 0,
+      "cves": [
+        "CVE-2026-131914"
+      ],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "tactic": "initial access"
+        }
+      ],
+      "iocs": {},
+      "affected_products": [
+        "Idunno.AntiCsrf.dll (versions 0.9.1.0, 0.9.1 Beta)",
+        "ASP.NET WebForms applications",
+        "IIS (w3wp.exe) hosting vulnerable sites"
+      ],
+      "recommendations": [
+        "Remove Idunno.AntiCsrf from all codebases and replace with a supported anti‑CSRF solution.",
+        "Audit Web.config and bin directories for any reference to Idunno.AntiCsrf or AntiCsrfModule.",
+        "Review IIS access logs for suspicious POST requests to .aspx pages returning 302/500 status codes with abnormal payload sizes.",
+        "Rotate all cryptographic keys and credentials stored in Web.config and applicationHost.config for potentially compromised servers.",
+        "Implement defense‑in‑depth: enable request validation, enforce TLS, and apply web‑application firewalls that can detect anomalous POST bodies."
+      ],
+      "first_seen": "2026-11-23T20:53:41.259804+00:00",
+      "last_updated": "2026-11-23T20:53:41.259817+00:00",
+      "summary": "A critical insecure‑deserialization flaw (CVE‑2026‑131914) in the legacy Idunno.AntiCsrf ASP.NET anti‑CSRF library enables unauthenticated remote code execution via a single crafted HTTP POST request. Active exploitation has been observed in the wild, compromising IIS worker processes (w3wp.exe) that host vulnerable WebForms applications. No official patch exists; organizations are urged to retire the library and adopt supported anti‑CSRF mechanisms.",
+      "analysis": "### Vulnerability Overview - **Component**: Idunno.AntiCsrf.dll (ASP.NET IHttpModule) – versions 0.9.1.0 and 0.9.1 Beta. - **CVE**: CVE‑2026‑131914, CVSS 9.3 (Critical). - **Root Cause**: The module deserializes untrusted CSRF token data using the .NET `System.Web.UI.ObjectStateFormatter` without any cryptographic MAC or signature verification. This insecure deserialization permits an attacker to embed a malicious gadget chain in the CSRF form field. ### Exploitation Mechanics 1. **Delivery**: A single HTTP POST to any ASP.NET WebForms (`.aspx`) endpoint that loads the `AntiCsrfModule`. 2. **Payload**: The attacker supplies a non‑empty CSRF cookie and a Base64‑encoded `ObjectStateFormatter` gadget chain in the CSRF form field. 3. **Effect**: The deserialization occurs in the context of the IIS worker process (`w3wp.exe`), resulting in arbitrary code execution and full compromise of the web server. 4. **Authentication**: No prior authentication or valid CSRF token is required. ### Real‑World Activity Google’s Mandiant division reports **active exploitation in the wild**, confirming that threat actors are already leveraging this flaw against vulnerable deployments. No further details on the actors or payloads were disclosed. ### Impacted Environments - ASP.NET WebForms applications that reference `Idunno.AntiCsrf` in `Web.config` or the application’s `bin/` directory. - Servers running IIS with the vulnerable module loaded (typically `w3wp.exe`). - Any system that processes POST requests to `.aspx` pages while the module is active. ### Mitigation & Defense - **Immediate Removal**: Stop using Idunno.AntiCsrf. Replace it with supported alternatives such as `System.Web.Helpers.AntiForgery`, `ASP.NET WebForms Page.ViewStateUserKey` with MAC‑verified ViewState, or the ASP.NET Core `IAntiforgery` implementation. - **Configuration Audit**: Search all `Web.config` files and application `bin/` directories for references to `Idunno.AntiCsrf` or `AntiCsrfModule`. - **Log Review**: Examine IIS logs for anomalous POST requests to `.aspx` endpoints that return HTTP 302 or HTTP 500 responses and contain unusually large `cs‑bytes` values. - **Credential Rotation**: For any environment where exploitation is suspected, rotate all secrets stored in `Web.config` and `applicationHost.config` (e.g., `<machineKey>` values, encryption keys, database credentials). - **Patch Strategy**: Until an official fix is released, the only reliable remediation is to remove the vulnerable library entirely.",
+      "sources": [
+        {
+          "title": "Hackers Exploit Critical ASP.NET Anti-CSRF Library Flaw Allowing Unauthenticated RCE",
+          "url": "https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html",
+          "source": "The Hacker News"
+        }
+      ]
+    },
     {
       "slug": "sonicwall-gen6-firewall-exploitation-risk",
       "name": "SonicWall Generation 6 Firewall Unsupported Vulnerability",

@@ -1,0 +1,3737 @@
+{
+  "name": "Extension ATT&CK",
+  "version": "1.1",
+  "generated": "2026-11-24",
+  "tactics": [
+    {
+      "id": "EXT-TA-01",
+      "name": "Initial Access",
+      "prefix": "INITACC",
+      "attack_shortname": "initial-access",
+      "order": 1,
+      "description": "How the extension first lands in the browser \u2014 store publication, sideload/dev-mode, forked clone, ownership-transfer update, or enterprise-policy force-install.\n"
+    },
+    {
+      "id": "EXT-TA-02",
+      "name": "Execution",
+      "prefix": "EXEC",
+      "attack_shortname": "execution",
+      "order": 2,
+      "description": "Running attacker-controlled logic inside the extension context, content scripts, offscreen documents, or the page's main world.\n"
+    },
+    {
+      "id": "EXT-TA-03",
+      "name": "Persistence",
+      "prefix": "PERS",
+      "attack_shortname": "persistence",
+      "order": 3,
+      "description": "Maintaining a foothold across sessions and updates \u2014 auto-update channels, service-worker re-registration, policy force-install, native-messaging hosts.\n"
+    },
+    {
+      "id": "EXT-TA-04",
+      "name": "Privilege/Scope Escalation",
+      "prefix": "PRIVESC",
+      "attack_shortname": "privilege-escalation",
+      "order": 4,
+      "description": "Gaining broader reach than needed \u2014 permission widening on update, broad host permissions, or exposing extension resources to the web.\n"
+    },
+    {
+      "id": "EXT-TA-05",
+      "name": "Defense Evasion",
+      "prefix": "DEFEV",
+      "attack_shortname": "defense-evasion",
+      "order": 5,
+      "description": "Avoiding review and detection \u2014 obfuscation/packing, geofenced/time-bombed activation, server-gated payloads, DNR-based traffic hiding, disabling peers.\n"
+    },
+    {
+      "id": "EXT-TA-06",
+      "name": "Credential Access",
+      "prefix": "CRED",
+      "attack_shortname": "credential-access",
+      "order": 6,
+      "description": "Stealing authentication material \u2014 cookies/sessions, authed-page DOM, form and keystroke capture, token observation.\n"
+    },
+    {
+      "id": "EXT-TA-07",
+      "name": "Collection",
+      "prefix": "COLL",
+      "attack_shortname": "collection",
+      "order": 7,
+      "description": "Gathering user data \u2014 browsing history, page content, screenshots and tab capture.\n"
+    },
+    {
+      "id": "EXT-TA-08",
+      "name": "Command & Control",
+      "prefix": "C2",
+      "attack_shortname": "command-and-control",
+      "order": 8,
+      "description": "Receiving instructions/config \u2014 remote config services, WebSocket C2, DNR redirection, policy-delivered managed storage.\n"
+    },
+    {
+      "id": "EXT-TA-09",
+      "name": "Exfiltration",
+      "prefix": "EXFIL",
+      "attack_shortname": "exfiltration",
+      "order": 9,
+      "description": "Moving stolen data off-device \u2014 fetch/sendBeacon to C2, DNS exfiltration, image beacons.\n"
+    },
+    {
+      "id": "EXT-TA-10",
+      "name": "Impact",
+      "prefix": "IMPACT",
+      "attack_shortname": "impact",
+      "order": 10,
+      "description": "Monetization and user harm \u2014 search/new-tab hijack, affiliate/cookie-stuffing, ad injection, residential-proxy node.\n"
+    }
+  ],
+  "techniques": [
+    {
+      "id": "EXT-C2-001",
+      "name": "Remote Config via Public Services",
+      "tactic": "Command & Control",
+      "status": "active",
+      "description": "The extension pulls operator instructions or feature flags from benign-looking public services (Google Sheets, pastebin, gists, GitHub Pages, DNS TXT records), blending C2 into normal-looking traffic.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch",
+        "dns.resolve"
+      ],
+      "detection_ideas": [
+        "Network: periodic fetches to gist/pastebin/sheets/raw hosts or anomalous DNS TXT lookups from the browser."
+      ],
+      "related": [
+        "EXT-C2-006",
+        "EXT-DEFEV-003",
+        "EXT-EXEC-003",
+        "EXT-EXEC-006",
+        "EXT-EXFIL-002",
+        "EXT-EXFIL-007",
+        "EXT-PRIVESC-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1102"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "The StegoAd campaign (119 extensions, up to 2.6M installs) ran 10+ C2 domains with automatic failover and abused trusted public infrastructure \u2014 Cloudflare Workers for proxying and GitHub Pages for hosting telemetry beacons and reCAPTCHA gates \u2014 so command/telemetry traffic blended into normal-looking requests."
+        },
+        {
+          "title": "737 Chrome VPN Extensions Linked to Brand Impersonation and Browser Traffic Redirection",
+          "url": "https://socket.dev/blog/chrome-vpn-extension-impersonation",
+          "publisher": "Socket Threat Research (Kush Pandya)",
+          "date": "2026-08-11",
+          "attribution": "66 extensions in this VPN-impersonation campaign issued a HEAD request with redirect:'manual', read the 3xx Location header themselves to discover whichever operator domain was currently live, then fetched /config/links.json from it \u2014 relocating C2 for already-installed copies without shipping an update."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+        "https://socket.dev/blog/chrome-vpn-extension-impersonation"
+      ]
+    },
+    {
+      "id": "EXT-C2-002",
+      "name": "WebSocket C2 from Service Worker",
+      "tactic": "Command & Control",
+      "status": "active",
+      "description": "A persistent WebSocket connection from the extension service worker provides a live command channel to operator infrastructure.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "WebSocket"
+      ],
+      "manifest_fingerprint": [
+        "new WebSocket(",
+        "service_worker"
+      ],
+      "detection_ideas": [
+        "Network: persistent WebSocket upgrade from browser to a non-CDN host."
+      ],
+      "related": [
+        "EXT-EXFIL-001",
+        "EXT-EXFIL-005",
+        "EXT-EXFIL-008",
+        "EXT-IMPACT-004",
+        "EXT-INITACC-008"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Mellow Drama: Turning Browsers Into Request Brokers",
+          "url": "https://secureannex.com/blog/mellow-drama",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-07-07",
+          "attribution": "Extensions bundling the Mellowtel library open a WebSocket channel from the service worker to an AWS Lambda endpoint, send device info and heartbeats, then receive target URLs to fetch \u2014 a live operator-controlled command channel over WebSocket."
+        },
+        {
+          "title": "DePIN comes to browser extensions",
+          "url": "https://secureannex.com/blog/depin-browser-extensions",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-09-01",
+          "attribution": "DePIN 'bandwidth-sharing' extensions (Grass/Wynd Labs, Nodepay, Gradient, DAWN) create a WebSocket connection from the background service worker back to a server and wait for instructions (URLs to request), returning the scraped data over the same channel."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/mellow-drama",
+        "https://secureannex.com/blog/depin-browser-extensions"
+      ]
+    },
+    {
+      "id": "EXT-C2-003",
+      "name": "DNR-Based Redirection Channel",
+      "tactic": "Command & Control",
+      "status": "proposed",
+      "description": "Declarative Net Request redirect rules reroute requests to operator-controlled endpoints, using the browser's own rule engine as a covert channel.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "safari"
+      ],
+      "apis": [
+        "declarativeNetRequest"
+      ],
+      "permissions": [
+        "declarativeNetRequest"
+      ],
+      "manifest_fingerprint": [
+        "declarative_net_request",
+        "redirect",
+        "regexSubstitution"
+      ],
+      "detection_ideas": [
+        "Inventory: redirect rules sending traffic to attacker hosts."
+      ],
+      "related": [
+        "EXT-DEFEV-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-C2-004",
+      "name": "Managed-Storage Config Delivery",
+      "tactic": "Command & Control",
+      "status": "proposed",
+      "description": "The operator (or an abused enterprise-policy path) delivers runtime configuration through managed storage (storage.managed / 3rdparty Extensions policy), controlling the extension without network C2.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "storage.managed"
+      ],
+      "manifest_fingerprint": [
+        "storage",
+        "chrome.storage.managed"
+      ],
+      "detection_ideas": [
+        "Policy monitoring: changes to 3rdparty>Extensions / Managed Extension Settings delivering instructions."
+      ],
+      "related": [
+        "EXT-EXEC-003",
+        "EXT-INITACC-005",
+        "EXT-PERS-005"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-C2-005",
+      "name": "Push-Notification (Web Push) C2",
+      "tactic": "Command & Control",
+      "status": "active",
+      "description": "The extension subscribes to Web Push from an operator domain and treats incoming push messages as the command channel, letting the operator selectively trigger behavior (per-victim, per-region, or on-demand) without polling.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "PushManager.subscribe",
+        "pushManager",
+        "alarms.onAlarm"
+      ],
+      "permissions": [
+        "notifications"
+      ],
+      "manifest_fingerprint": [
+        "pushManager",
+        "applicationServerKey",
+        "/subscribe",
+        "onAlarm"
+      ],
+      "detection_ideas": [
+        "Inventory: extension registering Web Push against a non-mainstream domain; behavior gated on push payload values.",
+        "Network: push-subscription POST to an attacker /subscribe endpoint."
+      ],
+      "related": [
+        "EXT-DEFEV-002",
+        "EXT-IMPACT-005"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Promise Bomb crashes browsers to install malware",
+          "url": "https://secureannex.com/blog/promise-bomb",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2026-02-23",
+          "attribution": "CrashFix variants (Pixel Shield, PageGuard) subscribe to Web Push from pixel-defence[.]com / page-guard[.]com; the destructive payload fires only when the C2 pushes a 'newVersion' value ending in '2', giving the operator selective per-victim remote control."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/promise-bomb"
+      ]
+    },
+    {
+      "id": "EXT-C2-006",
+      "name": "Blockchain / Dead-Drop Resolver C2",
+      "tactic": "Command & Control",
+      "status": "proposed",
+      "description": "The extension resolves its live C2 endpoint or payload from a resilient public source \u2014 a blockchain smart contract/transaction, or a dead drop in a social-media profile, gist, or pastebin \u2014 making takedown and blocklisting difficult.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch"
+      ],
+      "manifest_fingerprint": [
+        "eth_call",
+        "smart contract",
+        "api.github.com/gists",
+        "pastebin"
+      ],
+      "detection_ideas": [
+        "Network: extension querying blockchain RPC or public profile pages to derive a subsequent C2 host (dead-drop resolver pattern)."
+      ],
+      "related": [
+        "EXT-C2-001",
+        "EXT-DEFEV-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1102.001",
+        "T1568.002"
+      ]
+    },
+    {
+      "id": "EXT-COLL-001",
+      "name": "Browsing-History Capture",
+      "tactic": "Collection",
+      "status": "active",
+      "description": "The extension reads the user's browsing history via the history API and transmits it off-device, profiling the user's activity.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "history.search",
+        "history.getVisits"
+      ],
+      "permissions": [
+        "history"
+      ],
+      "manifest_fingerprint": [
+        "history",
+        "history.search",
+        "history.getVisits"
+      ],
+      "store_policy_violations": {
+        "cws": "Privacy: Limited Use",
+        "amo": "\u00a76 Data Collection",
+        "edge": "\u00a71.5 Personal information"
+      },
+      "detection_ideas": [
+        "Behavioral: history read followed by egress to a host not previously seen and not on the store/update allowlist."
+      ],
+      "related": [
+        "EXT-COLL-007",
+        "EXT-EXFIL-001",
+        "EXT-EXFIL-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Another cluster of potentially malicious Chrome extensions",
+          "url": "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+          "publisher": "Wladimir Palant (Almost Secure)",
+          "date": "2023-06-08",
+          "attribution": "The 'Adblock all advertisments' extension used a tabs.onUpdated listener to POST every address the user navigated to, along with a unique user ID, to a remote server disguised as a rule update."
+        }
+      ],
+      "references": [
+        "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/"
+      ]
+    },
+    {
+      "id": "EXT-COLL-002",
+      "name": "Page-Content Scraping",
+      "tactic": "Collection",
+      "status": "active",
+      "description": "Content scripts or an offscreen DOM scrape harvest page content across sites \u2014 message bodies, documents, financial data \u2014 and send it to an operator.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "scripting.executeScript",
+        "offscreen.createDocument"
+      ],
+      "permissions": [
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "content_scripts",
+        "DOM_SCRAPING",
+        "innerText",
+        "documentElement"
+      ],
+      "store_policy_violations": {
+        "cws": "Limited Use; Use of Permissions",
+        "amo": "\u00a76 Data Collection",
+        "edge": "\u00a71.5 Personal information"
+      },
+      "detection_ideas": [
+        "Behavioral: broad content-script scraping + periodic egress/beaconing."
+      ],
+      "related": [
+        "EXT-COLL-005",
+        "EXT-CRED-002",
+        "EXT-EXEC-004",
+        "EXT-EXFIL-001",
+        "EXT-INITACC-008",
+        "EXT-PRIVESC-002"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Sclpfybn Monetization Scheme",
+          "url": "https://secureannex.com/blog/sclpfybn-moneitization-scheme",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-01-03",
+          "attribution": "A tracking library embedded in extensions such as 'Reader Mode' ran in FULL_NAVIGATION mode, capturing visited URLs, headers, URL parameters and response codes across sensitive sites (Bank of America, American Express, Zoom, 23andMe) and exfiltrating them (LZString-compressed) to third-party domains."
+        },
+        {
+          "title": "Cyberhaven Extension Compromise",
+          "url": "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2024-12-27",
+          "attribution": "The malicious update injected a content script on <all_urls> at document_start that collected data from each page and messaged it to the background worker for exfiltration."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/sclpfybn-moneitization-scheme",
+        "https://secureannex.com/blog/cyberhaven-extension-compromise/"
+      ]
+    },
+    {
+      "id": "EXT-COLL-003",
+      "name": "Screenshot / Tab Capture",
+      "tactic": "Collection",
+      "status": "active",
+      "description": "The extension captures tab or screen content (captureVisibleTab, tabCapture, desktopCapture / getDisplayMedia) to collect what the user is viewing.\n",
+      "platforms": [
+        "chrome",
+        "edge"
+      ],
+      "apis": [
+        "tabs.captureVisibleTab",
+        "tabCapture.capture",
+        "desktopCapture.chooseDesktopMedia"
+      ],
+      "permissions": [
+        "tabCapture",
+        "desktopCapture",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "captureVisibleTab",
+        "getDisplayMedia",
+        "desktopCapture"
+      ],
+      "detection_ideas": [
+        "Inventory: capture APIs + egress; cadence of captured frames."
+      ],
+      "related": [
+        "EXT-COLL-008",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1113"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Kimsuky deploys TRANSLATEXT to target South Korean academia",
+          "url": "https://www.zscaler.com/blogs/security-research/kimsuky-deploys-translatext-target-south-korean-academia",
+          "publisher": "Zscaler ThreatLabz (Park)",
+          "date": "2024-06-27",
+          "attribution": "TRANSLATEXT captures browser screenshots (plus credentials/cookies) and exfiltrates them; cited by MITRE ATT&CK T1176.001 (S1201)."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-COLL-004",
+      "name": "Proxy-Based Full-Traffic Interception (AitM)",
+      "tactic": "Collection",
+      "status": "active",
+      "description": "The extension points the browser proxy at an attacker-controlled server (e.g. a fixed SOCKS5 node with a loopback-only bypass list), placing the operator in an adversary-in-the-middle position over every request the browser makes.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "scope_note": "Distinct from EXT-IMPACT-004 (reselling the host as a proxy exit node): here the victim's own traffic is routed through attacker infrastructure so it can be read.\n",
+      "apis": [
+        "proxy.settings.set"
+      ],
+      "permissions": [
+        "proxy"
+      ],
+      "manifest_fingerprint": [
+        "proxy",
+        "fixed_servers",
+        "socks5",
+        "1082",
+        "bypassList"
+      ],
+      "store_policy_violations": {
+        "cws": "Deceptive Behavior; Limited Use / Data Policy",
+        "amo": "\u00a77 Monetization; Data disclosure",
+        "edge": "\u00a72.8 Prohibited"
+      },
+      "detection_ideas": [
+        "Inventory: proxy permission + chrome.proxy.settings.set to a fixed non-corporate host; alert on proxy config changes.",
+        "Network: browser traffic egressing to a single relay IP/SOCKS port across all destinations."
+      ],
+      "related": [
+        "EXT-CRED-001",
+        "EXT-CRED-004",
+        "EXT-IMPACT-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1557"
+      ],
+      "real_world_examples": [
+        {
+          "title": "737 Chrome VPN Extensions Linked to Brand Impersonation and Browser Traffic Redirection",
+          "url": "https://socket.dev/blog/chrome-vpn-extension-impersonation",
+          "publisher": "Socket Threat Research (Kush Pandya)",
+          "date": "2026-08-11",
+          "attribution": "520 of 522 analyzed VPN extensions set chrome.proxy.settings to a fixed SOCKS5 server on port 1082 with a loopback-only bypass list, forcing every browser request through the operator's node \u2014 positioned to read every destination, TLS SNI, source IP and any plaintext request body."
+        }
+      ],
+      "references": [
+        "https://socket.dev/blog/chrome-vpn-extension-impersonation"
+      ]
+    },
+    {
+      "id": "EXT-COLL-005",
+      "name": "AI Prompt / Chat Harvesting",
+      "tactic": "Collection",
+      "status": "active",
+      "description": "A content script hooks the page's native fetch / XMLHttpRequest (or scrapes the DOM) to capture the user's conversations with AI tools (ChatGPT, Claude, Gemini, Perplexity) \u2014 prompts and responses \u2014 and exfiltrates them, often driven by remote config.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "fetch",
+        "XMLHttpRequest"
+      ],
+      "permissions": [
+        "scripting",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "window.fetch =",
+        "event-stream",
+        "getReader",
+        "chatgpt.com",
+        "claude.ai"
+      ],
+      "store_policy_violations": {
+        "cws": "Limited Use; Single Purpose; no remotely hosted code",
+        "amo": "\u00a71 No Surprises; Data disclosure",
+        "edge": "\u00a72.8 Prohibited"
+      },
+      "detection_ideas": [
+        "Static: content script at document_start reassigning window.fetch / XMLHttpRequest and reading response streams on AI-tool origins.",
+        "Network: AI-chat content posted to an analytics/marketing host; remote config fetch driving capture targets."
+      ],
+      "related": [
+        "EXT-COLL-002",
+        "EXT-EXEC-003",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1119"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Prompt poaching runs rampant in extensions",
+          "url": "https://secureannex.com/blog/prompt-poaching",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-12-29",
+          "attribution": "The Similarweb extension (1M+ users) hooks native fetch/XHR at document_start and, driven by remote config from rank.similarweb.com, intercepts streaming conversations from ChatGPT and Claude (fetch interception) and Gemini/Perplexity (DOM scraping), reconstructing full prompts and responses for exfiltration."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/prompt-poaching"
+      ]
+    },
+    {
+      "id": "EXT-COLL-006",
+      "name": "Clipboard Capture",
+      "tactic": "Collection",
+      "status": "proposed",
+      "description": "The extension reads clipboard contents (clipboardRead permission, or the async Clipboard API in an injected context) to harvest copied passwords, crypto addresses, OTP codes, or other sensitive data.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "navigator.clipboard.readText",
+        "document.execCommand"
+      ],
+      "permissions": [
+        "clipboardRead"
+      ],
+      "manifest_fingerprint": [
+        "clipboardRead",
+        "clipboard.readText",
+        "paste"
+      ],
+      "detection_ideas": [
+        "Inventory: clipboardRead permission; behavioral clipboard polling without a user paste action."
+      ],
+      "related": [
+        "EXT-CRED-005",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1115"
+      ]
+    },
+    {
+      "id": "EXT-COLL-007",
+      "name": "Geolocation Tracking",
+      "tactic": "Collection",
+      "status": "proposed",
+      "description": "The extension collects precise or coarse location via the geolocation API or IP geolocation lookups to profile or target the user.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "geolocation.getCurrentPosition",
+        "fetch"
+      ],
+      "permissions": [
+        "geolocation"
+      ],
+      "manifest_fingerprint": [
+        "geolocation",
+        "getCurrentPosition",
+        "watchPosition"
+      ],
+      "detection_ideas": [
+        "Inventory: geolocation permission or repeated IP-geo lookups paired with egress."
+      ],
+      "related": [
+        "EXT-COLL-001",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-COLL-008",
+      "name": "Audio / Microphone Capture",
+      "tactic": "Collection",
+      "status": "proposed",
+      "description": "The extension captures microphone audio or a tab's audio stream (getUserMedia / tabCapture audio) to record the user or meeting content.\n",
+      "platforms": [
+        "chrome",
+        "edge"
+      ],
+      "apis": [
+        "getUserMedia",
+        "tabCapture.capture"
+      ],
+      "permissions": [
+        "tabCapture"
+      ],
+      "manifest_fingerprint": [
+        "getUserMedia",
+        "audio",
+        "tabCapture"
+      ],
+      "detection_ideas": [
+        "Inventory: media-capture APIs + egress; capture started without a user-facing recording feature."
+      ],
+      "related": [
+        "EXT-COLL-003",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1123"
+      ]
+    },
+    {
+      "id": "EXT-CRED-001",
+      "name": "Cookie / Session Theft",
+      "tactic": "Credential Access",
+      "status": "active",
+      "description": "The extension reads cookies in bulk via the cookies API (notably session cookies for authenticated sites) and transmits them off-device, enabling session hijacking.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "cookies.getAll"
+      ],
+      "permissions": [
+        "cookies",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "cookies",
+        "cookies.getAll",
+        "<all_urls>"
+      ],
+      "detection_ideas": [
+        "Inventory: cookies + broad host permissions; egress of cookie-like/base64 payloads to non-allowlisted hosts."
+      ],
+      "related": [
+        "EXT-COLL-004",
+        "EXT-CRED-006",
+        "EXT-EXFIL-001",
+        "EXT-INITACC-007",
+        "EXT-PRIVESC-002"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1539"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Grandoreiro Malware Now Targeting Banks in Spain",
+          "url": "https://www.ibm.com/think/x-force/grandoreiro-malware-now-targeting-banks-in-spain",
+          "publisher": "IBM Security Intelligence / X-Force (Abramov)",
+          "date": "2020-04-13",
+          "attribution": "Grandoreiro uses malicious browser extensions to steal cookies and user info; cited by MITRE ATT&CK T1176.001 (S0531)."
+        },
+        {
+          "title": "Your Data Is Under New Lummanagement: The Rise of LummaStealer",
+          "url": "https://www.cybereason.com/blog/threat-analysis-rise-of-lummastealer",
+          "publisher": "Cybereason",
+          "date": "2025-03",
+          "attribution": "Lumma Stealer installs a malicious extension targeting Chrome, Edge, Opera and Brave to steal data; cited by MITRE ATT&CK T1176.001 (S1213)."
+        },
+        {
+          "title": "Cyberhaven Extension Compromise",
+          "url": "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2024-12-27",
+          "attribution": "The malicious Cyberhaven update used chrome.cookies.getAll() to collect cookies for a target domain (e.g. Facebook) and POST them to the attacker domain cyberhavenext[.]pro."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/",
+        "https://secureannex.com/blog/cyberhaven-extension-compromise/"
+      ]
+    },
+    {
+      "id": "EXT-CRED-002",
+      "name": "Authenticated-Page DOM Reading",
+      "tactic": "Credential Access",
+      "status": "active",
+      "description": "A content script reads sensitive data rendered on authenticated pages (account details, tokens embedded in the DOM, session state) and exfiltrates it.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "scripting.executeScript"
+      ],
+      "permissions": [
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "content_scripts",
+        "document.querySelector",
+        "innerText"
+      ],
+      "detection_ideas": [
+        "Behavioral: content script on banking/webmail origins followed by egress."
+      ],
+      "related": [
+        "EXT-COLL-002",
+        "EXT-CRED-005",
+        "EXT-CRED-006",
+        "EXT-EXEC-001",
+        "EXT-EXEC-007",
+        "EXT-PRIVESC-002"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Mispadu: Advertisement for a discounted Unhappy Meal",
+          "url": "https://www.welivesecurity.com/2019/11/19/mispadu-advertisement-discounted-unhappy-meal/",
+          "publisher": "ESET (WeLiveSecurity)",
+          "date": "2019-11-19",
+          "attribution": "Mispadu uses malicious Chrome extensions to steal financial data; cited by MITRE ATT&CK T1176.001 (S1122)."
+        },
+        {
+          "title": "TA413 Leverages New FriarFox Browser Extension to Target the Gmail Accounts of Global Tibetan Organizations",
+          "url": "https://www.proofpoint.com/uk/blog/threat-insight/ta413-leverages-new-friarfox-browser-extension-target-gmail-accounts-global",
+          "publisher": "Proofpoint (Raggi)",
+          "date": "2021-02-25",
+          "attribution": "Firefox 'FriarFox' extension accessing authenticated Gmail session data; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-CRED-003",
+      "name": "Form / Keystroke Capture",
+      "tactic": "Credential Access",
+      "status": "active",
+      "description": "Content-script listeners capture keystrokes and form submissions (including password fields) across sites and send them to an operator.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "manifest_fingerprint": [
+        "addEventListener(\"keydown\"",
+        "addEventListener(\"input\"",
+        "\"password\""
+      ],
+      "detection_ideas": [
+        "Static: key/input listeners targeting password fields + egress."
+      ],
+      "related": [
+        "EXT-CRED-005",
+        "EXT-CRED-006",
+        "EXT-CRED-007",
+        "EXT-CRED-008",
+        "EXT-CRED-009",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1056.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "'Catch-All' Google Chrome Malicious Extension Steals All Posted Data",
+          "url": "https://isc.sans.edu/diary/CatchAll+Google+Chrome+Malicious+Extension+Steals+All+Posted+Data/22976",
+          "publisher": "SANS ISC / Morphus Labs (Marinho)",
+          "date": "2017-10-27",
+          "attribution": "The extension captured all data posted by the victim on any website (including Gmail login form data) and leaked it to a C&C server; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://isc.sans.edu/diary/CatchAll+Google+Chrome+Malicious+Extension+Steals+All+Posted+Data/22976",
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-CRED-004",
+      "name": "Token Theft via Request Header Observation",
+      "tactic": "Credential Access",
+      "status": "active",
+      "description": "The extension observes request/response headers (for example via webRequest on Firefox, or DNR feedback/observation paths) to capture bearer tokens, auth cookies, or API keys in transit.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "scope_note": "Blocking webRequest remains on Firefox; MV3 Chromium webRequest is observe-only.",
+      "apis": [
+        "webRequest.onBeforeSendHeaders"
+      ],
+      "permissions": [
+        "webRequest"
+      ],
+      "manifest_fingerprint": [
+        "webRequest",
+        "onBeforeSendHeaders",
+        "Authorization"
+      ],
+      "detection_ideas": [
+        "Inventory: webRequest observation of auth headers + egress."
+      ],
+      "related": [
+        "EXT-COLL-004",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Cyberhaven Extension Compromise",
+          "url": "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2024-12-27",
+          "attribution": "The compromised 'AI Assistant - ChatGPT and Gemini for Chrome' used chrome.webRequest.onBeforeSendHeaders with the extraHeaders option to capture sensitive Cookie / Authorization headers in transit and fetch() them to an attacker domain \u2014 avoiding adding the cookies permission that would trigger a prompt."
+        },
+        {
+          "title": "Searching for something unknow",
+          "url": "https://secureannex.com/blog/searching-for-something-unknow",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-04-10",
+          "attribution": "A family of 50+ unlisted 'security' extensions (~6M users) configured the extraHeaders option on a webRequest.onBeforeSendHeaders listener to access sensitive 'Authorization' and 'Cookie' headers before requests ran; the depth of tracking was remotely gated by a server-controlled user_conf value."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+        "https://secureannex.com/blog/searching-for-something-unknow"
+      ]
+    },
+    {
+      "id": "EXT-CRED-005",
+      "name": "Crypto Wallet / Seed-Phrase Theft",
+      "tactic": "Credential Access",
+      "status": "proposed",
+      "description": "The extension targets browser crypto wallets and dApp flows \u2014 reading seed phrases / private keys from wallet UIs or storage, or intercepting and altering transaction-approval and address data \u2014 to drain funds.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "storage.local",
+        "scripting.executeScript"
+      ],
+      "permissions": [
+        "scripting",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "mnemonic",
+        "seed phrase",
+        "privateKey",
+        "ethereum",
+        "web3"
+      ],
+      "store_policy_violations": {
+        "cws": "Malicious and Prohibited Products",
+        "amo": "\u00a78 Security/Blocking",
+        "edge": "\u00a71.2.2 Unwanted and malicious software"
+      },
+      "detection_ideas": [
+        "Static: wallet/dApp selectors or seed-phrase regexes combined with egress; content scripts on wallet-extension or exchange origins.",
+        "Behavioral: clipboard reads/writes around crypto-address patterns (address-swap)."
+      ],
+      "related": [
+        "EXT-COLL-006",
+        "EXT-CRED-002",
+        "EXT-CRED-003",
+        "EXT-EXFIL-001",
+        "EXT-IMPACT-008"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-CRED-006",
+      "name": "OTP / 2FA Code Interception",
+      "tactic": "Credential Access",
+      "status": "active",
+      "description": "The extension reads one-time passcodes / second-factor codes from the page DOM or intercepts them in transit during sign-in, enabling account takeover even when MFA is enabled.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "scripting.executeScript",
+        "webRequest.onBeforeRequest"
+      ],
+      "permissions": [
+        "scripting",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "otp",
+        "2fa",
+        "verification code",
+        "one-time"
+      ],
+      "detection_ideas": [
+        "Behavioral: content script reading OTP input fields or auth responses on login origins; egress correlated with sign-in."
+      ],
+      "related": [
+        "EXT-CRED-001",
+        "EXT-CRED-002",
+        "EXT-CRED-003",
+        "EXT-CRED-008"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1111"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "StegoAd's retrieved payloads intercepted Google credentials and second-factor codes during sign-in and exfiltrated session cookies, enabling account takeover through both stolen passwords and hijacked sessions despite MFA."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/"
+      ]
+    },
+    {
+      "id": "EXT-CRED-007",
+      "name": "Injected Phishing / Fake-Login Overlay",
+      "tactic": "Credential Access",
+      "status": "proposed",
+      "description": "The extension injects a counterfeit login form or credential/payment prompt into a legitimate page (or a new tab), harvesting what the user types into the fake UI.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "scripting.executeScript",
+        "tabs.create"
+      ],
+      "permissions": [
+        "scripting",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "password",
+        "login form",
+        "overlay",
+        "credential"
+      ],
+      "detection_ideas": [
+        "Behavioral: content script injecting credential/payment forms absent from the site's own DOM; submission posts to a third-party host."
+      ],
+      "related": [
+        "EXT-CRED-003",
+        "EXT-CRED-009",
+        "EXT-EXEC-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1056.003"
+      ]
+    },
+    {
+      "id": "EXT-CRED-008",
+      "name": "Passkey / WebAuthn Interception",
+      "tactic": "Credential Access",
+      "status": "proposed",
+      "description": "A content script running in the page's main world wraps navigator.credentials.create/get to observe, downgrade or relay WebAuthn ceremonies, or to steer the user to a password fallback that the extension can then capture. Reported as a research-level risk; no in-the-wild campaign is cited yet.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "navigator.credentials",
+        "scripting.executeScript"
+      ],
+      "permissions": [
+        "scripting",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "navigator.credentials",
+        "PublicKeyCredential",
+        "world: \"MAIN\""
+      ],
+      "detection_ideas": [
+        "Static: main-world scripts that reassign navigator.credentials.get/create or PublicKeyCredential methods.",
+        "Behavioral: WebAuthn calls on login origins followed by extension-originated network egress."
+      ],
+      "related": [
+        "EXT-CRED-003",
+        "EXT-CRED-006",
+        "EXT-EXEC-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1556"
+      ]
+    },
+    {
+      "id": "EXT-CRED-009",
+      "name": "Autofill / Password-Manager UI Clickjacking",
+      "tactic": "Credential Access",
+      "status": "proposed",
+      "description": "The extension (or a page it injects into) overlays or manipulates the DOM so that a password manager's autofill dropdown fills credentials, cards or TOTP into attacker-controlled hidden fields, which the extension then reads.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "scripting.executeScript",
+        "MutationObserver"
+      ],
+      "permissions": [
+        "scripting",
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "opacity: 0",
+        "pointer-events",
+        "autocomplete",
+        "MutationObserver"
+      ],
+      "detection_ideas": [
+        "Behavioral: invisible or off-screen input fields injected into login pages by an extension; values read on autofill."
+      ],
+      "related": [
+        "EXT-CRED-003",
+        "EXT-CRED-007"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1056.003"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-001",
+      "name": "Obfuscation / Packing",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "Code is obfuscated, minified beyond readability, or compiled to WASM to hinder store review and static signature matching of the malicious behavior.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "manifest_fingerprint": [
+        ".wasm",
+        "eval(",
+        "new Function("
+      ],
+      "store_policy_violations": {
+        "cws": "Code Readability Requirements",
+        "amo": "\u00a73 no obfuscated code",
+        "edge": "\u00a71.1.7 Obfuscation"
+      },
+      "detection_ideas": [
+        "Static: high-entropy bundles, packer markers, or WASM paired with sensitive permissions."
+      ],
+      "related": [
+        "EXT-DEFEV-008",
+        "EXT-EXEC-002",
+        "EXT-EXEC-004",
+        "EXT-EXEC-005",
+        "EXT-EXEC-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Over 20,000,000 of Chrome Users are Victims of Fake Ad Blockers",
+          "url": "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html",
+          "publisher": "AdGuard (Meshkov)",
+          "date": "2018-04-17",
+          "attribution": "Malicious logic was hidden inside a modified jQuery library and steganographically inside an image, base64-encoded and obfuscated to evade Chrome Web Store review."
+        },
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "StegoAd hid executable JavaScript via steganography \u2014 appended after the PNG IEND marker of the extension's own icon, inside externally fetched PNG/WebP containers, and even within WOFF2 font files \u2014 then decoded it through layered case-swap, digit-swap, Base64 and XOR transforms, so static scanners saw only benign image/font data."
+        }
+      ],
+      "references": [
+        "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html",
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-002",
+      "name": "Geofenced / Time-Bombed Activation",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "Malicious behavior activates only for targeted geographies, locales, or after a delay, so reviewers and sandboxes see benign behavior.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "i18n.getUILanguage",
+        "fetch"
+      ],
+      "detection_ideas": [
+        "Behavioral: activation conditioned on geo/locale/time; divergent behavior across regions."
+      ],
+      "related": [
+        "EXT-C2-005",
+        "EXT-DEFEV-003",
+        "EXT-DEFEV-007",
+        "EXT-DEFEV-009"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Pixel Perfect: Sold Extension Injects Code Through Pixel",
+          "url": "https://secureannex.com/blog/pixel-perfect",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2026-02-23",
+          "attribution": "On first run the malicious QuickLens update fingerprinted the user's country via Cloudflare's trace endpoint (1.1.1.1/cdn-cgi/trace) and reported it to the C2, enabling the operator to deliver geo-targeted payloads."
+        },
+        {
+          "title": "Sclpfybn Monetization Scheme",
+          "url": "https://secureannex.com/blog/sclpfybn-moneitization-scheme",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-01-03",
+          "attribution": "The 'Email Hunter' extension in the cluster was observed likely region-blocking the United States \u2014 an example of geo-conditioned behavior to evade scrutiny."
+        },
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "StegoAd extensions stayed silent for a 3\u20135 day time-gate to survive sandbox analysis, fired the payload only probabilistically, and detected whether DevTools was open \u2014 hiding indefinitely if an analyst was watching."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/pixel-perfect",
+        "https://secureannex.com/blog/sclpfybn-moneitization-scheme",
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-003",
+      "name": "Benign-at-Review, Server-Gated Payload",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "The extension behaves benignly during review, then enables the malicious code path later via a remote switch, decoupling the observed-at-review behavior from production behavior.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch",
+        "storage.managed"
+      ],
+      "store_policy_violations": {
+        "cws": "Misleading or Unexpected Behavior; MV3 no remote code",
+        "amo": "\u00a71 No Surprises; \u00a74",
+        "edge": "\u00a71.2.1 CSP; \u00a71.1 accurate representation"
+      },
+      "detection_ideas": [
+        "Network: config fetch toggling behavior; new egress appearing post-install without an update."
+      ],
+      "related": [
+        "EXT-C2-001",
+        "EXT-C2-006",
+        "EXT-DEFEV-002",
+        "EXT-DEFEV-006",
+        "EXT-DEFEV-007",
+        "EXT-DEFEV-009",
+        "EXT-DEFEV-010",
+        "EXT-EXEC-001",
+        "EXT-EXEC-003",
+        "EXT-INITACC-001",
+        "EXT-INITACC-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Trends and Lessons from Three Years Fighting Malicious Extensions",
+          "url": "https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43824.pdf",
+          "publisher": "Google (Jagpal et al.)",
+          "date": "2015-08",
+          "attribution": "Documents malicious extensions evading Chrome Web Store automated review; cited by MITRE ATT&CK T1176.001."
+        },
+        {
+          "title": "Another cluster of potentially malicious Chrome extensions",
+          "url": "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+          "publisher": "Wladimir Palant (Almost Secure)",
+          "date": "2023-06-08",
+          "attribution": "The Great Suspender's 'license check' returned a reassuring response on first download, then delivered the real (malicious redirect) configuration only a few hours later to evade review."
+        },
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "StegoAd's C2 performed server-side request validation \u2014 researchers probing the payload URLs directly received empty responses, so the malicious image payload was only served to genuine post-install victims that passed the operator's gating checks."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/",
+        "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-004",
+      "name": "DNR-Based Traffic / Header Manipulation",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "Declarative Net Request rules strip or alter request/response headers (for example removing cookies or security headers) or redirect requests, hiding or reshaping C2 and data flows without content-level interception.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "safari"
+      ],
+      "scope_note": "Firefox retains blocking webRequest; DNR behavior/limits differ.",
+      "apis": [
+        "declarativeNetRequest"
+      ],
+      "permissions": [
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
+      ],
+      "manifest_fingerprint": [
+        "declarative_net_request",
+        "modifyHeaders",
+        "regexSubstitution"
+      ],
+      "detection_ideas": [
+        "Inventory: modifyHeaders/header-removal rules affecting auth hosts; corroborate with altered headers in proxy logs."
+      ],
+      "related": [
+        "EXT-C2-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Another cluster of potentially malicious Chrome extensions",
+          "url": "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+          "publisher": "Wladimir Palant (Almost Secure)",
+          "date": "2023-06-08",
+          "attribution": "Several extensions in the cluster abused webRequest/DNR to remove security headers such as Content-Security-Policy and X-Frame-Options and to alter Set-Cookie / User-Agent headers."
+        },
+        {
+          "title": "Pixel Perfect: Sold Extension Injects Code Through Pixel",
+          "url": "https://secureannex.com/blog/pixel-perfect",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2026-02-23",
+          "attribution": "The malicious QuickLens update shipped a rules.json using declarativeNetRequest to strip content-security-policy, x-frame-options, x-xss-protection and related headers from every response, enabling its pixel-onload remote code execution to run on any site."
+        }
+      ],
+      "references": [
+        "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+        "https://secureannex.com/blog/pixel-perfect"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-005",
+      "name": "Disable / Inventory Peer Extensions",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "Using the management API, the extension enumerates or disables other installed extensions (for example security or ad-blocking tooling) to reduce friction or visibility.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "management.getAll",
+        "management.setEnabled"
+      ],
+      "permissions": [
+        "management"
+      ],
+      "manifest_fingerprint": [
+        "management",
+        "setEnabled",
+        "getAll"
+      ],
+      "detection_ideas": [
+        "Runtime: extension calling management.setEnabled(false) on security extensions."
+      ],
+      "related": [],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Widespread malware campaign seeks to silently inject ads into search results, affects multiple browsers",
+          "url": "https://www.microsoft.com/en-us/security/blog/2020/12/10/widespread-malware-campaign-seeks-to-silently-inject-ads-into-search-results-affects-multiple-browsers/",
+          "publisher": "Microsoft Threat Intelligence",
+          "date": "2020-12-10",
+          "attribution": "Adrozek modifies browser security controls/settings to persist and evade; cited by MITRE ATT&CK T1176.001."
+        },
+        {
+          "title": "TA413 Leverages New FriarFox Browser Extension to Target the Gmail Accounts of Global Tibetan Organizations",
+          "url": "https://www.proofpoint.com/uk/blog/threat-insight/ta413-leverages-new-friarfox-browser-extension-target-gmail-accounts-global",
+          "publisher": "Proofpoint (Raggi)",
+          "date": "2021-02-25",
+          "attribution": "FriarFox modifies browser permissions/privacy settings; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-006",
+      "name": "Store Reputation / Review Manipulation",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "The operator games store trust signals \u2014 fake or coordinated reviews, inflated install counts, reused boilerplate privacy justifications, or unlisted-yet-Featured listings \u2014 so a malicious extension appears reputable and clears review.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "store_policy_violations": {
+        "cws": "Spam and Abuse; Enforcement Circumvention; Review manipulation",
+        "amo": "\u00a71 No Surprises; Ratings abuse",
+        "edge": "\u00a71.1.2 Accurate representation"
+      },
+      "detection_ideas": [
+        "Cluster listings sharing byte-identical privacy-justification text / review bursts / developer metadata across accounts.",
+        "Flag extensions that are both 'unlisted' (non-searchable) and 'Featured'."
+      ],
+      "related": [
+        "EXT-DEFEV-003",
+        "EXT-DEFEV-011",
+        "EXT-INITACC-003",
+        "EXT-INITACC-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "737 Chrome VPN Extensions Linked to Brand Impersonation and Browser Traffic Redirection",
+          "url": "https://socket.dev/blog/chrome-vpn-extension-impersonation",
+          "publisher": "Socket Threat Research (Kush Pandya)",
+          "date": "2026-08-11",
+          "attribution": "Across this campaign, 9 extensions from separate publisher accounts shipped byte-identical (same SHA-256) PRIVACY_JUSTIFICATIONS.md asserting 'No data transmitted to external servers' while shipping a proxy; impersonated brands carried fabricated 5-star reviews to appear legitimate."
+        },
+        {
+          "title": "Searching for something unknow",
+          "url": "https://secureannex.com/blog/searching-for-something-unknow",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-04-10",
+          "attribution": "The cookie-theft extensions were simultaneously 'unlisted' (not indexed or searchable) yet 'Featured' in the Chrome Web Store \u2014 a trust signal that makes a non-discoverable extension look vetted and reputable."
+        }
+      ],
+      "references": [
+        "https://socket.dev/blog/chrome-vpn-extension-impersonation",
+        "https://secureannex.com/blog/searching-for-something-unknow"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-007",
+      "name": "Anti-Analysis / Sandbox & DevTools Detection",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "The extension detects analysis conditions \u2014 DevTools open, sandbox/VM, direct researcher requests \u2014 and suppresses or alters behavior, while the C2 withholds the payload unless server-side checks pass.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch"
+      ],
+      "manifest_fingerprint": [
+        "devtools",
+        "debugger",
+        "console.clear"
+      ],
+      "detection_ideas": [
+        "Behavioral: logic branching on DevTools/sandbox signals; a C2 that returns empty/benign responses to direct probing but serves payloads to real installs."
+      ],
+      "related": [
+        "EXT-DEFEV-002",
+        "EXT-DEFEV-003",
+        "EXT-EXEC-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1497"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "StegoAd stayed silent for a 3\u20135 day time-gate to survive sandbox analysis, detected whether DevTools was open and hid indefinitely if so, and its C2 performed server-side request validation \u2014 serving empty responses to researchers probing payload URLs directly."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-008",
+      "name": "Polymorphic Per-Build Code Generation",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "Each published build is regenerated with different variable/function names, comments, and literals so every logically identical file has a unique hash, defeating hash- and string-based detection and cross-extension clustering.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "detection_ideas": [
+        "Cluster by normalized code skeleton (strip names/strings/whitespace) rather than file hash or extension ID to catch per-build regenerated variants."
+      ],
+      "related": [
+        "EXT-DEFEV-001",
+        "EXT-INITACC-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1027"
+      ],
+      "real_world_examples": [
+        {
+          "title": "737 Chrome VPN Extensions Linked to Brand Impersonation and Browser Traffic Redirection",
+          "url": "https://socket.dev/blog/chrome-vpn-extension-impersonation",
+          "publisher": "Socket Threat Research (Kush Pandya)",
+          "date": "2026-08-11",
+          "attribution": "Normalizing every live service worker into a code skeleton (names, strings, numbers and whitespace removed) produced 93 distinct skeletons across 409 live workers; the campaign regenerates variable names, function names and comments per build, producing a unique file hash for every logically identical file."
+        }
+      ],
+      "references": [
+        "https://socket.dev/blog/chrome-vpn-extension-impersonation"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-009",
+      "name": "Install-Source (Ad-Gated) Activation",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "Malicious behavior is enabled only for installs that arrived through an attacker's ad funnel. The landing page stores an activation ticket (e.g. in localStorage on the campaign domain); after install the extension opens that domain, its content script copies the ticket into extension storage, and the C2 workflow runs only when a valid ticket exists. Direct store installs - including reviewer and sandbox installs - get only the advertised utility, so the same store listing behaves differently by path.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "storage.local",
+        "runtime.sendMessage",
+        "tabs.create"
+      ],
+      "manifest_fingerprint": [
+        "content_scripts",
+        "storage",
+        "alarms"
+      ],
+      "scope_note": "Distinct from EXT-DEFEV-003 (server-gated after install) and EXT-DEFEV-002 (geo/time gating): the gate is the acquisition channel, carried as data from the landing page rather than shipped in the reviewed package.\n",
+      "detection_ideas": [
+        "Static: content script that reads window.localStorage on a first-party domain and relays the value to chrome.storage, with C2 calls guarded by that value.",
+        "Differential analysis: install the same listing via a direct store visit and via the ad/landing-page path; diff network egress and tab creation.",
+        "Network: extension service worker POSTs page URL/title to a host only after a post-install visit to an ad landing domain."
+      ],
+      "related": [
+        "EXT-DEFEV-002",
+        "EXT-DEFEV-003",
+        "EXT-EXEC-003",
+        "EXT-INITACC-006",
+        "EXT-PERS-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1480"
+      ],
+      "real_world_examples": [
+        {
+          "title": "SleeperWidget: How Ad-Driven Installs Activate Hidden Browser Extension Behavior",
+          "url": "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-10-21",
+          "attribution": "Direct store installs lacked the activation ticket and never contacted C2; ad-funnel installs copied the ticket from the landing domain's localStorage into extension storage, enabling URL/title reporting, ad injection and affiliate redirects. Builds shipped with a server-side enable flag off."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-010",
+      "name": "Shadow-DOM Overlay and Injection Exclusion List",
+      "tactic": "Defense Evasion",
+      "status": "active",
+      "description": "Injected ads or overlays render inside a closed/open shadow root at a high stacking order so page scripts and many ad blockers cannot see them, while a server-maintained exclusion list suppresses injection on high-trust sites (AI assistants, healthcare, tax, account pages) where an unexpected overlay would be noticed and reported.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "Element.attachShadow",
+        "storage.local"
+      ],
+      "manifest_fingerprint": [
+        "content_scripts",
+        "attachShadow"
+      ],
+      "detection_ideas": [
+        "Static: content script calling attachShadow and appending a fixed, max-z-index host element to document.documentElement.",
+        "Behavioral: overlay injection that is absent on a curated set of sensitive domains and controlled by a remote configuration list."
+      ],
+      "related": [
+        "EXT-DEFEV-003",
+        "EXT-IMPACT-003"
+      ],
+      "real_world_examples": [
+        {
+          "title": "SleeperWidget: How Ad-Driven Installs Activate Hidden Browser Extension Behavior",
+          "url": "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-10-21",
+          "attribution": "Injected content rendered in a high-stacking shadow root hidden from page scripts and many ad blockers; a server-maintained list excluded AI assistants, healthcare/genetic-data portals, tax software, account pages and high-trust brands. Disabling 'Sponsored content' stopped visible ads but not URL/title reporting."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-011",
+      "name": "Security-Extension Tampering via Management API",
+      "tactic": "Defense Evasion",
+      "status": "proposed",
+      "description": "An extension holding the management permission enumerates other installed extensions and disables or uninstalls security, ad-blocking or competing extensions that would expose or block its behavior.\n",
+      "platforms": [
+        "chrome",
+        "edge"
+      ],
+      "apis": [
+        "management.getAll",
+        "management.setEnabled",
+        "management.uninstall"
+      ],
+      "permissions": [
+        "management"
+      ],
+      "manifest_fingerprint": [
+        "management.setEnabled",
+        "management.uninstall",
+        "management.getAll"
+      ],
+      "detection_ideas": [
+        "Static: management permission combined with setEnabled(false)/uninstall calls targeting non-self IDs.",
+        "Runtime: unexpected disable events for security extensions shortly after a new install or update."
+      ],
+      "related": [
+        "EXT-DEFEV-006",
+        "EXT-DEFEV-012",
+        "EXT-PERS-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1562.001"
+      ]
+    },
+    {
+      "id": "EXT-DEFEV-012",
+      "name": "Anti-Removal and Extension-Page Blocking",
+      "tactic": "Defense Evasion",
+      "status": "proposed",
+      "description": "The extension makes removal difficult: closing or redirecting tabs that open the browser's extension-management page, spamming the user, or reinstalling itself, so the victim cannot easily uninstall it.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "tabs.onUpdated",
+        "tabs.remove",
+        "webNavigation"
+      ],
+      "permissions": [
+        "tabs"
+      ],
+      "manifest_fingerprint": [
+        "chrome://extensions",
+        "edge://extensions",
+        "about:addons",
+        "tabs.remove"
+      ],
+      "detection_ideas": [
+        "Static: listeners that match browser-internal extension-management URLs and close or redirect the tab."
+      ],
+      "related": [
+        "EXT-DEFEV-011",
+        "EXT-PERS-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1562"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-001",
+      "name": "Dynamic Script Injection",
+      "tactic": "Execution",
+      "status": "active",
+      "description": "The extension injects JavaScript into pages at runtime via the scripting API or dynamically registered content scripts, deciding what/where to run based on remote or runtime signals. Running in the page's MAIN world escapes the isolated world to reach page DOM, JS objects, and credentials.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "scripting.executeScript",
+        "scripting.registerContentScripts"
+      ],
+      "permissions": [
+        "scripting"
+      ],
+      "manifest_fingerprint": [
+        "scripting",
+        "executeScript",
+        "\"world\":\"MAIN\"",
+        "registerContentScripts"
+      ],
+      "detection_ideas": [
+        "Inventory: scripting permission + broad host permissions; runtime injection into sensitive origins."
+      ],
+      "related": [
+        "EXT-CRED-002",
+        "EXT-CRED-007",
+        "EXT-CRED-008",
+        "EXT-DEFEV-003",
+        "EXT-EXEC-003",
+        "EXT-EXEC-007",
+        "EXT-EXEC-008",
+        "EXT-EXEC-009",
+        "EXT-PERS-002",
+        "EXT-PERS-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Malicious code in PDF Toolbox extension",
+          "url": "https://palant.info/2023/05/16/malicious-code-in-pdf-toolbox-extension/",
+          "publisher": "Wladimir Palant (Almost Secure)",
+          "date": "2023-05-16",
+          "attribution": "PDF Toolbox (2M+ users) hid obfuscated code that fetched a 'config' file from serasearchtop[.]com and used it to register a tabs.onUpdated listener calling chrome.tabs.executeScript, injecting attacker-supplied JavaScript into every page the user opened."
+        },
+        {
+          "title": "How malicious extensions hide running arbitrary code",
+          "url": "https://palant.info/2023/06/02/how-malicious-extensions-hide-running-arbitrary-code/",
+          "publisher": "Wladimir Palant (Almost Secure)",
+          "date": "2023-06-02",
+          "attribution": "A cluster of eight MV3 extensions still in the Chrome Web Store (Soundboost, ~6.9M users) all held the 'scripting' permission and worked around the MV3 ban on remote code by using scripting.executeScript to load their own background.js into visited pages, driven by instructions fetched from tryimv3srvsts[.]com."
+        }
+      ],
+      "references": [
+        "https://palant.info/2023/05/16/malicious-code-in-pdf-toolbox-extension/",
+        "https://palant.info/2023/06/02/how-malicious-extensions-hide-running-arbitrary-code/"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-002",
+      "name": "In-Package Dynamic Eval",
+      "tactic": "Execution",
+      "status": "active",
+      "description": "The extension uses eval / new Function to execute code assembled at runtime from packaged or remotely fetched strings, enabling logic that is not obvious from static review.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "eval",
+        "Function"
+      ],
+      "manifest_fingerprint": [
+        "eval(",
+        "new Function("
+      ],
+      "store_policy_violations": {
+        "cws": "Code Readability; MV3 no remotely hosted code",
+        "amo": "\u00a73 no obfuscation; \u00a74 no remote code",
+        "edge": "\u00a71.1.7 Obfuscation; \u00a71.2.1 CSP"
+      },
+      "detection_ideas": [
+        "Static: eval/new Function combined with fetch of code-like payloads."
+      ],
+      "related": [
+        "EXT-DEFEV-001",
+        "EXT-EXEC-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Over 20,000,000 of Chrome Users are Victims of Fake Ad Blockers",
+          "url": "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html",
+          "publisher": "AdGuard (Meshkov)",
+          "date": "2018-04-17",
+          "attribution": "Fake ad-blocker extensions hid a script inside a modified jQuery that base64-decoded (atob) and executed attacker-controlled code in the privileged background context."
+        }
+      ],
+      "references": [
+        "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-003",
+      "name": "Remote-Config-Driven Logic",
+      "tactic": "Execution",
+      "status": "active",
+      "description": "All executable code ships in-package (as stores require), but behavior is gated by remote configuration/feature flags fetched at runtime, letting the operator enable malicious branches after review.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch",
+        "storage.managed"
+      ],
+      "detection_ideas": [
+        "Network: extension fetches config from gist/pastebin/sheets/raw hosts shortly before new egress patterns."
+      ],
+      "related": [
+        "EXT-C2-001",
+        "EXT-C2-004",
+        "EXT-COLL-005",
+        "EXT-DEFEV-003",
+        "EXT-DEFEV-009",
+        "EXT-EXEC-001",
+        "EXT-EXEC-002",
+        "EXT-EXEC-006",
+        "EXT-EXEC-008",
+        "EXT-IMPACT-007",
+        "EXT-INITACC-007",
+        "EXT-PERS-005"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Over 20,000,000 of Chrome Users are Victims of Fake Ad Blockers",
+          "url": "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html",
+          "publisher": "AdGuard (Meshkov)",
+          "date": "2018-04-17",
+          "attribution": "The fake ad blockers received commands from a remote command server (hidden inside an image) that were executed in the extension's privileged context, forming a browser botnet."
+        },
+        {
+          "title": "Stantinko: A massive adware campaign operating covertly since 2012",
+          "url": "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/",
+          "publisher": "ESET (Vachon & Faou)",
+          "date": "2017-07-20",
+          "attribution": "Stantinko's Chrome extensions ('The Safe Surfing', 'Teddy Protection') looked benign but received a different configuration from the C&C to perform click fraud and ad injection; cited by MITRE ATT&CK T1176.001."
+        },
+        {
+          "title": "Pixel Perfect: Sold Extension Injects Code Through Pixel",
+          "url": "https://secureannex.com/blog/pixel-perfect",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2026-02-23",
+          "attribution": "The weaponized QuickLens update polled a C2 (api.extensionanalyticspro[.]top) every five minutes for an array of JavaScript strings stored as 'cached-agents-data' in local storage, then executed them at runtime on every page via a 1x1 GIF image onload handler \u2014 so the malicious code never appeared in the package source."
+        },
+        {
+          "title": "Cyberhaven Extension Compromise",
+          "url": "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2024-12-27",
+          "attribution": "The malicious content script fetched a configuration object from cyberhavenext[.]pro into local storage; that attacker-controlled config (target domains, selectors, exfil URL) drove which pages were harvested and where data was sent."
+        }
+      ],
+      "references": [
+        "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html",
+        "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/",
+        "https://secureannex.com/blog/pixel-perfect",
+        "https://secureannex.com/blog/cyberhaven-extension-compromise/"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-004",
+      "name": "Offscreen Document Execution",
+      "tactic": "Execution",
+      "status": "proposed",
+      "description": "The extension creates a hidden offscreen document to run DOM-dependent work (parsing, iframe scripting, scraping, blob/clipboard handling) off the service worker and out of the user's view.\n",
+      "platforms": [
+        "chrome",
+        "edge"
+      ],
+      "scope_note": "Chrome 109+; Firefox has no offscreen API (uses background DOM); Safari differs.",
+      "apis": [
+        "offscreen.createDocument"
+      ],
+      "permissions": [
+        "offscreen"
+      ],
+      "manifest_fingerprint": [
+        "offscreen",
+        "DOM_SCRAPING",
+        "IFRAME_SCRIPTING",
+        "DOM_PARSER"
+      ],
+      "detection_ideas": [
+        "Inventory: offscreen permission with DOM_SCRAPING/IFRAME_SCRIPTING reasons."
+      ],
+      "related": [
+        "EXT-COLL-002",
+        "EXT-DEFEV-001",
+        "EXT-IMPACT-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-005",
+      "name": "WASM Module Execution",
+      "tactic": "Execution",
+      "status": "proposed",
+      "description": "Logic is compiled to a bundled WebAssembly module, hindering static review and signature matching of the obfuscated behavior.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "manifest_fingerprint": [
+        ".wasm",
+        "WebAssembly.instantiate"
+      ],
+      "detection_ideas": [
+        "Static: bundled .wasm combined with network egress and broad permissions."
+      ],
+      "related": [
+        "EXT-DEFEV-001",
+        "EXT-IMPACT-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-006",
+      "name": "Steganographic Payload Loading",
+      "tactic": "Execution",
+      "status": "active",
+      "description": "Executable JavaScript is smuggled inside a non-code asset (an image or font shipped in-package or fetched from C2), then extracted and executed at runtime, so static scanners see only benign media.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "fetch",
+        "atob"
+      ],
+      "manifest_fingerprint": [
+        "IEND",
+        "atob(",
+        ".woff2",
+        "charCodeAt",
+        "fromCharCode"
+      ],
+      "store_policy_violations": {
+        "cws": "MV3 no remotely hosted code; Code Readability",
+        "amo": "\u00a73 no obfuscation; \u00a74 no remote code",
+        "edge": "\u00a71.1.7 Obfuscation"
+      },
+      "detection_ideas": [
+        "Static: image/font parsing combined with eval/Function/new Blob and data appended after a PNG IEND marker or in WOFF2 tables.",
+        "Behavioral: an image/font fetch immediately followed by code execution or new egress."
+      ],
+      "related": [
+        "EXT-C2-001",
+        "EXT-DEFEV-001",
+        "EXT-DEFEV-007",
+        "EXT-EXEC-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1027.003"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "StegoAd (119 extensions, up to 2.6M installs) hid executable JavaScript after the PNG IEND marker of its own icon, inside externally fetched PNG/WebP containers, and within bundled WOFF2 font files, then decoded it through layered case-swap/digit-swap/Base64/XOR transforms and executed it at runtime."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-007",
+      "name": "Debugger API (CDP) Abuse",
+      "tactic": "Execution",
+      "status": "proposed",
+      "description": "The extension attaches to tabs via the chrome.debugger API (Chrome DevTools Protocol) to evaluate script, read or modify page state, or capture input with capabilities beyond ordinary content scripts.\n",
+      "platforms": [
+        "chrome",
+        "edge"
+      ],
+      "apis": [
+        "debugger.attach",
+        "debugger.sendCommand"
+      ],
+      "permissions": [
+        "debugger"
+      ],
+      "manifest_fingerprint": [
+        "debugger",
+        "Runtime.evaluate",
+        "Page.navigate",
+        "Input.dispatch"
+      ],
+      "detection_ideas": [
+        "Inventory: debugger permission; runtime attach to tabs issuing Runtime.evaluate on sensitive origins."
+      ],
+      "related": [
+        "EXT-CRED-002",
+        "EXT-EXEC-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-008",
+      "name": "userScripts API Execution",
+      "tactic": "Execution",
+      "status": "proposed",
+      "description": "The extension uses the MV3 userScripts API to register and run arbitrary, non-packaged scripts in page contexts \u2014 a sanctioned path that can execute code not present in the reviewed package.\n",
+      "platforms": [
+        "chrome",
+        "edge"
+      ],
+      "apis": [
+        "userScripts.register",
+        "userScripts.configureWorld"
+      ],
+      "permissions": [
+        "userScripts"
+      ],
+      "manifest_fingerprint": [
+        "userScripts",
+        "configureWorld",
+        "USER_SCRIPT"
+      ],
+      "detection_ideas": [
+        "Inventory: userScripts permission; registered user scripts whose code is fetched or assembled at runtime."
+      ],
+      "related": [
+        "EXT-EXEC-001",
+        "EXT-EXEC-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-EXEC-009",
+      "name": "Cross-Extension Messaging Abuse",
+      "tactic": "Execution",
+      "status": "proposed",
+      "description": "One extension drives another through runtime.sendMessage with an extension ID, externally_connectable or onMessageExternal handlers, using a trusted extension's privileges (or a loader/payload split across two extensions) to act.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "runtime.sendMessage",
+        "runtime.onMessageExternal",
+        "externally_connectable"
+      ],
+      "permissions": [],
+      "manifest_fingerprint": [
+        "externally_connectable",
+        "onMessageExternal",
+        "sendMessage(\""
+      ],
+      "detection_ideas": [
+        "Static: onMessageExternal handlers that execute scripts or perform privileged actions without verifying sender.id."
+      ],
+      "related": [
+        "EXT-EXEC-001",
+        "EXT-PERS-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-001",
+      "name": "HTTP Exfiltration (fetch / sendBeacon)",
+      "tactic": "Exfiltration",
+      "status": "active",
+      "description": "Collected data is sent to operator infrastructure using fetch or sendBeacon from a content script or the service worker.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch",
+        "navigator.sendBeacon"
+      ],
+      "manifest_fingerprint": [
+        "fetch(",
+        "sendBeacon("
+      ],
+      "detection_ideas": [
+        "Network: browser egress carrying large/encoded payloads to non-allowlisted hosts; beaconing cadence."
+      ],
+      "related": [
+        "EXT-C2-002",
+        "EXT-COLL-001",
+        "EXT-COLL-002",
+        "EXT-COLL-003",
+        "EXT-COLL-005",
+        "EXT-COLL-006",
+        "EXT-COLL-007",
+        "EXT-COLL-008",
+        "EXT-CRED-001",
+        "EXT-CRED-003",
+        "EXT-CRED-004",
+        "EXT-CRED-005",
+        "EXT-EXFIL-003",
+        "EXT-EXFIL-004",
+        "EXT-EXFIL-005",
+        "EXT-EXFIL-006",
+        "EXT-EXFIL-007",
+        "EXT-EXFIL-008"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1567"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Kimsuky deploys TRANSLATEXT to target South Korean academia",
+          "url": "https://www.zscaler.com/blogs/security-research/kimsuky-deploys-translatext-target-south-korean-academia",
+          "publisher": "Zscaler ThreatLabz (Park)",
+          "date": "2024-06-27",
+          "attribution": "TRANSLATEXT exfiltrates captured credentials, cookies and screenshots to operator infrastructure; cited by MITRE ATT&CK T1176.001 (S1201)."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-002",
+      "name": "DNS Exfiltration",
+      "tactic": "Exfiltration",
+      "status": "proposed",
+      "description": "Data is encoded into DNS queries (for example long random labels or TXT lookups), exfiltrating over a channel that egress proxies often overlook.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "dns.resolve",
+        "fetch"
+      ],
+      "permissions": [
+        "dns"
+      ],
+      "manifest_fingerprint": [
+        "dns.resolve",
+        "TXT"
+      ],
+      "detection_ideas": [
+        "DNS: long high-entropy labels / excessive TXT queries originating from the browser process."
+      ],
+      "related": [
+        "EXT-C2-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1048"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-003",
+      "name": "Image-Beacon Exfiltration",
+      "tactic": "Exfiltration",
+      "status": "proposed",
+      "description": "Data is encoded into the query string of an image/pixel request, exfiltrating via simple GETs that resemble analytics beacons.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "manifest_fingerprint": [
+        "new Image(",
+        ".src ="
+      ],
+      "detection_ideas": [
+        "Network: image requests with large encoded query strings to non-analytics hosts."
+      ],
+      "related": [
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-004",
+      "name": "Exfiltration via Trusted Analytics",
+      "tactic": "Exfiltration",
+      "status": "active",
+      "description": "Collected data or campaign telemetry is funneled through legitimate analytics services (Google Analytics, Yandex Metrika) so the egress blends into normally allowlisted measurement traffic.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch",
+        "navigator.sendBeacon"
+      ],
+      "manifest_fingerprint": [
+        "google-analytics.com",
+        "mc.yandex.ru",
+        "collect?v=",
+        "tid="
+      ],
+      "detection_ideas": [
+        "Network: analytics beacons carrying unusually large/encoded payloads, or the same tracking ID shared across many unrelated extensions/domains."
+      ],
+      "related": [
+        "EXT-COLL-001",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1567"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Inside StegoAd: How We Disrupted a Massive Malicious Extension Campaign",
+          "url": "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-06-16",
+          "attribution": "StegoAd used seven Google Analytics tracking IDs as covert campaign telemetry, monitoring activity at scale through trusted third-party infrastructure."
+        },
+        {
+          "title": "737 Chrome VPN Extensions Linked to Brand Impersonation and Browser Traffic Redirection",
+          "url": "https://socket.dev/blog/chrome-vpn-extension-impersonation",
+          "publisher": "Socket Threat Research (Kush Pandya)",
+          "date": "2026-08-11",
+          "attribution": "Eight Yandex Metrika counters (with Webvisor session recording) partitioned 49 campaign domains; one counter spanning the storefront and extension-farm landing pages linked the infrastructure and tracked users."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/Inside-StegoAd-How-We-Disrupted-a-Massive-Malicious-Extension-Campaign/",
+        "https://socket.dev/blog/chrome-vpn-extension-impersonation"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-005",
+      "name": "WebRTC Data-Channel Exfiltration",
+      "tactic": "Exfiltration",
+      "status": "proposed",
+      "description": "Data is pushed over a WebRTC data channel (peer connection via STUN/TURN), a path that egress proxies and content filters frequently do not inspect or block.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "RTCPeerConnection",
+        "RTCDataChannel"
+      ],
+      "manifest_fingerprint": [
+        "RTCPeerConnection",
+        "createDataChannel",
+        "stun:",
+        "turn:"
+      ],
+      "detection_ideas": [
+        "Network: unexpected STUN/TURN or peer traffic from an extension context without a user-facing RTC feature."
+      ],
+      "related": [
+        "EXT-C2-002",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1048"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-006",
+      "name": "Native-Messaging-Host Exfiltration",
+      "tactic": "Exfiltration",
+      "status": "proposed",
+      "description": "The extension hands collected data to a native messaging host (local binary) that exfiltrates from outside the browser, bypassing browser-level egress controls and any network policy scoped to the browser process.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "runtime.sendNativeMessage",
+        "runtime.connectNative"
+      ],
+      "permissions": [
+        "nativeMessaging"
+      ],
+      "manifest_fingerprint": [
+        "nativeMessaging",
+        "connectNative",
+        "sendNativeMessage"
+      ],
+      "detection_ideas": [
+        "EDR: browser spawning a native host that then makes outbound connections; correlate extension data handoff with host egress."
+      ],
+      "related": [
+        "EXT-EXFIL-001",
+        "EXT-PERS-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1048"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-007",
+      "name": "Messaging / Cloud-API Dead-Drop Exfiltration",
+      "tactic": "Exfiltration",
+      "status": "proposed",
+      "description": "Stolen data is posted to a legitimate messaging or cloud service (Telegram bot API, Discord webhook, Google Drive/Sheets, pastebin) so egress goes to a widely allowlisted, high-reputation host.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "fetch"
+      ],
+      "manifest_fingerprint": [
+        "api.telegram.org",
+        "discord.com/api/webhooks",
+        "pastebin",
+        "sheets.googleapis"
+      ],
+      "detection_ideas": [
+        "Network: extension POSTing to bot/webhook/cloud-doc endpoints with encoded payloads not tied to a user action."
+      ],
+      "related": [
+        "EXT-C2-001",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1567.002",
+        "T1102"
+      ]
+    },
+    {
+      "id": "EXT-EXFIL-008",
+      "name": "WebSocket Exfiltration",
+      "tactic": "Exfiltration",
+      "status": "proposed",
+      "description": "Collected data is streamed out over a persistent WebSocket connection rather than discrete HTTP requests, giving a continuous, lower-signature channel.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "WebSocket"
+      ],
+      "manifest_fingerprint": [
+        "new WebSocket(",
+        "wss://"
+      ],
+      "detection_ideas": [
+        "Network: long-lived WebSocket from an extension to a non-CDN host carrying outbound user data."
+      ],
+      "related": [
+        "EXT-C2-002",
+        "EXT-EXFIL-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1567"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-001",
+      "name": "Search Hijack",
+      "tactic": "Impact",
+      "status": "active",
+      "description": "The extension overrides the default search provider (or redirects search traffic) to monetize queries or route users to attacker-chosen results.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "manifest_fingerprint": [
+        "chrome_settings_overrides",
+        "search_provider"
+      ],
+      "store_policy_violations": {
+        "cws": "Misleading or Unexpected Behavior",
+        "amo": "\u00a71 No Surprises",
+        "edge": "\u00a71.1.8 Altering browser settings"
+      },
+      "detection_ideas": [
+        "Inventory: chrome_settings_overrides.search_provider set by a non-approved extension."
+      ],
+      "related": [
+        "EXT-IMPACT-003",
+        "EXT-IMPACT-009"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "macOS Bundlore: Mac Virus Bypassing macOS Security Features",
+          "url": "https://mackeeper.com/blog/post/610-macos-bundlore-adware-analysis/",
+          "publisher": "MacKeeper (Sushko)",
+          "date": "2019-04-17",
+          "attribution": "Bundlore installs malicious browser extensions to hijack user searches; cited by MITRE ATT&CK T1176.001 (S0482)."
+        },
+        {
+          "title": "Widespread malware campaign seeks to silently inject ads into search results, affects multiple browsers",
+          "url": "https://www.microsoft.com/en-us/security/blog/2020/12/10/widespread-malware-campaign-seeks-to-silently-inject-ads-into-search-results-affects-multiple-browsers/",
+          "publisher": "Microsoft Threat Intelligence",
+          "date": "2020-12-10",
+          "attribution": "Adrozek tampers with browser settings and search results across Chrome, Edge, Firefox and Yandex; cited by MITRE ATT&CK T1176.001."
+        },
+        {
+          "title": "Stantinko: A massive adware campaign operating covertly since 2012",
+          "url": "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/",
+          "publisher": "ESET (Vachon & Faou)",
+          "date": "2017-07-20",
+          "attribution": "Stantinko's Chrome extensions redirected search traffic (e.g. on the Rambler search engine) for click fraud; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/",
+        "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-002",
+      "name": "Affiliate / Cookie-Stuffing",
+      "tactic": "Impact",
+      "status": "active",
+      "description": "The extension injects affiliate tags or drops affiliate cookies for sites the user visits so the operator earns commissions on purchases the user would make anyway.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "declarativeNetRequest",
+        "cookies.set"
+      ],
+      "manifest_fingerprint": [
+        "cookies.set",
+        "affiliate",
+        "ref="
+      ],
+      "store_policy_violations": {
+        "cws": "Affiliate Ads",
+        "amo": "\u00a77 Monetization (no affiliate-tag injection)",
+        "edge": "\u00a71.10 Advertising"
+      },
+      "detection_ideas": [
+        "Network: injected affiliate parameters / affiliate cookies set without user action on retail sites."
+      ],
+      "related": [
+        "EXT-IMPACT-003",
+        "EXT-IMPACT-009"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Another cluster of potentially malicious Chrome extensions",
+          "url": "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+          "publisher": "Wladimir Palant (Almost Secure)",
+          "date": "2023-06-08",
+          "attribution": "Extensions including 'Translator - Select to Translate' and the taken-over 'The Great Suspender' redirected shopping sessions to inject the operator's affiliate ID (e.g. replacing Booking.com's aid parameter) to earn commissions."
+        },
+        {
+          "title": "SleeperWidget: How Ad-Driven Installs Activate Hidden Browser Extension Behavior",
+          "url": "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-10-21",
+          "attribution": "When the C2 server detected shopping intent it returned a server-controlled destination URL carrying the operator's affiliate tag (e.g. an Amazon link), which the extension opened without validating it."
+        }
+      ],
+      "references": [
+        "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+        "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-003",
+      "name": "Ad Injection",
+      "tactic": "Impact",
+      "status": "active",
+      "description": "The extension injects or replaces ads in page content for operator revenue, degrading the page and often unlabeled as extension-originated.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "apis": [
+        "scripting.executeScript"
+      ],
+      "permissions": [
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "content_scripts",
+        "createElement(\"iframe\")",
+        "insertAdjacentHTML"
+      ],
+      "store_policy_violations": {
+        "cws": "Ads",
+        "amo": "\u00a77 Monetization (label injected ads)",
+        "edge": "\u00a71.10 Advertising"
+      },
+      "detection_ideas": [
+        "Behavioral: content script inserting ad iframes/markup across sites."
+      ],
+      "related": [
+        "EXT-DEFEV-010",
+        "EXT-IMPACT-001",
+        "EXT-IMPACT-002",
+        "EXT-IMPACT-007"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "New OSX/Shlayer Malware Variant Found Using a Dirty New Trick",
+          "url": "https://www.intego.com/mac-security-blog/new-osxshlayer-malware-variant-found-using-a-dirty-new-trick/",
+          "publisher": "Intego (Vrijenhoek)",
+          "date": "2018-04-24",
+          "attribution": "OSX/Shlayer installs malicious Safari browser extensions to serve ads; cited by MITRE ATT&CK T1176.001 (S0402)."
+        },
+        {
+          "title": "Widespread malware campaign seeks to silently inject ads into search results, affects multiple browsers",
+          "url": "https://www.microsoft.com/en-us/security/blog/2020/12/10/widespread-malware-campaign-seeks-to-silently-inject-ads-into-search-results-affects-multiple-browsers/",
+          "publisher": "Microsoft Threat Intelligence",
+          "date": "2020-12-10",
+          "attribution": "Adrozek injects ads into search results across multiple browsers; cited by MITRE ATT&CK T1176.001."
+        },
+        {
+          "title": "Stantinko: A massive adware campaign operating covertly since 2012",
+          "url": "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/",
+          "publisher": "ESET (Vachon & Faou)",
+          "date": "2017-07-20",
+          "attribution": "Stantinko installed Chrome extensions that perform ad injection and click fraud; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/",
+        "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-004",
+      "name": "Residential-Proxy Node",
+      "tactic": "Impact",
+      "status": "active",
+      "description": "The extension turns the browser/host into a traffic relay (via the proxy API or an SDK), reselling the user's connection as a residential-proxy exit node.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "proxy.settings.set"
+      ],
+      "permissions": [
+        "proxy"
+      ],
+      "manifest_fingerprint": [
+        "proxy",
+        "proxy.settings.set",
+        "pacScript"
+      ],
+      "store_policy_violations": {
+        "cws": "Minimum Functionality / Unwanted software",
+        "amo": "\u00a77 Monetization",
+        "edge": "\u00a72.8 Prohibited; \u00a71.10"
+      },
+      "detection_ideas": [
+        "Network: browser acting as relay (many outbound connections to residential ranges) + proxy permission."
+      ],
+      "related": [
+        "EXT-C2-002",
+        "EXT-COLL-004",
+        "EXT-INITACC-008"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Mellow Drama: Turning Browsers Into Request Brokers",
+          "url": "https://secureannex.com/blog/mellow-drama",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-07-07",
+          "attribution": "The Mellowtel monetization library (found across ~45 Chrome, 129 Edge and 71 Firefox extensions; ~1M users) turns the browser into a request broker \u2014 receiving target URLs over WebSocket, stripping security headers with declarativeNetRequest, scraping pages via hidden iframes and returning the HTML, reselling users' connections as scraping/proxy exit nodes for Olostep's web-scraping API."
+        },
+        {
+          "title": "DePIN comes to browser extensions",
+          "url": "https://secureannex.com/blog/depin-browser-extensions",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-09-01",
+          "attribution": "DePIN extensions such as Grass (Wynd Labs), Nodepay, Gradient and DAWN \u2014 over 4M users combined \u2014 pay users crypto tokens for their 'unused bandwidth,' routing third-party web-scraping requests through users' residential connections to evade bot protection and appear as normal residential users."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/mellow-drama",
+        "https://secureannex.com/blog/depin-browser-extensions"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-005",
+      "name": "Browser Denial-of-Service / Forced Crash",
+      "tactic": "Impact",
+      "status": "active",
+      "description": "The extension deliberately crashes or freezes the browser (for example by flooding the runtime messaging system), typically to drive a fake 'repair' prompt that social-engineers the user into running host malware.\n",
+      "platforms": [
+        "chrome",
+        "edge"
+      ],
+      "apis": [
+        "runtime.sendMessage",
+        "runtime.connect",
+        "windows.create"
+      ],
+      "manifest_fingerprint": [
+        "sendMessage({}",
+        "runtime.connect",
+        "Promise.all"
+      ],
+      "store_policy_violations": {
+        "cws": "Malicious and Prohibited Products; Quality",
+        "amo": "\u00a78 Security/Blocking",
+        "edge": "\u00a71.2.2 Unwanted and malicious software"
+      },
+      "detection_ideas": [
+        "Static: loops creating millions of runtime.sendMessage/connect calls; post-crash popup to an external domain.",
+        "Behavioral: browser instability correlated with an installed extension, followed by a 'fix-it' page prompting clipboard/PowerShell actions (ClickFix)."
+      ],
+      "related": [
+        "EXT-C2-005",
+        "EXT-INITACC-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1499"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Promise Bomb crashes browsers to install malware",
+          "url": "https://secureannex.com/blog/promise-bomb",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2026-02-23",
+          "attribution": "CrashFix variants (Pixel Shield, PageGuard) flood Chrome's message passing with 10\u2013100 million unresolvable promises to crash the browser on command, then open a popup to the C2 serving a ClickFix 'your browser crashed, run this to fix it' lure that executes malware via finger.exe."
+        },
+        {
+          "title": "Malicious Browser Extension CrashFix / KongTuke",
+          "url": "https://www.huntress.com/blog/malicious-browser-extention-crashfix-kongtuke",
+          "publisher": "Huntress",
+          "date": "2026-01",
+          "attribution": "The original NexShield extension crashed Chrome via ~a billion runtime port connections, then served a fake 'CrashFix' popup leading to PowerShell malware execution (actor tracked as KongTuke)."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/promise-bomb",
+        "https://www.huntress.com/blog/malicious-browser-extention-crashfix-kongtuke"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-006",
+      "name": "Cryptojacking",
+      "tactic": "Impact",
+      "status": "proposed",
+      "description": "The extension runs a cryptocurrency miner in a background context (service worker, offscreen document, or injected page) to consume victim CPU/GPU for the operator's gain.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "WebAssembly.instantiate",
+        "Worker"
+      ],
+      "manifest_fingerprint": [
+        "coinhive",
+        "cryptonight",
+        "wasm",
+        "miner",
+        "stratum"
+      ],
+      "store_policy_violations": {
+        "cws": "Mining prohibited; Unwanted software",
+        "amo": "\u00a77 Monetization",
+        "edge": "\u00a72.8 Prohibited"
+      },
+      "detection_ideas": [
+        "Behavioral: sustained high CPU from a browser worker; mining-pool/stratum connections or known miner WASM."
+      ],
+      "related": [
+        "EXT-EXEC-004",
+        "EXT-EXEC-005",
+        "EXT-IMPACT-008"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1496"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-007",
+      "name": "Click Fraud / Automated Engagement",
+      "tactic": "Impact",
+      "status": "active",
+      "description": "The extension silently loads ads, clicks links, or drives likes/follows/views in background or hidden contexts to generate fraudulent ad or engagement revenue.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "tabs.create",
+        "scripting.executeScript",
+        "fetch"
+      ],
+      "manifest_fingerprint": [
+        "iframe",
+        "click",
+        "impression"
+      ],
+      "store_policy_violations": {
+        "cws": "Malicious and Prohibited Products; Ads policy",
+        "amo": "\u00a78 Security/Blocking",
+        "edge": "\u00a71.2.2 Unwanted and malicious software"
+      },
+      "detection_ideas": [
+        "Network/behavioral: hidden ad loads and synthetic click traffic not tied to user interaction."
+      ],
+      "related": [
+        "EXT-EXEC-003",
+        "EXT-IMPACT-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Stantinko: A massive adware campaign operating covertly since 2012",
+          "url": "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/",
+          "publisher": "ESET (Vachon & Faou)",
+          "date": "2017-07-20",
+          "attribution": "Stantinko's Chrome extensions received configuration from the C&C to perform click fraud and ad injection, silently monetizing victims; cited by MITRE ATT&CK T1176.001."
+        },
+        {
+          "title": "Over 20,000,000 of Chrome Users are Victims of Fake Ad Blockers",
+          "url": "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html",
+          "publisher": "AdGuard (Meshkov)",
+          "date": "2018-04-17",
+          "attribution": "The fake ad blockers formed a browser botnet that received commands from a remote server and executed attacker-chosen actions in the extension's privileged context."
+        }
+      ],
+      "references": [
+        "https://www.welivesecurity.com/2017/07/20/stantinko-massive-adware-campaign-operating-covertly-since-2012/",
+        "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-008",
+      "name": "Clipboard / Crypto-Address Swapping",
+      "tactic": "Impact",
+      "status": "proposed",
+      "description": "A content script watches copy events or the clipboard and replaces a copied cryptocurrency address or payment identifier with an attacker-controlled one, redirecting funds.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "clipboardRead",
+        "clipboardWrite",
+        "document.execCommand"
+      ],
+      "permissions": [
+        "clipboardRead",
+        "clipboardWrite"
+      ],
+      "manifest_fingerprint": [
+        "clipboardWrite",
+        "oncopy",
+        "navigator.clipboard.writeText"
+      ],
+      "detection_ideas": [
+        "Static: clipboard permissions with regex matching wallet-address formats and a replacement write."
+      ],
+      "related": [
+        "EXT-CRED-005",
+        "EXT-IMPACT-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1565.002"
+      ]
+    },
+    {
+      "id": "EXT-IMPACT-009",
+      "name": "New-Tab Page Override Hijack",
+      "tactic": "Impact",
+      "status": "proposed",
+      "description": "The extension uses chrome_url_overrides (or the Firefox equivalent) to replace the new-tab page with an attacker-controlled search or ad page, monetizing every tab the user opens.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "chrome_url_overrides"
+      ],
+      "permissions": [],
+      "manifest_fingerprint": [
+        "chrome_url_overrides",
+        "newtab"
+      ],
+      "detection_ideas": [
+        "Static: chrome_url_overrides.newtab pointing to a remote or redirecting page unrelated to the extension's stated purpose."
+      ],
+      "related": [
+        "EXT-IMPACT-001",
+        "EXT-IMPACT-002"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1565"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-001",
+      "name": "Store-Published Trojan",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "A malicious extension is published to an official store with a clean-looking listing and benign-appearing functionality, then abuses its granted capabilities once installed by users.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "install_vectors": [
+        "store"
+      ],
+      "manifest_fingerprint": [
+        "permissions",
+        "host_permissions"
+      ],
+      "store_policy_violations": {
+        "cws": "Malicious and Prohibited Products",
+        "amo": "\u00a78 Security/Blocking; Acceptable Use",
+        "edge": "\u00a71.2.2 Unwanted and malicious software"
+      },
+      "detection_ideas": [
+        "Store-side: listing/behavior mismatch; post-publish server-gated behavior.",
+        "Endpoint: installed store extension exhibiting capabilities beyond its stated purpose."
+      ],
+      "related": [
+        "EXT-DEFEV-003",
+        "EXT-INITACC-003",
+        "EXT-INITACC-006",
+        "EXT-INITACC-009",
+        "EXT-PRIVESC-002"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Trends and Lessons from Three Years Fighting Malicious Extensions",
+          "url": "https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43824.pdf",
+          "publisher": "Google (Jagpal et al.)",
+          "date": "2015-08",
+          "attribution": "Measurement study of malicious extensions distributed via the Chrome Web Store; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-002",
+      "name": "Ownership-Transfer / Update Trojan",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "A previously benign, popular extension is sold or its developer account is compromised; a subsequent auto-update introduces malicious code under the same extension ID that users already trust.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "scope_note": "The extension ID is derived from the signing public key, so an update keeps the same ID while the code changes \u2014 users and allowlists see no ID change.\n",
+      "install_vectors": [
+        "update_trojan",
+        "ownership_transfer"
+      ],
+      "store_policy_violations": {
+        "cws": "Malicious and Prohibited Products; Enforcement Circumvention",
+        "amo": "\u00a78 Security/Blocking",
+        "edge": "\u00a71.2.4 Extension updates; \u00a71.2.2"
+      },
+      "detection_ideas": [
+        "Diff permissions/code across versions of the same ID; alert on sudden capability or egress changes after an update.",
+        "Watch for new network destinations appearing only after a version bump."
+      ],
+      "related": [
+        "EXT-INITACC-007",
+        "EXT-PERS-001",
+        "EXT-PRIVESC-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Pixel Perfect: Sold Extension Injects Code Through Pixel",
+          "url": "https://secureannex.com/blog/pixel-perfect",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2026-02-23",
+          "attribution": "The Featured 'QuickLens' Google Lens extension (7,000 users) was listed for sale on ExtensionHub, changed ownership, and the new owner pushed a weaponized update turning it into a C2-driven remote-code-execution platform under the same ID."
+        },
+        {
+          "title": "Cyberhaven Extension Compromise",
+          "url": "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2024-12-27",
+          "attribution": "An OAuth phishing email tricked a Cyberhaven admin into granting chromewebstore access; the attacker pushed malicious v24.10.4 that auto-updated to users and exfiltrated sessions/cookies. The same campaign hit 20+ other extensions."
+        },
+        {
+          "title": "Buying browser extensions for fun and profit",
+          "url": "https://annex.security/blog/buying-browser-extensions/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "attribution": "The researcher arranged a transfer of the marketplace-listed Website Blocker extension; the developer ultimately transferred it without payment. The researcher published a demonstration redirect using existing permissions, with the same extension ID. Separately, the report describes a change of ownership and subsequent clickstream collection by 'Adblock for YouTube & Chrome - All Block'; it did not find evidence that sensitive headers were sent to the third party."
+        }
+      ],
+      "references": [
+        "https://annex.security/blog/buying-browser-extensions/",
+        "https://secureannex.com/blog/pixel-perfect",
+        "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+        "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-003",
+      "name": "Forked-Clone / Typosquat",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "An attacker copies a popular extension (name, icon, functionality) and republishes it with an added malicious payload, relying on brand confusion for installs.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "scope_note": "A clone signed with a different key gets a new extension ID even if code is copied; detect by code/name/icon similarity, not ID.\n",
+      "install_vectors": [
+        "store"
+      ],
+      "store_policy_violations": {
+        "cws": "Impersonation & Intellectual Property",
+        "amo": "\u00a72 Content (forks must materially differ)",
+        "edge": "\u00a71.1.2 Accurate representation"
+      },
+      "detection_ideas": [
+        "Similarity cluster listings by name/icon/code; flag near-duplicates with extra permissions or egress."
+      ],
+      "related": [
+        "EXT-DEFEV-006",
+        "EXT-DEFEV-008",
+        "EXT-INITACC-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Over 20,000,000 of Chrome Users are Victims of Fake Ad Blockers",
+          "url": "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html",
+          "publisher": "AdGuard (Meshkov)",
+          "date": "2018-04-17",
+          "attribution": "Lazy clones of popular ad blockers (AdRemover, uBlock Plus, Adblock Pro, etc.) with added malicious code reached 20M+ users via the Chrome Web Store before takedown."
+        }
+      ],
+      "references": [
+        "https://adguard.com/en/blog/over-20-000-000-of-chrome-users-are-victims-of-fake-ad-blockers.html"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-004",
+      "name": "Sideload / Developer-Mode Load",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "An off-store extension is installed outside official review \u2014 unpacked via developer mode, a dropped CRX (Linux manual), a signed XPI self-distribution, or loosened install-source policy.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "scope_note": "On Windows/macOS, Chromium self-hosted installs require enterprise policy; Linux allows manual CRX. Firefox self-distributed XPIs must still be Mozilla-signed. Safari has no sideload path beyond Xcode dev-install.\n",
+      "install_vectors": [
+        "sideload",
+        "dev_mode"
+      ],
+      "manifest_fingerprint": [
+        "update_url"
+      ],
+      "store_policy_violations": {
+        "cws": "Technical Requirements / off-store distribution constraints",
+        "amo": "\u00a73 Submission (signing required)",
+        "edge": "\u00a71.2 Security"
+      },
+      "detection_ideas": [
+        "Monitor ExtensionInstallSources / ExtensionDeveloperModeSettings loosening on managed endpoints.",
+        "Detect unpacked extension directories appearing under the browser profile."
+      ],
+      "related": [
+        "EXT-INITACC-005",
+        "EXT-PERS-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Rilide - An Information Stealing Browser Extension",
+          "url": "https://blog.pulsedive.com/rilide-an-information-stealing-browser-extension/",
+          "publisher": "Pulsedive Threat Research",
+          "date": "2025-03-21",
+          "attribution": "Rilide silently loads by modifying Chromium Preferences / Secure Preferences files; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://developer.chrome.com/docs/extensions/how-to/distribute",
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-005",
+      "name": "Force-Install via Enterprise Policy",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "An attacker (e.g. a bundled installer or registry-tampering malware) writes a browser management policy that silently force-installs an extension the user cannot remove, bypassing the store install prompt and data-collection consent.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "scope_note": "Google explicitly treats enterprise policies used outside one's own organization as malware. Safari's analog is an MDM configuration profile.\n",
+      "install_vectors": [
+        "policy_forcelist",
+        "mdm"
+      ],
+      "manifest_fingerprint": [
+        "update_url"
+      ],
+      "detection_ideas": [
+        "Monitor ExtensionInstallForcelist / ExtensionSettings(force_installed) / policies.json for new IDs with non-store update_url.",
+        "Flag force-install changes made outside change control; inventory managed-extension drift."
+      ],
+      "related": [
+        "EXT-C2-004",
+        "EXT-INITACC-004",
+        "EXT-PERS-003"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "No Place Like Chrome",
+          "url": "https://www.xorrior.com/No-Place-Like-Chrome/",
+          "publisher": "Chris Ross (xorrior)",
+          "date": "2019-02-08",
+          "attribution": "Silent browser-extension install on macOS via configuration profiles (.mobileconfig); cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://chromeenterprise.google/policies/",
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-006",
+      "name": "Malvertising / Deceptive Distribution",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "Installs are driven by paid ads, SEO-poisoned pages, fake update/CAPTCHA prompts, or bundled installers (PUP) rather than organic store discovery, pushing users to an attacker-controlled (often unlisted) store listing.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "install_vectors": [
+        "malvertising",
+        "bundled_installer",
+        "social_engineering"
+      ],
+      "store_policy_violations": {
+        "cws": "Deceptive Installation Tactics",
+        "amo": "\u00a71 No Surprises; Acceptable Use",
+        "edge": "\u00a71.1.4 Deceptive install"
+      },
+      "detection_ideas": [
+        "Correlate new extension installs with ad-click / fake-update referrers; flag unlisted listings reached only by direct URL.",
+        "Endpoint: extension install immediately preceded by a PUP/installer process."
+      ],
+      "related": [
+        "EXT-DEFEV-003",
+        "EXT-DEFEV-006",
+        "EXT-DEFEV-009",
+        "EXT-IMPACT-005",
+        "EXT-INITACC-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1204.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Searching for something unknow",
+          "url": "https://secureannex.com/blog/searching-for-something-unknow",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-04-10",
+          "attribution": "50+ 'unlisted' (non-discoverable) yet Featured cookie-theft extensions (~6M users) reached users despite being unsearchable; Google Ad Transparency results supplied by another researcher indicated the extensions were distributed via advertisements."
+        },
+        {
+          "title": "SleeperWidget: How Ad-Driven Installs Activate Hidden Browser Extension Behavior",
+          "url": "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-10-21",
+          "attribution": "250+ related listings across Edge Add-ons, Chrome Web Store and Mozilla Add-ons promoted through sponsored Bing and Google results to landing pages whose Add-to-browser button redirected to the official store listing; landing-page URLs carried ad-attribution parameters (msclkid, sid*) distinguishing ad-driven installs from direct store visits."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/searching-for-something-unknow",
+        "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-007",
+      "name": "Developer-Account Compromise",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "An attacker phishes or steals a legitimate publisher's store/OAuth credentials and pushes a malicious auto-update to the existing, trusted user base under the real extension ID \u2014 no ownership change required.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "scope_note": "Distinct from EXT-INITACC-002 (sale/transfer): here the original developer is still the account holder but has lost control. The update ships to all current users.\n",
+      "install_vectors": [
+        "update_trojan",
+        "account_compromise"
+      ],
+      "store_policy_violations": {
+        "cws": "Malicious and Prohibited Products; 2SV required",
+        "amo": "\u00a78 Security/Blocking",
+        "edge": "\u00a71.2.4 Extension updates"
+      },
+      "detection_ideas": [
+        "Alert on a trusted extension suddenly fetching new domains/config after an update not explained by changelog.",
+        "Monitor developer-account OAuth grants and publishing events for anomalies."
+      ],
+      "related": [
+        "EXT-CRED-001",
+        "EXT-EXEC-003",
+        "EXT-INITACC-002"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1195.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Cyberhaven Extension Compromise",
+          "url": "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2024-12-27",
+          "attribution": "A targeted OAuth phishing email to a Cyberhaven admin granted the attacker Chrome Web Store publishing access; they shipped a malicious signed update to the live user base. 20+ other extensions were hit by the same campaign."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/cyberhaven-extension-compromise/"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-008",
+      "name": "Bundled Third-Party SDK / Library Supply Chain",
+      "tactic": "Initial Access",
+      "status": "active",
+      "description": "A legitimate extension integrates a monetization/analytics SDK (or a compromised dependency) that silently adds data-collection, scraping, or traffic-relay capability \u2014 often requiring no new user-visible permissions.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "install_vectors": [
+        "supply_chain",
+        "sdk_inclusion"
+      ],
+      "store_policy_violations": {
+        "cws": "Deceptive Behavior; Limited Use / Data Policy",
+        "amo": "\u00a77 Monetization; Data disclosure",
+        "edge": "\u00a72.8 Prohibited"
+      },
+      "detection_ideas": [
+        "Flag known monetization-SDK markers (library names, lambda-url / request-broker hosts) across many unrelated extensions.",
+        "Diff a benign version against one that silently adds declarativeNetRequest/<all_urls> for an embedded SDK."
+      ],
+      "related": [
+        "EXT-C2-002",
+        "EXT-COLL-002",
+        "EXT-IMPACT-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001",
+        "T1195.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Mellow Drama: Turning Browsers Into Request Brokers",
+          "url": "https://secureannex.com/blog/mellow-drama",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2025-07-07",
+          "attribution": "The Mellowtel library \u2014 added by developers to ~45 Chrome, 129 Edge and 71 Firefox extensions (~1M users) as a 'share unused bandwidth' monetization SDK \u2014 turned the host extensions into a web-scraping/request-broker network, sometimes without adding any new permissions."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/mellow-drama"
+      ]
+    },
+    {
+      "id": "EXT-INITACC-009",
+      "name": "Browser-Sync Install Propagation",
+      "tactic": "Initial Access",
+      "status": "proposed",
+      "description": "A malicious extension installed on one device (or a compromised account) spreads to the user's other devices through browser profile sync, widening the victim footprint without further user action.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [],
+      "permissions": [],
+      "manifest_fingerprint": [],
+      "detection_ideas": [
+        "Inventory: the same extension ID appearing on multiple managed endpoints of one user shortly after first install; compare against sync policy (SyncDisabled / SyncTypesListDisabled)."
+      ],
+      "related": [
+        "EXT-INITACC-001",
+        "EXT-PERS-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-PERS-001",
+      "name": "Self-Hosted Auto-Update Channel",
+      "tactic": "Persistence",
+      "status": "proposed",
+      "description": "The extension declares an off-store update_url pointing at attacker infrastructure, allowing silent delivery of new code via the auto-update mechanism without store re-review.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "scope_note": "Chromium update flow: update_url -> updates.xml (gupdate/Omaha), appid = public-key hash, codebase = HTTPS .crx, new CRX signed with the same key. On Win/macOS this only applies to policy-installed extensions. Safari cannot self-host.\n",
+      "apis": [],
+      "manifest_fingerprint": [
+        "update_url"
+      ],
+      "install_vectors": [
+        "update_trojan"
+      ],
+      "detection_ideas": [
+        "Flag update_url whose host is not clients2.google.com / edge.microsoft.com / addons.mozilla.org.",
+        "Network: browser update fetch to a non-store host."
+      ],
+      "related": [
+        "EXT-DEFEV-011",
+        "EXT-DEFEV-012",
+        "EXT-INITACC-002",
+        "EXT-INITACC-004",
+        "EXT-INITACC-009"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-PERS-002",
+      "name": "Service-Worker Keep-Alive / Re-Registration",
+      "tactic": "Persistence",
+      "status": "proposed",
+      "description": "The MV3 service worker is kept alive or re-registers content scripts and alarms so the extension reliably resumes activity after the worker is terminated.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "alarms.create",
+        "scripting.registerContentScripts",
+        "runtime.getContexts"
+      ],
+      "permissions": [
+        "alarms"
+      ],
+      "manifest_fingerprint": [
+        "alarms",
+        "registerContentScripts",
+        "persistAcrossSessions"
+      ],
+      "detection_ideas": [
+        "Inventory: persistent alarms + dynamic content-script registration with persistAcrossSessions."
+      ],
+      "related": [
+        "EXT-EXEC-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-PERS-003",
+      "name": "Policy Force-Install Persistence",
+      "tactic": "Persistence",
+      "status": "active",
+      "description": "A force-install policy keeps the extension installed and pinned; the user cannot disable or remove it, persisting through profile resets and user action.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "install_vectors": [
+        "policy_forcelist",
+        "mdm"
+      ],
+      "detection_ideas": [
+        "Registry/policies.json/MDM monitoring for force_installed entries; drift vs approved allowlist."
+      ],
+      "related": [
+        "EXT-INITACC-005"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "No Place Like Chrome",
+          "url": "https://www.xorrior.com/No-Place-Like-Chrome/",
+          "publisher": "Chris Ross (xorrior)",
+          "date": "2019-02-08",
+          "attribution": "Silent, persistent browser-extension install on macOS via configuration profiles; cited by MITRE ATT&CK T1176.001."
+        }
+      ],
+      "references": [
+        "https://attack.mitre.org/techniques/T1176/001/"
+      ]
+    },
+    {
+      "id": "EXT-PERS-004",
+      "name": "Native-Messaging Host Bridge",
+      "tactic": "Persistence",
+      "status": "proposed",
+      "description": "The extension connects to a native messaging host \u2014 an on-disk binary registered via a host manifest \u2014 bridging the browser sandbox to the OS for persistent, higher-privilege execution.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "scope_note": "Safari's analog routes messages to the signed, sandboxed containing app via app groups rather than an arbitrary on-disk binary.\n",
+      "apis": [
+        "runtime.connectNative",
+        "runtime.sendNativeMessage"
+      ],
+      "permissions": [
+        "nativeMessaging"
+      ],
+      "manifest_fingerprint": [
+        "nativeMessaging",
+        "connectNative",
+        "sendNativeMessage"
+      ],
+      "detection_ideas": [
+        "EDR: browser process spawning a native-host binary from a user-writable path.",
+        "New native-host manifest JSON in user-writable dir + NativeMessagingUserLevelHosts enabled."
+      ],
+      "related": [
+        "EXT-EXEC-001",
+        "EXT-EXFIL-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-PERS-005",
+      "name": "Config Re-Seed via Sync Storage",
+      "tactic": "Persistence",
+      "status": "proposed",
+      "description": "The extension stores operator config / activation state in chrome.storage.sync so it propagates across the user's signed-in profiles and is restored after reinstall or on another device, surviving local cleanup.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "storage.sync"
+      ],
+      "manifest_fingerprint": [
+        "storage",
+        "chrome.storage.sync"
+      ],
+      "detection_ideas": [
+        "Behavioral: extension re-activating with prior config after a clean reinstall; inventory storage.sync carrying activation flags."
+      ],
+      "related": [
+        "EXT-C2-004",
+        "EXT-EXEC-003",
+        "EXT-PERS-006"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-PERS-006",
+      "name": "Cross-Extension Shared Identifier",
+      "tactic": "Persistence",
+      "status": "active",
+      "description": "Sibling extensions from one operator answer each other's postMessage queries (for example a get-ext-uid request on a shared page) so every family member reuses one tracking ID. Activity is correlated across extensions, and removing one extension does not clear the ID held by the others.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "window.postMessage",
+        "storage.local"
+      ],
+      "manifest_fingerprint": [
+        "content_scripts",
+        "get-ext-uid",
+        "ext-uid"
+      ],
+      "detection_ideas": [
+        "Static: content script with a window message listener that replies with a stored UID to any page-origin request.",
+        "Fleet: multiple installed extensions storing an identical UID value; treat the family as one unit when remediating."
+      ],
+      "related": [
+        "EXT-DEFEV-009",
+        "EXT-EXEC-009",
+        "EXT-PERS-005"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "SleeperWidget: How Ad-Driven Installs Activate Hidden Browser Extension Behavior",
+          "url": "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/",
+          "publisher": "Microsoft Edge Extensions Security Team",
+          "date": "2026-10-21",
+          "attribution": "A landing page sent get-ext-uid and reused the UID of any installed family member; 'Free Digital Books Online' stored the same UID as 'View Point 3D Earth' despite a different campaign and domain."
+        }
+      ],
+      "references": [
+        "https://microsoftedge.github.io/edgevr/posts/SleeperWidget-How-Ad-Driven-Installs-Activate-Hidden-Browser-Extension-Behavior/"
+      ]
+    },
+    {
+      "id": "EXT-PRIVESC-001",
+      "name": "Permission Widening on Update",
+      "tactic": "Privilege/Scope Escalation",
+      "status": "active",
+      "description": "An update adds high-risk permissions or host permissions beyond the extension's original scope, expanding capability after the extension has already earned user and allowlist trust.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "manifest_fingerprint": [
+        "permissions",
+        "host_permissions"
+      ],
+      "install_vectors": [
+        "update_trojan"
+      ],
+      "store_policy_violations": {
+        "cws": "Use of Permissions",
+        "amo": "\u00a74.1 only necessary permissions",
+        "edge": "\u00a71.6 Permissions"
+      },
+      "detection_ideas": [
+        "Diff permissions/host_permissions across versions of the same ID; alert on new <all_urls>, cookies, nativeMessaging, debugger, management, proxy."
+      ],
+      "related": [
+        "EXT-INITACC-002",
+        "EXT-PRIVESC-002",
+        "EXT-PRIVESC-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Pixel Perfect: Sold Extension Injects Code Through Pixel",
+          "url": "https://secureannex.com/blog/pixel-perfect",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2026-02-23",
+          "attribution": "After the QuickLens extension changed hands, the malicious v5.8 update added the declarativeNetRequestWithHostAccess and webRequest permissions (behind a single update permission prompt) to enable header stripping and C2 monitoring."
+        },
+        {
+          "title": "Cyberhaven Extension Compromise",
+          "url": "https://secureannex.com/blog/cyberhaven-extension-compromise/",
+          "publisher": "Secure Annex (John Tuckner)",
+          "date": "2024-12-27",
+          "attribution": "The 'AI Assistant' variant deliberately avoided adding the cookies permission on update \u2014 using webRequest instead \u2014 precisely because adding it would have triggered a user permission prompt, illustrating how attackers manage update-time permission changes."
+        }
+      ],
+      "references": [
+        "https://secureannex.com/blog/pixel-perfect",
+        "https://secureannex.com/blog/cyberhaven-extension-compromise/"
+      ]
+    },
+    {
+      "id": "EXT-PRIVESC-002",
+      "name": "Broad Host Permissions",
+      "tactic": "Privilege/Scope Escalation",
+      "status": "active",
+      "description": "The extension requests <all_urls> or wildcard host permissions far beyond its stated purpose, enabling content-script injection and data access across every site.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox",
+        "safari"
+      ],
+      "permissions": [
+        "<all_urls>"
+      ],
+      "manifest_fingerprint": [
+        "<all_urls>",
+        "*://*/*",
+        "host_permissions"
+      ],
+      "store_policy_violations": {
+        "cws": "Use of Permissions / single purpose",
+        "amo": "\u00a71 No Surprises; \u00a74.1",
+        "edge": "\u00a71.1.1 Single purpose; \u00a71.6"
+      },
+      "detection_ideas": [
+        "Inventory: broad host permissions disproportionate to stated function."
+      ],
+      "related": [
+        "EXT-COLL-002",
+        "EXT-CRED-001",
+        "EXT-CRED-002",
+        "EXT-INITACC-001",
+        "EXT-PRIVESC-001",
+        "EXT-PRIVESC-004"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ],
+      "real_world_examples": [
+        {
+          "title": "Another cluster of potentially malicious Chrome extensions",
+          "url": "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/",
+          "publisher": "Wladimir Palant (Almost Secure)",
+          "date": "2023-06-08",
+          "attribution": "Across a cluster of 109 extensions, 102 requested access to all websites \u2014 far beyond their stated function \u2014 to enable affiliate fraud, browsing-profile building, and code injection."
+        }
+      ],
+      "references": [
+        "https://palant.info/2023/06/08/another-cluster-of-potentially-malicious-chrome-extensions/"
+      ]
+    },
+    {
+      "id": "EXT-PRIVESC-003",
+      "name": "Web-Accessible Resource / External Bridge Exposure",
+      "tactic": "Privilege/Scope Escalation",
+      "status": "proposed",
+      "description": "The extension exposes resources to web pages via web_accessible_resources or opens an extension<->web channel via externally_connectable, creating a bridge that web content can use to reach extension capabilities.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "runtime.onMessageExternal"
+      ],
+      "manifest_fingerprint": [
+        "web_accessible_resources",
+        "externally_connectable",
+        "onMessageExternal"
+      ],
+      "detection_ideas": [
+        "Inventory: broad web_accessible_resources matches or permissive externally_connectable matches."
+      ],
+      "related": [
+        "EXT-C2-001"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    },
+    {
+      "id": "EXT-PRIVESC-004",
+      "name": "Optional-Permission Runtime Escalation",
+      "tactic": "Privilege/Scope Escalation",
+      "status": "proposed",
+      "description": "The extension ships a minimal reviewed permission set, then requests additional optional_permissions or optional_host_permissions at runtime via permissions.request, widening scope after install \u2014 often behind an innocuous prompt.\n",
+      "platforms": [
+        "chrome",
+        "edge",
+        "firefox"
+      ],
+      "apis": [
+        "permissions.request",
+        "permissions.contains"
+      ],
+      "manifest_fingerprint": [
+        "optional_permissions",
+        "optional_host_permissions",
+        "permissions.request"
+      ],
+      "detection_ideas": [
+        "Behavioral: runtime permissions.request granting broad host access well after install; diff effective vs. manifest-declared permissions."
+      ],
+      "related": [
+        "EXT-PRIVESC-001",
+        "EXT-PRIVESC-002"
+      ],
+      "mitre_attack_xref": [
+        "T1176.001"
+      ]
+    }
+  ],
+  "counts": {
+    "techniques": 80,
+    "by_status": {
+      "active": 47,
+      "proposed": 33
+    },
+    "by_tactic": {
+      "Command & Control": 6,
+      "Collection": 8,
+      "Credential Access": 9,
+      "Defense Evasion": 12,
+      "Execution": 9,
+      "Exfiltration": 8,
+      "Impact": 9,
+      "Initial Access": 9,
+      "Persistence": 6,
+      "Privilege/Scope Escalation": 4
+    }
+  }
+}

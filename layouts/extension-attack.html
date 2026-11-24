@@ -1,0 +1,129 @@
+{{- define "main" }}
+{{- $matrix := hugo.Data.extension_attack.matrix }}
+{{- $snapshot := hugo.Data.extension_attack.snapshot }}
+{{- $source := printf "%s/tree/%s" $snapshot.repository $snapshot.revision }}
+
+<div class="extension-attack" id="extension-attack">
+  <header class="ea-header">
+    <p class="ea-eyebrow">Browser extension tradecraft</p>
+    <h1>{{ .Title }}</h1>
+    <p class="ea-description">{{ .Description }}</p>
+    <p class="ea-snapshot">
+      v{{ $matrix.version }} &middot; {{ len $matrix.techniques }} techniques &middot; {{ len $matrix.tactics }} tactics
+    </p>
+    <div class="ea-links">
+      <a href="{{ $source }}" target="_blank" rel="noopener noreferrer">View source <span class="ea-revision">{{ substr $snapshot.revision 0 7 }}</span></a>
+      <a href="{{ $snapshot.repository }}/issues" target="_blank" rel="noopener noreferrer">Report an issue</a>
+    </div>
+  </header>
+
+  <div class="ea-controls">
+    <label class="ea-search">Search techniques
+      <input id="ea-search" type="search" placeholder="ID, name, API, permission, campaign or publisher" autocomplete="off">
+    </label>
+    <label>Status
+      <select id="ea-status">
+        <option value="">All statuses</option>
+        <option value="active">Active</option>
+        <option value="proposed">Proposed</option>
+      </select>
+    </label>
+    <label>Jump to tactic
+      <select id="ea-tactic" aria-controls="ea-board">
+        <option value="">Choose tactic</option>
+        {{- range sort $matrix.tactics "order" }}
+        <option value="{{ .id }}">{{ .name }}</option>
+        {{- end }}
+      </select>
+    </label>
+  </div>
+
+  <div class="ea-legend">
+    <span><span class="ea-status ea-status-active">Active: {{ $matrix.counts.by_status.active }}</span> public example</span>
+    <span><span class="ea-status ea-status-proposed">Proposed: {{ $matrix.counts.by_status.proposed }}</span> needs validation</span>
+  </div>
+  <p class="ea-help">Evidence status, not detection coverage. Select a technique for details.</p>
+  <div class="ea-summary">
+    <p class="ea-result" id="ea-result" role="status" aria-live="polite">{{ len $matrix.techniques }} of {{ len $matrix.techniques }} techniques</p>
+    <button class="ea-reset" id="ea-reset" type="button">Reset filters</button>
+  </div>
+  <p class="ea-error" id="ea-error" role="alert" hidden></p>
+  <noscript><p class="ea-error">JavaScript is required for search and technique details. The full matrix is listed below; the source link provides all records.</p></noscript>
+
+  <div class="ea-board" id="ea-board" role="region" aria-label="Browser extension technique matrix, scroll horizontally for more tactics" tabindex="0">
+    {{- range sort $matrix.tactics "order" }}
+    {{- $techniques := where $matrix.techniques "tactic" .name }}
+    <section class="ea-column" aria-labelledby="{{ .id }}">
+      <h2 id="{{ .id }}" tabindex="-1">{{ .name }} <span class="ea-column-count">{{ len $techniques }}</span></h2>
+      {{- range $techniques }}
+      <button class="ea-technique ea-{{ .status }}" type="button" data-open-technique="{{ .id }}" data-status="{{ .status }}">
+        <span class="ea-id">{{ .id }}</span>
+        <span>{{ .name }}</span>
+        <span class="ea-cell-status">{{ .status }}</span>
+      </button>
+      {{- end }}
+    </section>
+    {{- end }}
+  </div>
+  <p class="ea-empty" id="ea-empty" hidden>No techniques match these filters. Try another term or reset the filters.</p>
+  <footer class="ea-footer">
+    <p>Snapshot built {{ $snapshot.generated }} from <a href="{{ $source }}">Extension ATT&amp;CK</a>, maintained by Melted in Hex.
+      Taxonomy licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.</p>
+    <p>The <code>EXT-*</code> identifiers are project-specific. Not affiliated with or endorsed by MITRE. Detection ideas are not tested detection rules.</p>
+  </footer>
+
+  <dialog class="ea-dialog" id="ea-dialog" aria-label="Technique details">
+    <div class="ea-dialog-bar"><button id="ea-close" type="button" aria-label="Close technique details">Close &times;</button></div>
+    {{- range $matrix.techniques }}
+    <section class="ea-detail" data-detail="{{ .id }}" hidden>
+      <p class="ea-id">{{ .id }} &middot; {{ .tactic }}</p>
+      <h2 id="detail-{{ .id }}" tabindex="-1">{{ .name }}</h2>
+      <p><span class="ea-status ea-status-{{ .status }}">{{ .status }}</span></p>
+      <p>{{ .description }}</p>
+      {{- range slice (dict "label" "Platforms" "values" .platforms) (dict "label" "Installation paths" "values" .install_vectors) (dict "label" "APIs" "values" .apis) (dict "label" "Permissions" "values" .permissions) (dict "label" "Manifest / code patterns" "values" .manifest_fingerprint) (dict "label" "MITRE ATT&CK references" "values" .mitre_attack_xref) }}
+      {{- if .values }}
+      <div class="ea-field"><h3>{{ .label }}</h3>{{ range .values }}<code>{{ . }}</code>{{ end }}</div>
+      {{- end }}
+      {{- end }}
+      {{- with .scope_note }}<h3>Platform notes</h3><p>{{ . }}</p>{{ end }}
+      {{- with .real_world_examples }}
+      <h3>Public examples</h3>
+      {{- range . }}
+      <article class="ea-example">
+        <h4><a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .title }}</a></h4>
+        <p class="ea-example-meta">{{ .publisher }}{{ with .date }} &middot; {{ . }}{{ end }}</p>
+        {{- with .attribution }}<p>{{ . }}</p>{{ end }}
+      </article>
+      {{- end }}
+      {{- end }}
+      <h3>Detection ideas</h3>
+      <ul>{{ range .detection_ideas }}<li>{{ . }}</li>{{ end }}</ul>
+      {{- with .store_policy_violations }}
+      <h3>Store-policy notes</h3>
+      <ul>{{ range $store, $note := . }}<li><strong>{{ upper $store }}:</strong> {{ $note }}</li>{{ end }}</ul>
+      {{- end }}
+      {{- with .related }}
+      <h3>Related techniques</h3>
+      <div class="ea-related">
+        {{- range . }}
+        {{- $related := index (where $matrix.techniques "id" .) 0 }}
+        <button type="button" data-open-technique="{{ . }}"><span class="ea-id">{{ . }}</span><span>{{ $related.name }}</span></button>
+        {{- end }}
+      </div>
+      {{- end }}
+      {{- with .references }}
+      <h3>References</h3>
+      <ul class="ea-references">
+        {{- range . }}
+        <li>{{ if findRE `(?i)^https?://` . }}<a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ . }}</a>{{ else }}{{ . }}{{ end }}</li>
+        {{- end }}
+      </ul>
+      {{- end }}
+    </section>
+    {{- end }}
+  </dialog>
+</div>
+<script id="ea-data" type="application/json">{{ $matrix | jsonify | safeJS }}</script>
+{{- $script := resources.Get "js/extension-attack.js" | resources.Minify | fingerprint }}
+<script defer src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
+{{- end }}

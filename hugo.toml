@@ -97,6 +97,11 @@ minifyOutput = true
   url = "/wire/"
   weight = 22
 [[menu.main]]
+  identifier = "extension-attack"
+  name = "Extension ATT&CK"
+  url = "/extension-attack/"
+  weight = 24
+[[menu.main]]
   identifier = "tags"
   name = "Tags"
   url = "/tags/"

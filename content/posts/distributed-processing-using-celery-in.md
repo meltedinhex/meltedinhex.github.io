@@ -22,7 +22,7 @@ Celery is an asynchronous task queue based on distributed message passing. Tasks
 **Architecture:**  
   
 
-[![](/images/distributed-processing-using-celery-in/celery_architecture-d8d5269c.jpg)](/images/distributed-processing-using-celery-in/celery_architecture-d8d5269c.jpg)
+[![Celery architecture with clients sending tasks through a broker to workers](/images/distributed-processing-using-celery-in/celery_architecture-d8d5269c.jpg)](/images/distributed-processing-using-celery-in/celery_architecture-d8d5269c.jpg)
 
 Fig1 : Celery architecture
 
@@ -191,6 +191,6 @@ flower -A proj --port=5555
 
 Now, you can visit this URL http://localhost:5555 for monitoring celery clusters.  
   
-[![](/images/distributed-processing-using-celery-in/flower1-a83ec990.png)](/images/distributed-processing-using-celery-in/flower1-a83ec990.png)  
+[![Flower web interface for monitoring Celery workers and tasks](/images/distributed-processing-using-celery-in/flower1-a83ec990.png)](/images/distributed-processing-using-celery-in/flower1-a83ec990.png)  
 
 Fig2 : Celery Flower

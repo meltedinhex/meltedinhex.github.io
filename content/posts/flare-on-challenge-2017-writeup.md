@@ -68,7 +68,7 @@ Key : ClientSideLoginsAreEasy@flare-on.com
  **Challenge 2 : IgniteMe.exe**  
  This is a crackme challenge. It is a command line tool, takes an input from the user and checks whether it is correct or not.  
 In the function 401050, you can see where the input is processed by a XOR loop.  
-[![](/images/flare-on-challenge-2017-writeup/c2-56ca1bae.png)](/images/flare-on-challenge-2017-writeup/c2-56ca1bae.png)  
+[![IgniteMe function at 401050 processing the input with a reverse XOR loop](/images/flare-on-challenge-2017-writeup/c2-56ca1bae.png)](/images/flare-on-challenge-2017-writeup/c2-56ca1bae.png)  
   
 The XOR key is hardcoded, which is 0x4. This function XORs the input data with 0x4 in reverse order and compares it against the hardcoded encrypted data.  
 So, we have the encrypted data and encryption key, and we know the algorithm.  
@@ -97,7 +97,7 @@ When you reverse engineer the binary, you will see the buffer is transferred to 
 With the help of this character it performs some operation on data at 0x40107c.  
 You can see the code at 0x401029.  
   
-[![](/images/flare-on-challenge-2017-writeup/c3-a06831c6.png)](/images/flare-on-challenge-2017-writeup/c3-a06831c6.png)  
+[![greek_to_me code at 0x401029 transforming data with the received byte](/images/flare-on-challenge-2017-writeup/c3-a06831c6.png)](/images/flare-on-challenge-2017-writeup/c3-a06831c6.png)  
   
 To decrypt the data properly we need the correct input character.  
 We have to create a client for this binary, brute-force the input from 0 to 0xff and print the output.  
@@ -169,7 +169,7 @@ This loop checks the executable files in the directory, takes the timedatestamp 
   
 Look at the pseudo code of function2.  
   
-[![](/images/flare-on-challenge-2017-writeup/c4-1116eeb6.png)](/images/flare-on-challenge-2017-writeup/c4-1116eeb6.png)  
+[![Patched Notepad pseudocode selecting file data by timestamp and writing key.bin](/images/flare-on-challenge-2017-writeup/c4-1116eeb6.png)](/images/flare-on-challenge-2017-writeup/c4-1116eeb6.png)  
   
 It is comparing the timestamp of a file with a hardcoded value.  
 So if you check the timestamps of the first 4 challenges of Flare-On 2016, you will get the idea.  
@@ -177,7 +177,7 @@ Just put those 4 files in the directory and tweak notepad.exe to update its time
 After 4 executions we get the key.bin properly filled.  
 When you update notepad.exe with the last timestamp, you get the key.  
   
-[![](/images/flare-on-challenge-2017-writeup/c4b-b8abae98.png)](/images/flare-on-challenge-2017-writeup/c4b-b8abae98.png)  
+[![Challenge 4 key revealed after updating Notepad's timestamp](/images/flare-on-challenge-2017-writeup/c4b-b8abae98.png)](/images/flare-on-challenge-2017-writeup/c4b-b8abae98.png)  
   
 Key : bl457\_fr0m\_th3\_p457@flare-on.com  
   
@@ -242,7 +242,7 @@ Key : y0u\_\_sUnK\_mY\_\_P3Wp3w\_b04t@flare-on.com
  **Challenge 6 : payload.dll**  
  This DLL has only one export function named EntryPoint.  
 When we execute this function using rundll32, we get the below message box.  
-[![](/images/flare-on-challenge-2017-writeup/c6_msg-8f59cdab.png)](/images/flare-on-challenge-2017-writeup/c6_msg-8f59cdab.png)  
+[![payload.dll error dialog reading Insert clever error message here after execution with rundll32](/images/flare-on-challenge-2017-writeup/c6_msg-8f59cdab.png)](/images/flare-on-challenge-2017-writeup/c6_msg-8f59cdab.png)  
   
 Here is the hint; we have to provide some argument to this DLL.  
 Let's have a look at the code of the export function.  
@@ -252,12 +252,12 @@ When you break at this location, we can get the value to which our argument is c
 The argument is compared with "orphanedirreproducibleconfidence". Let's change the argument value and make this condition satisfied.  
 So in the last it shows a message box with the key part of 1 byte.  
   
-[![](/images/flare-on-challenge-2017-writeup/msgbox-e7d3f2b6.jpg)](/images/flare-on-challenge-2017-writeup/msgbox-e7d3f2b6.jpg)  
+[![Key-part message box revealing key index 25 as 0x6d](/images/flare-on-challenge-2017-writeup/msgbox-e7d3f2b6.jpg)](/images/flare-on-challenge-2017-writeup/msgbox-e7d3f2b6.jpg)  
   
 Now let's go back in reverse, to where this argument value is coming from.  
 The answer is in the function at 0x180005D30; let's check the pseudo code of this function.  
   
-[![](/images/flare-on-challenge-2017-writeup/c6_source-20450da6.png)](/images/flare-on-challenge-2017-writeup/c6_source-20450da6.png)  
+[![payload.dll pseudocode deriving the key index and argument used in the comparison](/images/flare-on-challenge-2017-writeup/c6_source-20450da6.png)](/images/flare-on-challenge-2017-writeup/c6_source-20450da6.png)  
   
 So, the index 25 is coming from sub\_180004760(); it gives the value 25 if executed in September.  
 For the argument value, let's check sub\_180005C40()  

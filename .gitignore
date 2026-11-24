@@ -2,6 +2,11 @@
 /public/
 /resources/_gen/
 .hugo_build.lock
+node_modules/
+test-results/
+playwright-report/
+.test-resources/
+.test-cache/
 
 # OS / editor
 .DS_Store

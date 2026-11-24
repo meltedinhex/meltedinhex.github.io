@@ -276,7 +276,7 @@
   border-color: var(--mh-border-strong, rgba(255, 138, 46, 0.40));
   transform: translateY(-2px);
 }
-.wire-card:focus-visible {
+.wire-card:focus-within {
   outline: 2px solid var(--mh-orange, #ff7a18);
   outline-offset: 2px;
 }
@@ -287,7 +287,7 @@
   transition: opacity 0.14s ease;
 }
 .wire-card:hover .wire-open,
-.wire-card:focus-visible .wire-open { opacity: 1; }
+.wire-card:focus-within .wire-open { opacity: 1; }
 .wire-card.sev-critical { border-left-color: #ff5a4d; }
 .wire-card.sev-high { border-left-color: var(--mh-orange, #ff7a18); }
 .wire-card.sev-medium { border-left-color: var(--mh-amber, #ffd24a); }
@@ -472,35 +472,38 @@
 /* ---- Threat dossier drawer ---- */
 body.wire-locked { overflow: hidden; }
 
-.wire-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
+.wire-dossier::backdrop {
   background: rgba(6, 5, 10, 0.72);
   backdrop-filter: blur(3px);
-  opacity: 0;
-  transition: opacity 0.22s ease;
 }
-.wire-overlay.show { opacity: 1; }
 
 .wire-dossier {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 1001;
+  left: auto;
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
   width: min(680px, 94vw);
-  height: 100%;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  color: var(--mh-text);
   background: var(--mh-bg-2, #0f0d15);
   border-left: 1px solid var(--mh-border-strong, rgba(255, 138, 46, 0.40));
   box-shadow: -30px 0 80px -30px rgba(0, 0, 0, 0.8);
-  transform: translateX(100%);
-  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   flex-direction: column;
   outline: none;
 }
-.wire-dossier.show { transform: translateX(0); }
+.wire-dossier:not([open]) { display: none; }
 .wire-dossier-inner { display: flex; flex-direction: column; height: 100%; }
+.wire-d-scroll { min-height: 0; }
+.wire-more { display: block; margin: 24px auto; }
+#wireError, #wireCopyStatus { color: var(--mh-muted); font-size: 0.9rem; }
+#wireCopyStatus:empty { display: none; }
 
 .wire-d-head {
   position: relative;
@@ -744,8 +747,21 @@ body.wire-locked { overflow: hidden; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wire-dossier, .wire-overlay { transition: none; }
+  .wire-dossier { transition: none; }
 }
+
+:root[data-theme="light"] .wire-chip.is-active,
+:root[data-theme="light"] .wire-heat-n,
+:root[data-theme="light"] .wire-sev,
+:root[data-theme="light"] .wire-ioc-group h4 span { color: #fff; }
+:root[data-theme="light"] .wire-chip.sev-critical.is-active,
+:root[data-theme="light"] .sev-critical .wire-sev { background: #b42318; border-color: #b42318; }
+:root[data-theme="light"] .sev-low .wire-sev { background: #21663f; }
+:root[data-theme="light"] .wire-conf-pct.hi,
+:root[data-theme="light"] .wire-ioc-btn.ok { color: #21663f; }
+:root[data-theme="light"] .wire-conf-pct.lo,
+:root[data-theme="light"] .wire-tag.cve { color: #a32919; }
+:root[data-theme="light"] .wire-tag.act { color: #69419c; }
 
 @media (max-width: 720px) {
   .wire-grid { grid-template-columns: 1fr; }

@@ -103,12 +103,12 @@ The main wrapper of this ransomware is below.
 It checks for a file encrypted\_files.txt in %APPDATA%; if it is not there, it will proceed with the encryption.  
 It initializes the encryption key, finds the specified files for encryption, encrypts them, makes an entry for each encrypted file in encrypted\_files.txt, and displays a GUI form.  
   
-[![](/images/analysis-of-noblis-in-dev-ransomware/encryptd_files-465efca0.png)](/images/analysis-of-noblis-in-dev-ransomware/encryptd_files-465efca0.png)  
+[![Noblis Encrypted Files window listing affected file paths](/images/analysis-of-noblis-in-dev-ransomware/encryptd_files-465efca0.png)](/images/analysis-of-noblis-in-dev-ransomware/encryptd_files-465efca0.png)  
   
 The ransomware has an independent configuration file (runtime.cfg) which is loaded at runtime.  
 The configuration file has the encrypted file extension, ransom note, file types to be encrypted, BTC amount, wallet address, etc.  
   
-[![](/images/analysis-of-noblis-in-dev-ransomware/configfile-628394d3.jpg)](/images/analysis-of-noblis-in-dev-ransomware/configfile-628394d3.jpg)  
+[![Noblis runtime.cfg settings for file extensions, ransom text, Bitcoin amount and wallet](/images/analysis-of-noblis-in-dev-ransomware/configfile-628394d3.jpg)](/images/analysis-of-noblis-in-dev-ransomware/configfile-628394d3.jpg)  
   
 Here, the wallet address is invalid; that's why we are calling it in-development ransomware.  
 The ransom note is in Spanish and it points to a handle @4v4t4r.  
@@ -182,10 +182,10 @@ If key.txt is not present in the current directory, it will generate an AES key 
 The first 16 bytes of every encrypted file is the IV, and the rest is encrypted with this IV and the key stored in key.txt.  
   
 After encryption of every file, it will start a GUI panel shown below.  
-[![](/images/analysis-of-noblis-in-dev-ransomware/showdialog-f25d1c15.png)](/images/analysis-of-noblis-in-dev-ransomware/showdialog-f25d1c15.png)  
+[![Noblis ransom interface displayed after file encryption](/images/analysis-of-noblis-in-dev-ransomware/showdialog-f25d1c15.png)](/images/analysis-of-noblis-in-dev-ransomware/showdialog-f25d1c15.png)  
   
 Decryption tool -  
-[![](/images/analysis-of-noblis-in-dev-ransomware/decryption_-09a06588.png)](/images/analysis-of-noblis-in-dev-ransomware/decryption_-09a06588.png)  
+[![Noblis file decryption tool interface](/images/analysis-of-noblis-in-dev-ransomware/decryption_-09a06588.png)](/images/analysis-of-noblis-in-dev-ransomware/decryption_-09a06588.png)  
   
 The ransomware has the code for RSA encryption but it is not used here; maybe it will come with RSA encryption in the next version.  
   

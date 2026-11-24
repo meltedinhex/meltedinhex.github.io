@@ -37,19 +37,19 @@ The sample drops the following files in the Temp directory on execution:
 2. BAT file :  Created by itself  
 3. TXT file : Created by itself  
 
-[![](/images/analysis-of-ransomware-spread-by/workflow-33bac296.png)](/images/analysis-of-ransomware-spread-by/workflow-33bac296.png)
+[![Workflow of the JavaScript sample dropping executable, batch and ransom-note files](/images/analysis-of-ransomware-spread-by/workflow-33bac296.png)](/images/analysis-of-ransomware-spread-by/workflow-33bac296.png)
 
 Fig1 : Workflow of JavaScript sample
 
 Content of JS file before the de-obfuscation is as follows:
 
-[![](/images/analysis-of-ransomware-spread-by/obfuscated_js-cfdac258.png)](/images/analysis-of-ransomware-spread-by/obfuscated_js-cfdac258.png)  
+[![Obfuscated JavaScript sample before decoding](/images/analysis-of-ransomware-spread-by/obfuscated_js-cfdac258.png)](/images/analysis-of-ransomware-spread-by/obfuscated_js-cfdac258.png)  
 
 Fig2 : Obfuscated JS code
 
 After de-obfuscation and decryption of the above code looks like as follows:
 
-[![](/images/analysis-of-ransomware-spread-by/deobfuscated_js-95e036c0.png)](/images/analysis-of-ransomware-spread-by/deobfuscated_js-95e036c0.png)
+[![Deobfuscated JavaScript that downloads and executes the ransomware payload](/images/analysis-of-ransomware-spread-by/deobfuscated_js-95e036c0.png)](/images/analysis-of-ransomware-spread-by/deobfuscated_js-95e036c0.png)
 
 Fig3 : Deobfuscated JS script
 
@@ -68,13 +68,13 @@ File size :  15.93 KB (16317 bytes)
 The Batch file is created by JavaScript file and dropped into the Temp directory.  
   
 
-[![](/images/analysis-of-ransomware-spread-by/js_code_to_create_bat-c9ecaf11.png)](/images/analysis-of-ransomware-spread-by/js_code_to_create_bat-c9ecaf11.png)
+[![JavaScript code creating the batch file in the Temp directory](/images/analysis-of-ransomware-spread-by/js_code_to_create_bat-c9ecaf11.png)](/images/analysis-of-ransomware-spread-by/js_code_to_create_bat-c9ecaf11.png)
 
 Fig4 : JavaScript code for creating BAT file
 
 After the creation of batch file, it looks like:
 
-[![](/images/analysis-of-ransomware-spread-by/bat-file-c30a0372.png)](/images/analysis-of-ransomware-spread-by/bat-file-c30a0372.png)
+[![Batch script loops passing matching files on each drive to _crypt.exe](/images/analysis-of-ransomware-spread-by/bat-file-c30a0372.png)](/images/analysis-of-ransomware-spread-by/bat-file-c30a0372.png)
 
 Fig5 : BAT file snippet
 
@@ -98,19 +98,19 @@ It calls the executable file (\_crypt.exe) for each file on the disk.
 After the encryption, it deletes the executable file (\_crypt.exe) from the Temp directory and starts the text file (\_readme.txt).  
   
 
-[![](/images/analysis-of-ransomware-spread-by/batsnipp-f1b7ef6d.png)](/images/analysis-of-ransomware-spread-by/batsnipp-f1b7ef6d.png)
+[![Batch commands deleting _crypt.exe and opening _readme.txt after encryption](/images/analysis-of-ransomware-spread-by/batsnipp-f1b7ef6d.png)](/images/analysis-of-ransomware-spread-by/batsnipp-f1b7ef6d.png)
 
   
   
 Text file has ransom note, it ask for 0.5 BTC to decrypt the files.  
   
-[![](/images/analysis-of-ransomware-spread-by/ransom_note-e17906d6.jpg)](/images/analysis-of-ransomware-spread-by/ransom_note-e17906d6.jpg)
+[![Ransom note requesting 0.5 BTC to decrypt the files](/images/analysis-of-ransomware-spread-by/ransom_note-e17906d6.jpg)](/images/analysis-of-ransomware-spread-by/ransom_note-e17906d6.jpg)
 
 Fig7 : Ransom note
 
 At the end, the batch file makes a run entry for the above text file (\_readme.txt) and deletes itself from the Temp directory.
 
-[![](/images/analysis-of-ransomware-spread-by/runentry-f3e2c0f2.png)](/images/analysis-of-ransomware-spread-by/runentry-f3e2c0f2.png)
+[![Batch code adding a Run entry to display _readme.txt at startup](/images/analysis-of-ransomware-spread-by/runentry-f3e2c0f2.png)](/images/analysis-of-ransomware-spread-by/runentry-f3e2c0f2.png)
 
 Fig8 : Run entry of ransom note
 
@@ -128,12 +128,12 @@ The executable file is an encryption tool which encrypts a file passed via its p
 The sample reads a file, encrypts it with the following encryption logic, and writes the file with the same extension:  
   
 
-[![](/images/analysis-of-ransomware-spread-by/encryptionlogic-f44f4948.png)](/images/analysis-of-ransomware-spread-by/encryptionlogic-f44f4948.png)
+[![Encryption routine used by _crypt.exe on the file passed as its argument](/images/analysis-of-ransomware-spread-by/encryptionlogic-f44f4948.png)](/images/analysis-of-ransomware-spread-by/encryptionlogic-f44f4948.png)
 
 Fig9 : Encryption routine
 
 Where, the key is directly present in a .data section of the sample, size of key is 0xFF bytes.
-[![](/images/analysis-of-ransomware-spread-by/encrypkey-11552811.png)](/images/analysis-of-ransomware-spread-by/encrypkey-11552811.png)
+[![Hardcoded 0xFF-byte encryption key in the executable's .data section](/images/analysis-of-ransomware-spread-by/encrypkey-11552811.png)](/images/analysis-of-ransomware-spread-by/encrypkey-11552811.png)
 
 Fig10 : Encryption key shown in data section
 

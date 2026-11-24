@@ -27,7 +27,7 @@ Size  : 48128 bytes
   
 When we execute this sample, the following dialog box will appear.  
   
-[![](/images/analysis-of-lockcrypt-ransomware/lock_run-832d9973.png)](/images/analysis-of-lockcrypt-ransomware/lock_run-832d9973.png)  
+[![Dialog displayed after executing the LockCrypt sample](/images/analysis-of-lockcrypt-ransomware/lock_run-832d9973.png)](/images/analysis-of-lockcrypt-ransomware/lock_run-832d9973.png)  
 Fig1 : Window after execution of malware  
 
 **Environment Setup :**  
@@ -69,7 +69,7 @@ After processes termination, it calls the DialogBoxParamA Windows API.
 It is abusing the Windows API to execute a malicious procedure.  
   
 You can see the below code.  
-[![](/images/analysis-of-lockcrypt-ransomware/dlgbx_abuse-8577ce0c.png)](/images/analysis-of-lockcrypt-ransomware/dlgbx_abuse-8577ce0c.png)  
+[![Disassembly calling DialogBoxParamA with the malicious dialog callback](/images/analysis-of-lockcrypt-ransomware/dlgbx_abuse-8577ce0c.png)](/images/analysis-of-lockcrypt-ransomware/dlgbx_abuse-8577ce0c.png)  
 Fig2 : DialogBoxParamA function call  
   
 Here we have a callback function for the dialog box, so we will not skip this API.  
@@ -81,7 +81,7 @@ First it uses ShellExecute to run the following command to delete backup storage
 After that it creates a "Hacked" subkey in the following registry key.  
 "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"  
   
-[![](/images/analysis-of-lockcrypt-ransomware/registry_hacked-6440695a.png)](/images/analysis-of-lockcrypt-ransomware/registry_hacked-6440695a.png)  
+[![Code storing the victim ID under Hacked in the Winlogon registry key](/images/analysis-of-lockcrypt-ransomware/registry_hacked-6440695a.png)](/images/analysis-of-lockcrypt-ransomware/registry_hacked-6440695a.png)  
 Fig3 : Storing victim id in registry  
   
 By default it initializes the value of "Hacked" as "SfplHinIptOwnboa".  
@@ -95,11 +95,11 @@ Userinit = "C:\Windows\system32\userinit.exe, C:\Windows\bfsvcm.exe"
   
 This is for displaying a message on the logon screen of the user's system.  
   
-[![](/images/analysis-of-lockcrypt-ransomware/winlogon-90ddfefe.jpg)](/images/analysis-of-lockcrypt-ransomware/winlogon-90ddfefe.jpg)  
+[![Windows logon notice warning that files are encrypted and referring to Readme](/images/analysis-of-lockcrypt-ransomware/winlogon-90ddfefe.jpg)](/images/analysis-of-lockcrypt-ransomware/winlogon-90ddfefe.jpg)  
 Fig4 : Logon screen  
   
 You can see the registry of my infected system.  
-[![](/images/analysis-of-lockcrypt-ransomware/registry-4d870c82.png)](/images/analysis-of-lockcrypt-ransomware/registry-4d870c82.png)  
+[![Infected system Winlogon registry values for the ransom notice and bfsvcm.exe startup](/images/analysis-of-lockcrypt-ransomware/registry-4d870c82.png)](/images/analysis-of-lockcrypt-ransomware/registry-4d870c82.png)  
 Fig5 : Registry of infected system  
 
 **Encryption Process :**  
@@ -127,14 +127,14 @@ unsigned int sub_401AC7()
   
 After creating and assigning the id to the registry, the ransomware will send the base64 encoded victim information to the command and control server.  
   
-[![](/images/analysis-of-lockcrypt-ransomware/packet_info-9c29fb11.jpg)](/images/analysis-of-lockcrypt-ransomware/packet_info-9c29fb11.jpg)  
+[![Network packet sending Base64-encoded victim information to the LockCrypt server](/images/analysis-of-lockcrypt-ransomware/packet_info-9c29fb11.jpg)](/images/analysis-of-lockcrypt-ransomware/packet_info-9c29fb11.jpg)  
 Fig6 : Packet sent to C2 server  
   
 The IP address of the server is 46.32.17[.]222 and the format of the information sent to the server is:  
 Victim\_ID | Operating\_System | System | Malware\_Location  
   
 When the server gets this information, it sends huge data in response.  
-[![](/images/analysis-of-lockcrypt-ransomware/server_resp-e8eac3ce.jpg)](/images/analysis-of-lockcrypt-ransomware/server_resp-e8eac3ce.jpg)  
+[![Server response containing data used by the LockCrypt encryption routine](/images/analysis-of-lockcrypt-ransomware/server_resp-e8eac3ce.jpg)](/images/analysis-of-lockcrypt-ransomware/server_resp-e8eac3ce.jpg)  
 Fig7 : Server response after getting victim's info  
   
 This data is unique and depends on the victim's information, and it plays a major role in the encryption process.  
@@ -208,7 +208,7 @@ File extension : [base64 of filename] ID [Victim ID].lock
 It drops ReadMe.TxT in C:\ which is a ransom note, and makes a run entry for the same to execute it on startup.  
 Microsoft Windows Operating System = "C:\Windows\notepad.exe C:\ReadMe.TxT"  
   
-[![](/images/analysis-of-lockcrypt-ransomware/ransom_note-87717604.png)](/images/analysis-of-lockcrypt-ransomware/ransom_note-87717604.png)  
+[![LockCrypt ransom note dropped as C:\ReadMe.TxT](/images/analysis-of-lockcrypt-ransomware/ransom_note-87717604.png)](/images/analysis-of-lockcrypt-ransomware/ransom_note-87717604.png)  
 Fig8 : Ransom note (ReadMe.TxT)  
   
 

@@ -1,0 +1,31 @@
+{{- $publisher := dict "@type" "Organization" "@id" (printf "%s#publisher" site.Home.Permalink) "name" site.Title "url" site.Home.Permalink "logo" (dict "@type" "ImageObject" "url" (site.Params.assets.favicon | default "favicon.ico" | absURL)) }}
+{{- $authorURL := site.Params.schema.authorURL | default "/about/" | absURL }}
+{{- $person := dict "@type" "Person" "@id" (printf "%s#author" $authorURL) "name" site.Params.author "url" $authorURL }}
+{{- with site.Params.schema.authorSameAs }}{{ $person = merge $person (dict "sameAs" .) }}{{ end }}
+{{- $schema := dict "@context" "https://schema.org" "@type" "WebPage" "name" .Title "url" .Permalink "inLanguage" .Language.Locale "publisher" $publisher }}
+{{- if .IsHome }}
+  {{- $schema = merge $schema (dict "@type" "WebSite" "description" site.Params.description) }}
+{{- else if eq .RelPermalink (site.Params.schema.authorURL | default "/about/" | relURL) }}
+  {{- $schema = merge $schema (dict "@type" "AboutPage" "mainEntity" $person "about" $person) }}
+{{- else if and .IsPage (eq .Section "posts") }}
+  {{- $authors := slice }}
+  {{- $names := .Params.author | default site.Params.author }}
+  {{- if not (reflect.IsSlice $names) }}{{ $names = slice $names }}{{ end }}
+  {{- range $names }}
+    {{- $author := dict "@type" "Person" "name" . }}
+    {{- if eq . site.Params.author }}{{ $author = $person }}{{ end }}
+    {{- $authors = $authors | append $author }}
+  {{- end }}
+  {{- $schema = merge $schema (dict "@type" "BlogPosting" "headline" (.Title | plainify) "description" (.Description | default .Summary | plainify) "articleBody" (.Plain | htmlUnescape) "wordCount" .WordCount "keywords" (.Params.keywords | default .Params.tags | default (slice)) "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00") "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00") "author" $authors "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)) }}
+  {{- $images := partial "templates/_funcs/get-page-images" . }}
+  {{- with index $images 0 }}{{ $schema = merge $schema (dict "image" .Permalink) }}{{ end }}
+{{- end }}
+<script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>
+{{- if not .IsHome }}
+  {{- $items := slice }}
+  {{- range .Ancestors.Reverse }}
+    {{- $items = $items | append (dict "@type" "ListItem" "position" (add (len $items) 1) "name" .Title "item" .Permalink) }}
+  {{- end }}
+  {{- $items = $items | append (dict "@type" "ListItem" "position" (add (len $items) 1) "name" .Title "item" .Permalink) }}
+  <script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items | jsonify | safeJS }}</script>
+{{- end }}

@@ -30,7 +30,7 @@ I have used the [Jd-gui tool](https://github.com/java-decompiler/jd-gui/releases
   
   
 
-[![](/images/flare-on-challenge-2018-writeup/code-745d3572.jpg)](/images/flare-on-challenge-2018-writeup/code-745d3572.jpg)
+[![Decompiled Java invitation-code check comparing the input with a hardcoded key](/images/flare-on-challenge-2018-writeup/code-745d3572.jpg)](/images/flare-on-challenge-2018-writeup/code-745d3572.jpg)
 
   
  key : GoldenTicket2018@flare-on.com  
@@ -42,18 +42,18 @@ I have used the [Jd-gui tool](https://github.com/java-decompiler/jd-gui/releases
 I have solved this challenge statically.  
 The zip contains 48 PE files and each one asks for a password. If you enter anything wrong, it displays "Go step on a brick!". So I loaded one file in CFF and found a resource named "BRICK".  
 
-[![](/images/flare-on-challenge-2018-writeup/resource-0c4df235.jpg)](/images/flare-on-challenge-2018-writeup/resource-0c4df235.jpg)
+[![FLEGGO executable's BRICK resource inspected in CFF Explorer](/images/flare-on-challenge-2018-writeup/resource-0c4df235.jpg)](/images/flare-on-challenge-2018-writeup/resource-0c4df235.jpg)
 
   
  This BRICK is different in each file, so I entered the ASCII of the first 20 bytes from the same file in place of a password. Yes, I guessed it right :)  
 
-[![](/images/flare-on-challenge-2018-writeup/pass-5f510a11.jpg)](/images/flare-on-challenge-2018-writeup/pass-5f510a11.jpg)
+[![FLEGGO accepting the password and associating its dropped PNG with the character w](/images/flare-on-challenge-2018-writeup/pass-5f510a11.jpg)](/images/flare-on-challenge-2018-writeup/pass-5f510a11.jpg)
 
   
    
  When we enter the correct password, it drops a PNG file and displays a character associated with it. Here we have "w" and the associated PNG file looks like below.  
 
-[![](/images/flare-on-challenge-2018-writeup/w_13147895-fa369911.png)](/images/flare-on-challenge-2018-writeup/w_13147895-fa369911.png)
+[![FLEGGO brick illustration numbered 23, placing the associated character w at that key position](/images/flare-on-challenge-2018-writeup/w_13147895-fa369911.png)](/images/flare-on-challenge-2018-writeup/w_13147895-fa369911.png)
 
 So this means the 23rd character of our key will be "w".
 
@@ -87,7 +87,7 @@ This is a Confuser-packed .NET binary. After execution, it drops a DLL in %APPDA
 
 When you debug standalone DLL with ollydbg, you will find below code.
 
-[![](/images/flare-on-challenge-2018-writeup/4_1-c04c8735.png)](/images/flare-on-challenge-2018-writeup/4_1-c04c8735.png)
+[![browserassist.dll code checking the parent process name and version before starting a thread](/images/flare-on-challenge-2018-writeup/4_1-c04c8735.png)](/images/flare-on-challenge-2018-writeup/4_1-c04c8735.png)
 
 The first function calculates the crc32 of the parent process name and compares it with some hard-coded value. So this DLL must be injected into some specific process; the hint is already given in the instructions, like "especially if they are a Firefox user". So if you replace loaddll.exe with firefox.exe then the checksum will definitely match.
 
@@ -97,7 +97,7 @@ If both these functions succeed, it will create a thread to proceed further.
 
 This thread downloads base64 encoded and encrypted data from the URL hxxp://pastebin.com/raw/hvaru8NU and decodes and decrypts it using the RC4 algorithm with the key md5("FL@R3ON.EXE"). The decrypted code is a JSON file which looks like below.
 
-[![](/images/flare-on-challenge-2018-writeup/json-78347d59.jpg)](/images/flare-on-challenge-2018-writeup/json-78347d59.jpg)
+[![Decrypted JSON defining web-injection code and content for flare-on.com](/images/flare-on-challenge-2018-writeup/json-78347d59.jpg)](/images/flare-on-challenge-2018-writeup/json-78347d59.jpg)
 
 This is a web injection technique similar to [TinyNuke malware](https://www.bitsighttech.com/blog/break-out-of-the-tinynuke-botnet). At the last, the DLL injects this JSON into Firefox. If the webpage contains the "code" section shown in the JSON, then it will be replaced by the "content" section. At the end of this JSON file, the host and file path are already given.
 
@@ -137,7 +137,7 @@ I appended the parameter in the URL like ?q="abcdefgh" and checked where this pa
 
 It was comparing each byte of the parameter with some value, I set a breakpoint at the comparison and recorded each value.
 
-[![](/images/flare-on-challenge-2018-writeup/wasm_comp-7e51904d.jpg)](/images/flare-on-challenge-2018-writeup/wasm_comp-7e51904d.jpg)
+[![Firefox WebAssembly debugger at 0xBF2 comparing input bytes with constant values](/images/flare-on-challenge-2018-writeup/wasm_comp-7e51904d.jpg)](/images/flare-on-challenge-2018-writeup/wasm_comp-7e51904d.jpg)
 
 0xBF2 is where it is comparing parameters with constant values.
 
@@ -145,7 +145,7 @@ Key : wasm\_rulez\_js\_droolz@flare-on.com
 
 **Challenge 6** :**magic**
 
-**[![](/images/flare-on-challenge-2018-writeup/6_1-5d1bdb04.jpg)](/images/flare-on-challenge-2018-writeup/6_1-5d1bdb04.jpg)**
+**[![Challenge 6 loop that modifies the magic file across 666 iterations](/images/flare-on-challenge-2018-writeup/6_1-5d1bdb04.jpg)](/images/flare-on-challenge-2018-writeup/6_1-5d1bdb04.jpg)**
 
 **This loop runs 666 times and it changes the magic file in every iteration.
 

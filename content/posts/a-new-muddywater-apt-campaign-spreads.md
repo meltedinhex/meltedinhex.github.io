@@ -36,27 +36,27 @@ https://twitter.com/360TIC/status/1081080752438009856
 
 https://www.virustotal.com/#/file/c873532e009f2fc7d3b111636f3bbaa307465e5a99a7f4386bebff2ef8a37a20/detection
 
-![](/images/a-new-muddywater-apt-campaign-spreads/doc1-85a3eec5.png)
+![Malicious Word document with a blurred identity document and a macros-disabled security warning](/images/a-new-muddywater-apt-campaign-spreads/doc1-85a3eec5.png)
 
 The document has obfuscated macro code which contains encrypted binary data. On execution, it decrypts the data, drops files and executes them.
 
 The decryption function used in VBS macro is shown below.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/decrypt_macro-f9b0c3dd.png)](/images/a-new-muddywater-apt-campaign-spreads/decrypt_macro-f9b0c3dd.png)
+[![Macro function used to decrypt the embedded binary data](/images/a-new-muddywater-apt-campaign-spreads/decrypt_macro-f9b0c3dd.png)](/images/a-new-muddywater-apt-campaign-spreads/decrypt_macro-f9b0c3dd.png)
 
 With the help of this function, it decrypts line(0) of the code shown in the below image, which is nothing but the header of a PE file.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/file1_enc-37d5b560.png)](/images/a-new-muddywater-apt-campaign-spreads/file1_enc-37d5b560.png)
+[![Encrypted macro data whose first line decodes to a PE header](/images/a-new-muddywater-apt-campaign-spreads/file1_enc-37d5b560.png)](/images/a-new-muddywater-apt-campaign-spreads/file1_enc-37d5b560.png)
 
 The macro concatenates the above lines, converts them to ASCII, and stores it at "C:\users\public" with the name "temp\_rt\_32.exe".
 
 After that, it concatenates another piece of code shown below and stores it at the same location with the name "Data.zip"
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/file2_enc-03ff56c0.png)](/images/a-new-muddywater-apt-campaign-spreads/file2_enc-03ff56c0.png)
+[![Embedded macro data concatenated and saved as Data.zip](/images/a-new-muddywater-apt-campaign-spreads/file2_enc-03ff56c0.png)](/images/a-new-muddywater-apt-campaign-spreads/file2_enc-03ff56c0.png)
 
 Location - C:\Users\Public
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/drop_location-9f084ea4.png)](/images/a-new-muddywater-apt-campaign-spreads/drop_location-9f084ea4.png)
+[![Files dropped by the macro in C:\Users\Public](/images/a-new-muddywater-apt-campaign-spreads/drop_location-9f084ea4.png)](/images/a-new-muddywater-apt-campaign-spreads/drop_location-9f084ea4.png)
 
 After that, the document uses ShellExecute to run temp\_rt\_32.exe and exits itself.
 
@@ -66,9 +66,9 @@ temp\_rt\_32.exe is a UPX packed Delphi file. On execution, it extracts the data
 
 And then it imports the UP.txt file to the registry, which is nothing but the RUN entry of GoogleUpdate.exe with the name DVRStudio, and exits itself.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/datazip-5f7ac659.png)](/images/a-new-muddywater-apt-campaign-spreads/datazip-5f7ac659.png)
+[![Data.zip contents including GoogleUpdate.exe, temp_gh_12.dat and UP.txt](/images/a-new-muddywater-apt-campaign-spreads/datazip-5f7ac659.png)](/images/a-new-muddywater-apt-campaign-spreads/datazip-5f7ac659.png)
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/reg-d00a20c0.png)](/images/a-new-muddywater-apt-campaign-spreads/reg-d00a20c0.png)
+[![Registry data establishing a DVRStudio Run entry for GoogleUpdate.exe](/images/a-new-muddywater-apt-campaign-spreads/reg-d00a20c0.png)](/images/a-new-muddywater-apt-campaign-spreads/reg-d00a20c0.png)
 
 **GoogleUpdate.exe :**
 
@@ -82,17 +82,17 @@ ID = base64\_encode(username\_volumeserialnumber)
 
 After that, it checks internet connectivity by resolving google.com. If it returns true, it will do the malicious activity, otherwise it will wait for 5 min.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/internet_chk-7ee345c6.png)](/images/a-new-muddywater-apt-campaign-spreads/internet_chk-7ee345c6.png)
+[![Internet connectivity check resolving google.com and waiting on failure](/images/a-new-muddywater-apt-campaign-spreads/internet_chk-7ee345c6.png)](/images/a-new-muddywater-apt-campaign-spreads/internet_chk-7ee345c6.png)
 
 If the internet is connected, then it reads "C:\Users\Public\temp\_gh\_12.dat" which has the following encoded data.
 
 "NAAbYiYadQF4QQAAMXo2Oic7CT4nORx/N3oYKwReWSMEMwAuCGxlX3ZUYmEHEh4+Gz0RPxgVBi8QYBY/aWITJQQGImZ2Y1cLdncHIQ8iHywJMhAgHxgfJRx1GUlvEhl9HRIIUG1wclB9Zw8/AiwQPQYCDmMCOBxv"
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/url_decode-92fdd895.png)](/images/a-new-muddywater-apt-campaign-spreads/url_decode-92fdd895.png)
+[![Function decoding the URL stored in temp_gh_12.dat using Base64 and XOR](/images/a-new-muddywater-apt-campaign-spreads/url_decode-92fdd895.png)](/images/a-new-muddywater-apt-campaign-spreads/url_decode-92fdd895.png)
 
 The above function will Base64 decode the data of temp\_gh\_12.dat, XOR the decoded data with the hardcoded key and then again Base64 decode the decrypted data.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/xor-f0aff5a5.png)](/images/a-new-muddywater-apt-campaign-spreads/xor-f0aff5a5.png)
+[![XOR routine using the hardcoded key UHIRER874893UIUOFUGHEWROUIRGH35](/images/a-new-muddywater-apt-campaign-spreads/xor-f0aff5a5.png)](/images/a-new-muddywater-apt-campaign-spreads/xor-f0aff5a5.png)
 
 Here the key is "UHIRER874893UIUOFUGHEWROUIRGH35"
 
@@ -102,7 +102,7 @@ hxxps://www.jsonstore.io/4de4d6d84d17638b3cd0eaf18857784aff27501be7d3dd89fad2b7a
 
 The sample downloads the JSON file from the above URL and gets the URL of the CnC server.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/cnc_urls-c88f739e.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_urls-c88f739e.png)
+[![JSON response containing two candidate command-and-control URLs](/images/a-new-muddywater-apt-campaign-spreads/cnc_urls-c88f739e.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_urls-c88f739e.png)
 
 Above jsonstore api has two CnC URLs. The sample will parse these URLs and proceed with the active one.
 
@@ -118,15 +118,15 @@ The sample reads this info from the file and sends it to the CnC server at the b
 
 hxxp://shopcloths.ddns.net/users.php?tname=id\_UniqueID&path=Users
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/info_sent-990dd469.png)](/images/a-new-muddywater-apt-campaign-spreads/info_sent-990dd469.png)
+[![HTTP POST uploading encoded and encrypted machine information to the command-and-control server](/images/a-new-muddywater-apt-campaign-spreads/info_sent-990dd469.png)](/images/a-new-muddywater-apt-campaign-spreads/info_sent-990dd469.png)
 
 The sample has a Base64 encoded and XOR encrypted PowerShell script which is decrypted by the same encryption and encoding method described above.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/enc_powershell-02672e55.png)](/images/a-new-muddywater-apt-campaign-spreads/enc_powershell-02672e55.png)
+[![Embedded Base64-encoded and XOR-encrypted PowerShell script](/images/a-new-muddywater-apt-campaign-spreads/enc_powershell-02672e55.png)](/images/a-new-muddywater-apt-campaign-spreads/enc_powershell-02672e55.png)
 
 The decrypted PowerShell script looks like below.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/ps_script-cfd15241.png)](/images/a-new-muddywater-apt-campaign-spreads/ps_script-cfd15241.png)
+[![Decrypted PowerShell script collecting usernames, environment variables, services and network information](/images/a-new-muddywater-apt-campaign-spreads/ps_script-cfd15241.png)](/images/a-new-muddywater-apt-campaign-spreads/ps_script-cfd15241.png)
 
 The first function of the script gives all the usernames available in the system.
 
@@ -140,11 +140,11 @@ After that, it reads the same file and sends it to the CnC server at the below l
 
 hxxp://shopcloths.ddns.net/users.php?tname=res\_uniqueID.frk&path=Data
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/post_info-3514f1ed.png)](/images/a-new-muddywater-apt-campaign-spreads/post_info-3514f1ed.png)
+[![HTTP POST uploading the encrypted PowerShell results as a res_uniqueID.frk file](/images/a-new-muddywater-apt-campaign-spreads/post_info-3514f1ed.png)](/images/a-new-muddywater-apt-campaign-spreads/post_info-3514f1ed.png)
 
 After all these initialization steps, control transfers to an infinite loop which takes care of all the actions coming from the server and acts accordingly.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/cnc_loop-5fba598d.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_loop-5fba598d.png)
+[![Command loop checking connectivity and processing server instructions](/images/a-new-muddywater-apt-campaign-spreads/cnc_loop-5fba598d.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_loop-5fba598d.png)
 
 This loop first checks the internet connection by pinging google.com, then it checks server connectivity by sending the following request to the server and comparing the output with the hardcoded value.
 
@@ -162,11 +162,11 @@ Currently, there are only three commands present in this version.
 
 2. Upload FilePath: It uploads FilePath on the server at URL hxxp://shopcloths.ddns.net/users.php?tname=randomname.extension&path=Data
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/cnc_commands-e2110ab7.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_commands-e2110ab7.png)
+[![Command handlers for downloading files and uploading victim files](/images/a-new-muddywater-apt-campaign-spreads/cnc_commands-e2110ab7.png)](/images/a-new-muddywater-apt-campaign-spreads/cnc_commands-e2110ab7.png)
 
 3. Powershell script: If the response of the server is an encoded and encrypted PowerShell script, then it will be run by the third function which is shown below.
 
-[![](/images/a-new-muddywater-apt-campaign-spreads/run_ps-9019e195.png)](/images/a-new-muddywater-apt-campaign-spreads/run_ps-9019e195.png)
+[![Function decoding, decrypting and executing a PowerShell command from the server](/images/a-new-muddywater-apt-campaign-spreads/run_ps-9019e195.png)](/images/a-new-muddywater-apt-campaign-spreads/run_ps-9019e195.png)
 
 **IOCs :**
 

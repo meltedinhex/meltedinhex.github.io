@@ -65,6 +65,61 @@ git push
 Every push to `main` runs `.github/workflows/hugo.yml`, which builds with Hugo and
 publishes to GitHub Pages automatically.
 
+## Regression checks
+
+Use Hugo Extended 0.163.1 and Node.js 24:
+
+```powershell
+npm ci
+npx playwright install chromium
+npm test
+```
+
+`npm run test:static` builds into a temporary directory, checks generated local
+links and fragments, images and alt attributes, duplicate IDs, analytics,
+structured data, draft exclusions, share settings and the zero-refresh setting.
+Temporary fixture content never changes the real posts.
+
+`npm run test:browser` starts and stops its own Hugo server on port 4178. It checks
+mobile/desktop layout, light/dark article contrast (at least 4.5:1), sticky-header
+anchor offsets, reduced motion, skip navigation, search loading/retry, clipboard
+failures, Wire pagination, modal focus, hash/history, refresh failures and ETags,
+and the Extension ATT&CK viewer. External fonts and analytics are blocked in
+these browser tests. Use `SITE_TEST_PORT` if that port is occupied; an existing
+server is never reused. On Windows, an installed Edge can be used instead:
+
+```powershell
+$env:PLAYWRIGHT_CHANNEL = "msedge"
+npm run test:browser
+```
+
+CI runs both suites before producing the deployment artifact. Site overrides
+live outside the PaperMod submodule, including search, structured data, Open
+Graph and RSS templates. Keep these overrides in mind when updating the theme.
+
+## Threat Wire behaviour
+
+The board initially renders 24 threats; **Show more threats** adds another 24.
+Search, filters, statistics and direct dossier links still use the full feed.
+Dossier HTML is created only when opened. Source links remain ordinary links.
+The native dialog contains focus, closes with Escape or a backdrop click, and
+tracks hash changes and browser history.
+
+`params.wireRefreshSeconds = 0` disables automatic polling, including focus
+refreshes. A configured live endpoint still receives its initial request after
+the committed snapshot is loaded. Polling pauses in hidden tabs and backs off
+after failures. Same-origin feeds use ETag revalidation when available; the
+browser handles normal cache revalidation for cross-origin feeds without adding
+custom headers that could require CORS preflights. Failed refreshes keep the last
+valid feed visible, label it as saved data and offer a retry. Invalid feeds are
+rejected before replacing current data. The time counters and filters describe
+**updated** reports, not newly discovered reports.
+
+The global author is Mohd Sadique; Melted in Hex remains the site and publisher.
+Per-post author overrides are preserved. About uses `AboutPage`/`Person`
+structured data, while interactive pages use `WebPage`, not `BlogPosting`.
+Tracker entries are shown only when their referenced article is published.
+
 ## Extension ATT&CK viewer
 
 The permanent `/extension-attack/` page renders a fixed taxonomy snapshot inside

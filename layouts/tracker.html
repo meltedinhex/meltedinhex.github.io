@@ -10,15 +10,23 @@
 <div class="post-content">
   {{ .Content }}
 
-  {{- $campaigns := sort hugo.Data.campaigns.campaigns "date" "desc" }}
+  {{- $campaigns := slice }}
+  {{- range sort hugo.Data.campaigns.campaigns "date" "desc" }}
+    {{- $page := site.GetPage (printf "/posts/%s" .slug) }}
+    {{- if and $page (not $page.Draft) (in site.RegularPages $page) }}
+      {{- $campaigns = $campaigns | append (merge . (dict "page" $page)) }}
+    {{- else }}
+      {{- warnf "Tracker: omitting campaign %q because /posts/%s is not published" .name .slug }}
+    {{- end }}
+  {{- end }}
   {{- $cats := slice }}
   {{- range $campaigns }}{{ $cats = $cats | append .category }}{{ end }}
   {{- $cats = uniq $cats }}
 
   <div class="tracker-filters" role="group" aria-label="Filter by category">
-    <button class="tracker-filter is-active" data-filter="all">All</button>
+    <button class="tracker-filter is-active" data-filter="all" aria-pressed="true">All</button>
     {{- range $cats }}
-    <button class="tracker-filter" data-filter="{{ . | urlize }}">{{ . }}</button>
+    <button class="tracker-filter" data-filter="{{ . | urlize }}" aria-pressed="false">{{ . }}</button>
     {{- end }}
   </div>
 
@@ -38,7 +46,7 @@
       <tbody>
         {{- range $campaigns }}
         <tr data-category="{{ .category | urlize }}">
-          <td data-label="Campaign"><a href="/posts/{{ .slug }}/">{{ .name }}</a></td>
+          <td data-label="Campaign"><a href="{{ .page.RelPermalink }}">{{ .name }}</a></td>
           <td data-label="Family">{{ .family }}</td>
           <td data-label="Actor">{{ .actor }}</td>
           <td data-label="Platform"><span class="tracker-tag">{{ .platform }}</span></td>
@@ -65,8 +73,9 @@
     buttons.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var f = btn.getAttribute('data-filter');
-        buttons.forEach(function (b) { b.classList.remove('is-active'); });
+        buttons.forEach(function (b) { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
         btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
         rows.forEach(function (row) {
           var show = f === 'all' || row.getAttribute('data-category') === f;
           row.style.display = show ? '' : 'none';

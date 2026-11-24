@@ -26,6 +26,8 @@
 {{- end }}
 
 {{- partial "extend_footer.html" . }}
+{{- $clipboard := resources.Get "js/clipboard.js" | resources.Minify | fingerprint }}
+<script src="{{ $clipboard.RelPermalink }}" integrity="{{ $clipboard.Data.Integrity }}"></script>
 
 <script>
     let menu = document.getElementById('menu');
@@ -41,24 +43,13 @@
         }
     }
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
+    const header = document.querySelector('header.header');
+    if (header) {
+        const updateOffset = () => document.documentElement.style.setProperty(
+            '--site-header-offset', `${Math.ceil(header.getBoundingClientRect().height) + 16}px`);
+        updateOffset();
+        new ResizeObserver(updateOffset).observe(header);
+    }
 
 </script>
 
@@ -100,32 +91,36 @@
 
         const copybutton = document.createElement('button');
         copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '{{- i18n "code_copy" | default "copy" }}';
+        copybutton.type = 'button';
+        copybutton.textContent = '{{- i18n "code_copy" | default "copy" }}';
+        const status = document.createElement('span');
+        status.className = 'copy-status';
+        status.setAttribute('role', 'status');
+        let resetCopyTimer;
 
         function copyingDone() {
-            copybutton.innerHTML = '{{- i18n "code_copied" | default "copied!" }}';
-            setTimeout(() => {
-                copybutton.innerHTML = '{{- i18n "code_copy" | default "copy" }}';
+            copybutton.textContent = '{{- i18n "code_copied" | default "copied!" }}';
+            status.textContent = '';
+            resetCopyTimer = setTimeout(() => {
+                copybutton.textContent = '{{- i18n "code_copy" | default "copy" }}';
             }, 2000);
         }
 
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
+        copybutton.addEventListener('click', async () => {
+            clearTimeout(resetCopyTimer);
+            const hadFocus = document.activeElement === copybutton;
+            copybutton.disabled = true;
             try {
-                document.execCommand('copy');
+                await window.mhCopyText(codeblock.textContent);
                 copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
+            } catch (error) {
+                console.error('Code copy failed:', error);
+                copybutton.textContent = 'copy failed';
+                status.textContent = 'Could not copy. Select the code and copy it manually.';
+            } finally {
+                copybutton.disabled = false;
+                if (hadFocus && document.activeElement === document.body) copybutton.focus({ preventScroll: true });
+            }
         });
 
         if (container.classList.contains("highlight")) {
@@ -139,6 +134,7 @@
             // code blocks not having highlight as parent class
             codeblock.parentNode.appendChild(copybutton);
         }
+        if (copybutton.isConnected) copybutton.parentNode.insertAdjacentElement('afterend', status);
     });
 </script>
 {{- end }}

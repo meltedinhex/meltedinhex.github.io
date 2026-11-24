@@ -111,7 +111,7 @@ FileType: MSIL
   
 This binary is executed with 3 arguments "spider", "ktn" and "100".  
 First of all it creates a victim's ID and dumps it to %APPDATA%\Spider\id.txt  
-[![](/images/analysis-of-file-spider-ransomware/ransomidtxt-32cd8163.png)](/images/analysis-of-file-spider-ransomware/ransomidtxt-32cd8163.png)  
+[![Code generating the victim ID and saving it to Spider\id.txt](/images/analysis-of-file-spider-ransomware/ransomidtxt-32cd8163.png)](/images/analysis-of-file-spider-ransomware/ransomidtxt-32cd8163.png)  
   
 One string is created from 0x20 bytes of a random number, the second argument (ktn) and the third argument (100). It is encrypted with the RSA algorithm; the RSA public key is hardcoded in the function, which is-  
   
@@ -169,22 +169,22 @@ Directories which are going to be skipped are:
   
 Each file is encrypted by the AES CFB algorithm with the same key, which is encrypted by RSA, and random 0x20 bytes of salt.  
   
-[![](/images/analysis-of-file-spider-ransomware/aes_algo-b53bdd53.png)](/images/analysis-of-file-spider-ransomware/aes_algo-b53bdd53.png)  
+[![File-Spider file encryption routine using AES in CFB mode](/images/analysis-of-file-spider-ransomware/aes_algo-b53bdd53.png)](/images/analysis-of-file-spider-ransomware/aes_algo-b53bdd53.png)  
   
 The password and salt are randomly generated.  
 These two are different for each file, so they are prepended to the encrypted file.  
 The first 0x20 bytes are the salt, the next 0x50 bytes are the AES encrypted password and the rest is the encrypted file data.  
   
-[![](/images/analysis-of-file-spider-ransomware/encrypted_file-25150054.png)](/images/analysis-of-file-spider-ransomware/encrypted_file-25150054.png)  
+[![Encrypted file layout with salt and an encrypted password preceding the file data](/images/analysis-of-file-spider-ransomware/encrypted_file-25150054.png)](/images/analysis-of-file-spider-ransomware/encrypted_file-25150054.png)  
   
 After the encryption of each file, it will add the full path of the encrypted file to %APPDATA%\Spider\files.txt  
   
-[![](/images/analysis-of-file-spider-ransomware/filetxt-2097aa36.png)](/images/analysis-of-file-spider-ransomware/filetxt-2097aa36.png)  
+[![Spider\files.txt recording the full paths of encrypted files](/images/analysis-of-file-spider-ransomware/filetxt-2097aa36.png)](/images/analysis-of-file-spider-ransomware/filetxt-2097aa36.png)  
   
 In each directory, it creates an internet shortcut file named "HOW TO DECRYPT FILES.url" which redirects to hxxps://vid.me/embedded/CGyDc?autoplay=1&stats=1. It's a video which shows how to remove the ransomware by paying a ransom in Bitcoin to the attacker.  
   
 It appends .spider extension to each encrypted file.  
-[![](/images/analysis-of-file-spider-ransomware/enc_files-1be53abb.png)](/images/analysis-of-file-spider-ransomware/enc_files-1be53abb.png)  
+[![Encrypted files renamed with the .spider extension](/images/analysis-of-file-spider-ransomware/enc_files-1be53abb.png)](/images/analysis-of-file-spider-ransomware/enc_files-1be53abb.png)  
 
 **Decryptor (dec.exe) :**  
 
@@ -196,7 +196,7 @@ The dec.exe is executed with a single argument "spider".
 It creates a mutex of name "SpiderForm" to avoid execution of multiple instances.  
 The argument provided to this must be "spider" or "startup" for further execution.  
   
-[![](/images/analysis-of-file-spider-ransomware/dec_code-ade62766.png)](/images/analysis-of-file-spider-ransomware/dec_code-ade62766.png)  
+[![Decryptor startup code checking the SpiderForm mutex and spider or startup argument](/images/analysis-of-file-spider-ransomware/dec_code-ade62766.png)](/images/analysis-of-file-spider-ransomware/dec_code-ade62766.png)  
   
 Then it creates a thread which terminates all the following processes.  
 "taskmgr", "procexp", "msconfig", "Starter", "regedit", "cdclt", "cmd", "OUTLOOK", "WINWORD", "EXCEL", "MSACCESS"  
@@ -207,13 +207,13 @@ Value : "%APPDATA%\Spider\dec.exe startup"
   
 In the last, it will start the form which contains payment instructions and the decryption tool.  
   
-[![](/images/analysis-of-file-spider-ransomware/dec_tool-4054b701.png)](/images/analysis-of-file-spider-ransomware/dec_tool-4054b701.png)  
+[![File-Spider ransom interface warning that files are encrypted and directing the victim to its website](/images/analysis-of-file-spider-ransomware/dec_tool-4054b701.png)](/images/analysis-of-file-spider-ransomware/dec_tool-4054b701.png)  
   
-[![](/images/analysis-of-file-spider-ransomware/dec_key-ef40d7a4.png)](/images/analysis-of-file-spider-ransomware/dec_key-ef40d7a4.png)  
+[![File-Spider decryption panel with a decryption-key field and Start Decrypting button](/images/analysis-of-file-spider-ransomware/dec_key-ef40d7a4.png)](/images/analysis-of-file-spider-ransomware/dec_key-ef40d7a4.png)  
   
 Payment site of File Spider ransomware is spiderwjzbmsmu7y[.]onion  
   
-[![](/images/analysis-of-file-spider-ransomware/onionsite-78a9f0cd.jpg)](/images/analysis-of-file-spider-ransomware/onionsite-78a9f0cd.jpg)  
+[![File-Spider ransom payment website at its onion address](/images/analysis-of-file-spider-ransomware/onionsite-78a9f0cd.jpg)](/images/analysis-of-file-spider-ransomware/onionsite-78a9f0cd.jpg)  
   
 
 **IOCs :**  

@@ -1,0 +1,15 @@
+{{- define "main" }}
+<header class="page-header">
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}<div class="post-description">{{ . }}</div>{{ end }}
+</header>
+<div id="searchbox" class="searchbox">
+  <input id="searchInput" disabled placeholder="{{ .Params.placeholder | default (printf "%s ↵" .Title) }}"
+    aria-label="Search the site" aria-describedby="searchStatus" type="search" autocomplete="off" maxlength="64"
+    data-index="{{ "index.json" | relURL }}">
+  <p id="searchStatus" class="search-status" role="status" aria-live="polite" aria-atomic="true">Loading search index...</p>
+  <button id="searchRetry" type="button" hidden>Retry search</button>
+  <ul id="searchResults" class="searchResults" aria-label="Search results" aria-busy="true"></ul>
+  <noscript><p>Search needs JavaScript. You can also browse the <a href="{{ "archives/" | relURL }}">archive</a>.</p></noscript>
+</div>
+{{- end }}

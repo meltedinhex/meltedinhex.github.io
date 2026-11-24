@@ -4,7 +4,7 @@
 {{- $recent := where $posts "Date" "ge" $cutoff -}}
 {{- $latest := first 3 $recent -}}
 <article class="first-entry home-info">
-  <div class="mh-term" role="img" aria-label="{{ .Title }} — {{ .Content | plainify }}">
+  <div class="mh-term">
     <div class="mh-term__bar">
       <span class="mh-term__dots" aria-hidden="true">
         <i class="mh-dot mh-dot--r"></i><i class="mh-dot mh-dot--y"></i><i class="mh-dot mh-dot--g"></i>
@@ -15,6 +15,7 @@
     <div class="mh-term__body">
       <p class="mh-line" style="--d:0"><span class="mh-prompt">$</span> whoami</p>
       <h1 class="mh-out mh-title" style="--d:1">{{ .Title | markdownify }}</h1>
+      <p class="mh-byline" style="--d:1">By <a href="{{ "about/" | relURL }}">Mohd Sadique</a></p>
 
       <p class="mh-line" style="--d:2"><span class="mh-prompt">$</span> cat ./profile.txt</p>
       <div class="mh-out mh-content" style="--d:3">

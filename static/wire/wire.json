@@ -1,7 +1,63 @@
 {
-  "generated_at": "2026-11-23T21:18:16.791767+00:00",
-  "count": 356,
+  "generated_at": "2026-11-25T19:34:09.646066+00:00",
+  "count": 357,
   "reports": [
+    {
+      "slug": "hex-pm-rce-exploit",
+      "name": "Hex.pm Remote Code Execution (CVE-2026-129514)",
+      "category": "vulnerability",
+      "severity": "critical",
+      "confidence": 0.9,
+      "faithfulness": 0.85,
+      "source_count": 1,
+      "ioc_count": 1,
+      "cves": [
+        "CVE-2026-129514"
+      ],
+      "malware_families": [],
+      "threat_actors": [],
+      "ttps": [
+        {
+          "id": "T1203",
+          "name": "Exploitation for Client Execution",
+          "tactic": "execution"
+        },
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "tactic": "execution"
+        }
+      ],
+      "iocs": {
+        "cve": [
+          "CVE-2026-129514"
+        ]
+      },
+      "affected_products": [
+        "Hex.pm hosted registry service",
+        "hexpm/hexpm web application (self‑hosted or forked deployments)",
+        "Third‑party Hex package mirrors (potentially untrusted)"
+      ],
+      "recommendations": [
+        "Apply the fix by updating to commit 379b0a2 or later in any self‑hosted Hex.pm deployment.",
+        "Upgrade the Hex client to the version that includes the new registry signing verification once released.",
+        "Discontinue use of unauthenticated third‑party mirrors until they adopt the signed registry model.",
+        "Implement network‑level restrictions to limit inbound POST requests to the Hex.pm API endpoints to known, trusted sources.",
+        "Add logging and alerting for anomalous POST payloads, especially those containing Erlang term structures.",
+        "Conduct a post‑incident review to verify that no data was exfiltrated and to assess any potential persistence mechanisms."
+      ],
+      "first_seen": "2026-11-25T19:06:48.436219+00:00",
+      "last_updated": "2026-11-25T19:06:48.436232+00:00",
+      "summary": "On November 23, 2026, threat actors exploited a critical unauthenticated remote code execution vulnerability (CVE-2026-129514) in the Hex.pm package registry, allowing them to execute arbitrary OS commands on the service's web servers. The flaw stems from unsafe deserialization of Erlang terms in the request parser, bypassing authentication and routing. While no malicious package modifications were observed, the incident demonstrates the risk of untrusted data handling in supply‑chain services. Immediate remediation and hardening of the registry are required.",
+      "analysis": "### Vulnerability Overview - **Identifier**: CVE-2026-129514 (CVSS 10.0 – Critical) - **Component**: Hex.pm web application (the hosted registry for Elixir/Erlang packages). - **Root Cause**: Deserialization of untrusted Erlang term payloads. The Plug.Crypto library’s “safe” mode decoder incorrectly accepted maps containing a special struct marker, allowing attackers to inject arbitrary Erlang structs. ### Exploit Chain 1. **Unauthenticated POST** – The vulnerable parser runs before any authentication checks, so any attacker can send a crafted request. 2. **Deserialization Abuse** – The malicious payload includes a struct that the decoder treats as a valid term. 3. **Library Call Hijack** – Through a chain of calls in Plug, Ecto, and DBConnection, the attacker forces the application to invoke a function of their choosing. 4. **Command Execution** – The chosen function executes an operating‑system command under the user account that runs the Erlang VM, achieving full remote code execution on the server. ### Incident Timeline - **18:16 UTC, 23 Nov 2026** – First malicious request observed. - **18:16‑~19:00 UTC** – 69 malicious requests logged before the incident response team deployed a fix. - **Post‑fix** – Deployment of commit `379b0a2` introduced validation that rejects any term containing the dangerous struct, returning HTTP 400. ### Impact Assessment - No evidence of package tampering was found, but the possibility of data exfiltration (e.g., reading user‑uploaded files) could not be ruled out. - The vulnerability affects the hosted Hex.pm service and any self‑hosted or forked deployments of the `hexpm/hexpm` web application that have not applied the fix. - Third‑party mirrors remain untrusted until the new registry signing system and updated client tools are released. ### Mitigation Status - The Hex.pm team applied the fix on the same day of the attack. - Developers using the standard Hex client (`mix deps.get`) were not directly exposed, but are advised to update the client to the latest version once available.",
+      "sources": [
+        {
+          "title": "Hex.pm RCE (CVE-2026-129514) Exploited in Server Attack",
+          "url": "https://socradar.io/blog/hex-pm-rce-cve-2026-129514-exploited/",
+          "source": "SOCRadar"
+        }
+      ]
+    },
     {
       "slug": "idunno-anticsrf-rce-exploit",
       "name": "Idunno.AntiCsrf Remote Code Execution Vulnerability (CVE-2026-131914)",
